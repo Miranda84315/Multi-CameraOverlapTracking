@@ -2,6 +2,10 @@ import cv2
 import numpy as np
 import os
 from scipy.optimize import fsolve
+'''
+Use this to calucate intrinsics and extrinsics
+and save the reslut in npy file
+'''
 
 intrinsics_root = 'D:/Code/MultiCamOverlap/dataset/calibration/cam'
 extrinsics_root = 'D:/Code/MultiCamOverlap/dataset/calibration/cam'
