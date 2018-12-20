@@ -77,7 +77,12 @@ def get_extrinsics(icam, cameraMatrix, distCoeffs, objp, corners):
     t = Rt[:, 3:]
     imagePoints, jacobian2 = cv2.projectPoints(objpoints_test, r, t,
                                                cameraMatrix, distCoeffs)
-    print(imagePoints)
+    img = cv2.imread(extrinsics_root + str(icam) + '.jpg')
+    for i in range(0, len(imagePoints)):
+        x = int(imagePoints[i][0, 0])
+        y = int(imagePoints[i][0, 1])
+        cv2.circle(img, (x, y), 2, (0, 0, 0), -1)
+    cv2.imwrite(extrinsics_root + str(icam) + '_temp.jpg', img)
     return r, t, Rt
 
 
