@@ -255,8 +255,8 @@ def main():
         fourcc = cv2.VideoWriter_fourcc(*'XVID')
         out_filename = experiment_root + 'video-results/camera' + str(
             icam) + '_result.avi'
-        height = 1920
-        width = 1080
+        height = 1080
+        width = 1920
         total_height = height
         # * 2 + 10 * 3
         total_width = width
