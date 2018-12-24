@@ -1,0 +1,9 @@
+<RCC>
+  <qresource prefix="newPrefix">
+    <file>data/qrc/approval-symbol-in-badge.png</file>
+    <file>data/qrc/pause.png</file>
+    <file>data/qrc/play-button.png</file>
+    <file>data/qrc/play-button.png</file>
+    <file>data/qrc/confirm.png</file>
+  </qresource>
+</RCC>

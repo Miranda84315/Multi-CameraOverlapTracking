@@ -18,7 +18,7 @@ opts.image_height = 1080;
 opts.current_camera = -1;
 opts.world = 0;
 opts.ROIs = getROIs();
-opts.minimum_trajectory_length = 100;
+opts.minimum_trajectory_length = 10;
 opts.optimization = 'KL'; 
 opts.use_groupping = 1;
 opts.num_cam = 4;
@@ -32,7 +32,7 @@ opts.load_trajectories = 1;
 
 % Tracklets
 tracklets = [];
-tracklets.window_width = 50;
+tracklets.window_width = 15;
 tracklets.min_length = 5;
 tracklets.alpha = 1;
 tracklets.beta = 0.02;
@@ -46,9 +46,9 @@ trajectories = [];
 trajectories.appearance_groups = 0; % determined automatically when zero
 trajectories.alpha = 1;
 trajectories.beta = 0.01;
-trajectories.window_width = 300;
-trajectories.overlap = 150;
-trajectories.speed_limit = 30;
+trajectories.window_width = 70;
+trajectories.overlap = 35;
+trajectories.speed_limit = 200;
 trajectories.indifference_time = 100;
 trajectories.threshold = 8;
 
