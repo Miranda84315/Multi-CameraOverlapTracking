@@ -109,7 +109,7 @@ def object_detection(detection_graph, cam_num, video_root, save_root,
 
 
 def main():
-    cam_num = 4
+    cam_num = 1
     video_root = 'D:/Code/MultiCamOverlap/dataset/videos/No1/'
     save_root = 'D:/Code/MultiCamOverlap/dataset/detections/'
     # MODEL_NAME

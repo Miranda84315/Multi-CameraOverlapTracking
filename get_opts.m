@@ -34,22 +34,22 @@ opts.load_trajectories = 1;
 % Tracklets
 tracklets = [];
 tracklets.window_width = 15;
-tracklets.min_length = 5;
+tracklets.min_length = 1;
 tracklets.alpha = 1;
 tracklets.beta = 0.02;
 tracklets.cluster_coeff = 0.75;
-tracklets.nearest_neighbors = 8;
-tracklets.speed_limit = 20;
+tracklets.nearest_neighbors = 80;
+tracklets.speed_limit = 80000%20;
 tracklets.threshold = 8;
 
 % Trajectories
 trajectories = [];
-trajectories.appearance_groups = 0; % determined automatically when zero
+trajectories.appearance_groups = 1; % determined automatically when zero
 trajectories.alpha = 1;
 trajectories.beta = 0.01;
 trajectories.window_width = 70;
 trajectories.overlap = 35;
-trajectories.speed_limit = 200;
+trajectories.speed_limit = 80000;
 trajectories.indifference_time = 100;
 trajectories.threshold = 8;
 
