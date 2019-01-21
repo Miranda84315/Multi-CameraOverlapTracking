@@ -1,11 +1,12 @@
 function compute_L2_trajectories(opts)
 % Computes single-camera trajectories from tracklets
-for iCam = 1:4
+for iCam = 4:4
 
     % Initialize
     % -- load tracklets from L1-tracklet.mat
     % -- trajectoriesFromTracklets include detection start/endFrame and
     % -- segmentStart/End
+    iCam = 4;
     load(fullfile(opts.experiment_root, opts.experiment_name, 'L1-tracklets', sprintf('tracklets%d_%s.mat',iCam,opts.sequence_names{opts.sequence})));
     trajectoriesFromTracklets = trackletsToTrajectories(tracklets,1:length(tracklets));
     
@@ -20,6 +21,7 @@ for iCam = 1:4
     
     while startFrame <= global2local(opts.start_frames(opts.current_camera), sequence_interval(end))
         % Display loop state
+
         clc; fprintf('Cam: %d - Window %d...%d\n', iCam, startFrame, endFrame);
 
         % Compute trajectories in current time window

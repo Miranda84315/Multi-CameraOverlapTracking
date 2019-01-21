@@ -286,39 +286,8 @@ def main():
             # get the bounding box and put to image box 1
             frame_img = draw_bb(icam, current_frame, frame_img, startFrame,
                                 find_ind_bb)
-            # frame_img = cv2.copyMakeBorder(
-            #     frame_img,
-            #     10,
-            #     10,
-            #     10,
-            #     10,
-            #     cv2.BORDER_CONSTANT,
-            #     value=[255, 255, 255])
 
-            # img_traj = draw_traj(icam, current_frame, find_ind)
-            # img_traj = cv2.copyMakeBorder(
-            #     img_traj,
-            #     10,
-            #     308,
-            #     0,
-            #     10,
-            #     cv2.BORDER_CONSTANT,
-            #     value=[255, 255, 255])
-
-            # img_heat = cal_heatmap(icam, current_frame, startFrame,
-            #                        find_ind_heat)
-            # img_heat = cv2.copyMakeBorder(
-            #     img_heat,
-            #     0,
-            #     10,
-            #     10,
-            #     10,
-            #     cv2.BORDER_CONSTANT,
-            #     value=[255, 255, 255])
-
-            # img_left = np.concatenate((frame_img, img_heat), axis=0)
-            # img = np.concatenate((img_left, img_traj), axis=1)
-
+            cv2.putText(frame_img, str(current_frame), (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
             cv2.imshow("video2", frame_img)
             cv2.waitKey(1)
             print('icam = ' + str(icam))
