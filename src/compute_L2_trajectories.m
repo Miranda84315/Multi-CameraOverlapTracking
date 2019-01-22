@@ -1,6 +1,6 @@
 function compute_L2_trajectories(opts)
 % Computes single-camera trajectories from tracklets
-for iCam = 4:4
+for iCam = 1:4
 
     % Initialize
     % -- load tracklets from L1-tracklet.mat

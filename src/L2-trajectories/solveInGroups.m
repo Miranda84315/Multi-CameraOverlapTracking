@@ -45,14 +45,13 @@ for i = 1 : length(allGroups)
     appearanceAffinity = getAppearanceMatrix(featureVectors(indices), params.threshold);
     [spacetimeAffinity, impossibilityMatrix, indifferenceMatrix] = getSpaceTimeAffinity(tracklets(indices), params.beta, params.speed_limit, params.indifference_time);
     
-    spacetimeAffinity = spacetimeAffinity + 0.05
     % compute the correlation matrix
-    correlationMatrix = appearanceAffinity + spacetimeAffinity - 0.05;
+    correlationMatrix = appearanceAffinity + spacetimeAffinity;
     correlationMatrix = correlationMatrix .* indifferenceMatrix;
 
     correlationMatrix(impossibilityMatrix == 1) = -inf;
-    correlationMatrix(sameLabels) = 1;
     correlationMatrix = tanh(correlationMatrix);
+    correlationMatrix(sameLabels) = 1;
     
     % show appearance group tracklets
     if opts.visualize, trajectoriesVisualizePart2; end

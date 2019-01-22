@@ -1,19 +1,19 @@
-function newTrajectories = recomputeTrajectories( trajectories )
+function newTrajectories = recomputeTrajectories( newTrajectories )
 %RECOMPUTETRAJECTORIES Summary of this function goes here
 %   Detailed explanation goes here
 
 % newTrajectories = trajectories;
 
-segmentLength = 50;
+segmentLength = 30;
 
-for i = 1:length(trajectories)
+for i = 1:length(newTrajectories)
 
-    segmentStart = trajectories(i).segmentStart;
-    segmentEnd = trajectories(i).segmentEnd;
+    segmentStart = newTrajectories(i).segmentStart;
+    segmentEnd = newTrajectories(i).segmentEnd;
     
     numSegments = (segmentEnd + 1 - segmentStart) / segmentLength;
     
-    alldata = {trajectories(i).tracklets(:).data};
+    alldata = {newTrajectories(i).tracklets(:).data};
     alldata = cell2mat(alldata');
     alldata = sortrows(alldata,2);
     [~, uniqueRows] = unique(alldata(:,1));
@@ -37,8 +37,8 @@ for i = 1:length(trajectories)
     keyData(:,2) = -1;
     newData = fillTrajectories(keyData);
     
-    newTrajectory = trajectories(i);
-    sampleTracklet = trajectories(i).tracklets(1);
+    newTrajectory = newTrajectories(i);
+    sampleTracklet = newTrajectories(i).tracklets(1);
     newTrajectory.tracklets = [];
     
     
