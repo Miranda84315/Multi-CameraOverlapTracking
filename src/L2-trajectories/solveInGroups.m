@@ -46,11 +46,10 @@ for i = 1 : length(allGroups)
     [spacetimeAffinity, impossibilityMatrix, indifferenceMatrix] = getSpaceTimeAffinity(tracklets(indices), params.beta, params.speed_limit, params.indifference_time);
     
     % compute the correlation matrix
-    correlationMatrix = appearanceAffinity + spacetimeAffinity;
+    correlationMatrix = (appearanceAffinity + spacetimeAffinity)/2;
     correlationMatrix = correlationMatrix .* indifferenceMatrix;
 
     correlationMatrix(impossibilityMatrix == 1) = -inf;
-    correlationMatrix = tanh(correlationMatrix);
     correlationMatrix(sameLabels) = 1;
     
     % show appearance group tracklets

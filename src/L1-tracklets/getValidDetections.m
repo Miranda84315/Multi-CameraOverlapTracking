@@ -12,6 +12,9 @@ for k = 1:size(detections_in_interval,1)
     newbb = pose(1:4);
     feet = feetPosition(newbb);
     
+    if detections_in_interval(k,7)< 0.8
+        valid(k) = 0;
+    end
     
     %{
     % Drop small and large detections
