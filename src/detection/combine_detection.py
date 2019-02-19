@@ -3,7 +3,7 @@ import scipy.io
 import math
 import matplotlib.pyplot as plt
 from scipy.optimize import fsolve
-from sklearn.cluster import KMeans
+from sklearn.cluster import spectral_clustering
 '''
 use k-means to combined detections
 '''
@@ -66,7 +66,7 @@ def calucate_distance(x1, y1, x2, y2):
     return distance
 
 
-def clustering(x, num_clustering):
+def clustering_affinity(x, num_clustering):
     num_x = len(x)
     distanceMatrix = np.zeros((num_x, num_x))
     for i in range(0, num_x):
@@ -88,6 +88,10 @@ def clustering(x, num_clustering):
     return distanceMatrix
 
 
+def KL_clustering(x, cluster_num):
+    # write the KL algo
+    return 0
+
 def main():
     startFrame = 0
     endFrame = 1
@@ -107,16 +111,25 @@ def main():
             x, y = project_3d(detection[i, 1], detection[i, 2], cmtx, dist, Rt[int(detection[i, 0]) - 1])
             detection[i, 1] = x
             detection[i, 2] = y
-        #plt.plot(detection[:, 1], detection[:, 2], 'ro')
-        #plt.show()
         _, counts = np.unique(detection[:, 0], return_counts=True)
-        x = clustering(detection, max(counts))
+        x = clustering_affinity(detection, max(counts))
         scipy.io.savemat(
                     'distanceMatrix.mat',
                     mdict={'distanceMatrix': x})
 
         _, counts = np.unique(detection[:, 0], return_counts=True)
+        #label = KL_clustering(x, counts)
+        label = np.array([0, 1, 2, 3, 2, 1, 0, 4, 3, 0, 1, 2, 1, 3, 0, 4, 2]).reshape((len(detection), 1))
+        detection = np.append(detection, label, axis=1)
+        color = ['bo', 'go', 'ro', 'co', 'mo']
+
+        for i in range(0, len(detection)):
+            plt.plot(detection[i, 1], detection[i, 2], color[int(detection[i, 3])])
+        plt.show()
+
 '''
+        labels = spectral_clustering(x, n_clusters=5, eigen_solver=None)
+        print(labels)
         kmeans = KMeans(n_clusters=max(counts), random_state=0).fit(x)
         print(kmeans.labels_)
         label = kmeans.labels_.reshape((len(detection), 1))
