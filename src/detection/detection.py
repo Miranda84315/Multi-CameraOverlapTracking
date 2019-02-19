@@ -5,7 +5,7 @@ import tensorflow as tf
 import scipy.io
 from object_detection.utils import label_map_util
 '''
-python detection.py --video_root D:/Code/AF_tracking/videos/ --save_root D:/Code/AF_tracking/dataset/detections/ --cam_num 4
+python detection.py --video_root D:/Code/AF_tracking/videos/ --save_root D:/Code/AF_tracking/dataset/detections/new_delete_other/ --cam_num 4
 '''
 
 start_time = [1, 1, 1, 1]
@@ -55,7 +55,7 @@ def object_detection(detection_graph, cam_num, video_root, save_root,
                     scores_new = np.squeeze(scores)
                     category_index_new = category_index
                     max_boxes_to_draw = 5
-                    min_score_thresh = .50
+                    min_score_thresh = .85
                     for i in range(min(max_boxes_to_draw, boxes_new.shape[0])):
                         if scores_new is None or (scores_new[i] >
                                                   min_score_thresh):
@@ -109,7 +109,7 @@ def object_detection(detection_graph, cam_num, video_root, save_root,
 
 
 def main():
-    cam_num = 1
+    cam_num = 4
     video_root = 'D:/Code/MultiCamOverlap/dataset/videos/No1/'
     save_root = 'D:/Code/MultiCamOverlap/dataset/detections/'
     # MODEL_NAME

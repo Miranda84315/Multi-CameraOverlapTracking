@@ -1,8 +1,9 @@
 import numpy as np
-import cv2
 import scipy.io
+import math
 import matplotlib.pyplot as plt
 from scipy.optimize import fsolve
+from sklearn.cluster import KMeans
 '''
 use k-means to combined detections
 '''
@@ -60,6 +61,33 @@ def project_3d(u, v, cameraMatrix, distCoeffs, Rt):
     return world_x, world_y
 
 
+def calucate_distance(x1, y1, x2, y2):
+    distance = np.sqrt(np.square(x1 - x2) + np.square(y1 - y2))
+    return distance
+
+
+def clustering(x, num_clustering):
+    num_x = len(x)
+    distanceMatrix = np.zeros((num_x, num_x))
+    for i in range(0, num_x):
+        for j in range(i, num_x):
+            x1 = x[i, 1]
+            x2 = x[j, 1]
+            y1 = x[i, 2]
+            y2 = x[j, 2]
+            distanceMatrix[i, j] = calucate_distance(x1, y1, x2, y2)
+            distanceMatrix[j, i] = distanceMatrix[i, j]
+    for i in range(0, num_x):
+        for j in range(i, num_x):
+            if (x[i, 0] == x[j, 0]) and (i != j):
+                distanceMatrix[i, j] = np.inf
+                distanceMatrix[j, i] = distanceMatrix[i, j]
+
+    print(x)
+    print(distanceMatrix)
+    return distanceMatrix
+
+
 def main():
     startFrame = 0
     endFrame = 1
@@ -79,8 +107,22 @@ def main():
             x, y = project_3d(detection[i, 1], detection[i, 2], cmtx, dist, Rt[int(detection[i, 0]) - 1])
             detection[i, 1] = x
             detection[i, 2] = y
-        plt.plot(detection[:, 1], detection[:, 2], 'ro')
-        plt.show()
+        #plt.plot(detection[:, 1], detection[:, 2], 'ro')
+        #plt.show()
+        _, counts = np.unique(detection[:, 0], return_counts=True)
+        x = clustering(detection, max(counts))
+        scipy.io.savemat(
+                    'distanceMatrix.mat',
+                    mdict={'distanceMatrix': x})
+
+        _, counts = np.unique(detection[:, 0], return_counts=True)
+'''
+        kmeans = KMeans(n_clusters=max(counts), random_state=0).fit(x)
+        print(kmeans.labels_)
+        label = kmeans.labels_.reshape((len(detection), 1))
+        detection = np.append(detection, label, axis=1)
+        print(detection)
+'''
 
 if __name__ == '__main__':
     main()
