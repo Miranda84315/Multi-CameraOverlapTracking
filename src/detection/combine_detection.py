@@ -1,9 +1,8 @@
 import numpy as np
 import scipy.io
-import math
 import matplotlib.pyplot as plt
 from scipy.optimize import fsolve
-from sklearn.cluster import spectral_clustering
+from sklearn.cluster import SpectralClustering
 '''
 use k-means to combined detections
 '''
@@ -43,6 +42,7 @@ def project_3d(u, v, cameraMatrix, distCoeffs, Rt):
     p2 = distCoeffs[3]
     x_two = (u - cx) / fx
     y_two = (v - cy) / fy
+
     def f1(x):
         x_one = float(x[0])
         y_one = float(x[1])
@@ -52,6 +52,7 @@ def project_3d(u, v, cameraMatrix, distCoeffs, Rt):
         return [x_two - (x_one * (1 + k1 * r2 + k2 * r4 + k3 * r6) + 2 * p1 * x_one * y_one + p2 * (r2 + 2 * x_one * x_one)),
                 y_two - (y_one * (1 + k1 * r2 + k2 * r4 + k3 * r6) + p1 * (r2 + 2 * y_one * y_one) + 2 * p2 * x_one * y_one)]
     [x_one, y_one] = fsolve(f1, [0, 0])
+
     def f2(x):
         X = float(x[0])
         Y = float(x[1])
@@ -63,34 +64,34 @@ def project_3d(u, v, cameraMatrix, distCoeffs, Rt):
 
 def calucate_distance(x1, y1, x2, y2):
     distance = np.sqrt(np.square(x1 - x2) + np.square(y1 - y2))
-    return distance
+    return 1 / (1 + distance)
 
 
 def clustering_affinity(x, num_clustering):
     num_x = len(x)
-    distanceMatrix = np.zeros((num_x, num_x))
+    similarityMatrix = np.zeros((num_x, num_x))
     for i in range(0, num_x):
         for j in range(i, num_x):
             x1 = x[i, 1]
             x2 = x[j, 1]
             y1 = x[i, 2]
             y2 = x[j, 2]
-            distanceMatrix[i, j] = calucate_distance(x1, y1, x2, y2)
-            distanceMatrix[j, i] = distanceMatrix[i, j]
+            similarityMatrix[i, j] = calucate_distance(x1, y1, x2, y2)
+            similarityMatrix[j, i] = similarityMatrix[i, j]
+
     for i in range(0, num_x):
         for j in range(i, num_x):
             if (x[i, 0] == x[j, 0]) and (i != j):
-                distanceMatrix[i, j] = np.inf
-                distanceMatrix[j, i] = distanceMatrix[i, j]
+                similarityMatrix[i, j] = 0
+                similarityMatrix[j, i] = similarityMatrix[i, j]
+            if (i == j):
+                similarityMatrix[i, j] = 1
+                similarityMatrix[j, i] = 1
 
     print(x)
-    print(distanceMatrix)
-    return distanceMatrix
+    print(similarityMatrix)
+    return similarityMatrix
 
-
-def KL_clustering(x, cluster_num):
-    # write the KL algo
-    return 0
 
 def main():
     startFrame = 0
@@ -113,13 +114,12 @@ def main():
             detection[i, 2] = y
         _, counts = np.unique(detection[:, 0], return_counts=True)
         x = clustering_affinity(detection, max(counts))
-        scipy.io.savemat(
-                    'distanceMatrix.mat',
-                    mdict={'distanceMatrix': x})
 
         _, counts = np.unique(detection[:, 0], return_counts=True)
-        #label = KL_clustering(x, counts)
-        label = np.array([0, 1, 2, 3, 2, 1, 0, 4, 3, 0, 1, 2, 1, 3, 0, 4, 2]).reshape((len(detection), 1))
+        sc = SpectralClustering(5, affinity='precomputed', n_init=100)
+        sc.fit(x)
+        print(sc.labels_)
+        label = np.array(sc.labels_).reshape((len(detection), 1))
         detection = np.append(detection, label, axis=1)
         color = ['bo', 'go', 'ro', 'co', 'mo']
 
@@ -127,15 +127,6 @@ def main():
             plt.plot(detection[i, 1], detection[i, 2], color[int(detection[i, 3])])
         plt.show()
 
-'''
-        labels = spectral_clustering(x, n_clusters=5, eigen_solver=None)
-        print(labels)
-        kmeans = KMeans(n_clusters=max(counts), random_state=0).fit(x)
-        print(kmeans.labels_)
-        label = kmeans.labels_.reshape((len(detection), 1))
-        detection = np.append(detection, label, axis=1)
-        print(detection)
-'''
 
 if __name__ == '__main__':
     main()
