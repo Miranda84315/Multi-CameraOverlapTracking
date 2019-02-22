@@ -80,11 +80,37 @@ for spatialGroupID = 1 : max(spatialGroupIDs)
     labels      = labels + totalLabels;
     totalLabels = max(labels);
     identities  = labels;
-    originalDetections(spatialGroupObservations, 2) = identities;
+    originalDetections(spatialGroupObservations, 8) = identities;
     
     % Show clustered detections
     if opts.visualize, trackletsVisualizePart3; end
 end
 fprintf('\n');
+
+%% FINALIZE TRACKLETS
+% Fit a low degree polynomial to include missing detections and smooth the tracklet
+trackletsToSmooth  = originalDetections(currentDetectionsIDX,:);
+featuresAppearance = allFeatures.appearance(currentDetectionsIDX);
+smoothedTracklets  = smoothTracklets3D(trackletsToSmooth, startFrame, params.window_width, featuresAppearance, params.min_length, currentInterval);
+
+% Assign IDs to all tracklets
+for i = 1:length(smoothedTracklets)
+    smoothedTracklets(i).id = i;
+    smoothedTracklets(i).ids = i;
+end
+
+% Attach new tracklets to the ones already discovered from this batch of detections
+if ~isempty(smoothedTracklets)
+    ids = 1 : length(smoothedTracklets); 
+    tracklets = [tracklets, smoothedTracklets];
+end
+
+% Show generated tracklets in window
+if opts.visualize, trackletsVisualizePart4; end
+
+if ~isempty(tracklets)
+    tracklets = nestedSortStruct(tracklets,{'startFrame','endFrame'});
+end
+
 
 end

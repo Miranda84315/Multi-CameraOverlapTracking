@@ -1,5 +1,12 @@
 function [motionScores, impossibilityMatrix] = motionAffinity(detectionCenters,detectionFrames,estimatedVelocity, speedLimit, beta)
 % This function computes the motion affinities given a set of detections.
+%{
+detectionCenters=spatialGroupDetectionCenters;
+detectionFrames=spatialGroupDetectionFrames;
+estimatedVelocity=spatialGroupEstimatedVelocity;
+speedLimit=params.speed_limit;
+beta=params.beta;
+%}
 % A simple motion prediction is performed from a source detection to
 % a target detection to compute the prediction error.
 

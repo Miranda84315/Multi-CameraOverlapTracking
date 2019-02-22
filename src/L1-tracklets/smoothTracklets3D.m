@@ -1,4 +1,4 @@
-function smoothedTracklets = smoothTracklets( tracklets, segmentStart, segmentInterval, featuresAppearance, minTrackletLength, currentInterval )
+function smoothedTracklets = smoothTracklets3D( tracklets, segmentStart, segmentInterval, featuresAppearance, minTrackletLength, currentInterval )
 % This function smooths given tracklets by fitting a low degree polynomial 
 % in their spatial location
 %{
@@ -10,13 +10,13 @@ minTrackletLength=params.min_length;
 currentInterval=currentInterval;
 %}
 
-trackletIDs          = unique(tracklets(:,2));
+trackletIDs          = unique(tracklets(:, 8));
 numTracklets         = length(trackletIDs);
 smoothedTracklets    = struct([]);
 
 for i = 1:numTracklets
 
-    mask = tracklets(:,2)==trackletIDs(i);
+    mask = tracklets(:, 8)==trackletIDs(i);
     detections = tracklets(mask,:);
     
     % Reject tracklets of short length
