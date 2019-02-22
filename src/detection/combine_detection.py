@@ -102,15 +102,15 @@ def recomputeIndex(index, n, each_n):
     for i in index:
         for j in range(1, n + 1):
             if i < each_n[j]:
-                new_index[j-1] = i - each_n[j - 1]
+                new_index[j-1] = i - each_n[j - 1] + 1
                 break
     return new_index
 
 
 def main():
     startFrame = 0
-    endFrame = 1
-    plot_img = True
+    endFrame = 225
+    plot_img = False
 
     cmtx = np.loadtxt(matrix_save + 'intrinsics.txt')
     dist = np.loadtxt(matrix_save + 'distCoeffs.txt')
@@ -129,6 +129,7 @@ def main():
     detections, num_each_camera = load_detection(cam_num)
     total_detections = []
     for current_frame in range(startFrame, endFrame):
+        print(current_frame)
         detection = np.array([detections[i, [0, 7, 8]] for i in range(len(detections)) if detections[i, 1] == (current_frame + 1)])
         original_index = np.array([i for i in range(len(detections)) if detections[i, 1] == (current_frame + 1)])
         for i in range(0, len(detection)):
@@ -149,7 +150,7 @@ def main():
         # calucate new detection using mean x, y-point.
         new_detection = []
         for i in range(0, max(counts)):
-            info_detection = [current_frame]
+            info_detection = [current_frame + 1]
             coordinate = np.array([detection[k, 1:3] for k in range(0, len(detection)) if detection[k, 3] == i])
             index = [original_index[k] for k in range(0, len(original_index)) if label[k] == i]
             index = recomputeIndex(index, cam_num, num_each_camera)
@@ -162,8 +163,8 @@ def main():
         if plot_img is True:
             new_detection = np.array(new_detection)
             for i in range(0, len(detection)):
-                plt.plot(detection[i, 1], detection[i, 2], color[int(detection[i, 0])])
-            #plt.plot(new_detection[:, 1], new_detection[:, 2], 'y^')
+                plt.plot(detection[i, 1], detection[i, 2], color[int(detection[i, 3])])
+            plt.plot(new_detection[:, 1], new_detection[:, 2], 'y^')
             plt.xlabel('x')
             plt.ylabel('y')
             plt.legend(['bo', 'go', 'ro', 'co'], ['cam1', 'cam2', 'cam3', 'cam4'], loc='upper left')
@@ -172,7 +173,7 @@ def main():
 
     total_detections = np.array(total_detections).reshape((len(total_detections), 7))
     print(total_detections)
-    # scipy.io.savemat(save_root + 'camera_all.mat', mdict={'detections': total_detections})
+    scipy.io.savemat(save_root + 'camera_all.mat', mdict={'detections': total_detections})
 
 
 if __name__ == '__main__':

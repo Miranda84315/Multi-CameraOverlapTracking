@@ -7,7 +7,7 @@ opts.dataset_path    = 'D:/Code/MultiCamOverlap/dataset/';
 opts.gurobi_path     = 'C:/gurobi800/win64/matlab';
 opts.experiment_root = 'D:/Code/MultiCamOverlap/experiments';
 opts.experiment_dir = 'experiments';
-opts.experiment_name = 'demo';
+opts.experiment_name = 'demo_v2';
 
 opts.reader = DataVideoReader(opts.dataset_path);
 
