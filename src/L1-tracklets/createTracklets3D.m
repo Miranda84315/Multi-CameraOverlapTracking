@@ -1,4 +1,4 @@
-function  tracklets = createTracklets3D(opts, originalDetections, allFeatures, startFrame, endFrame, tracklets)
+function  tracklets = createTracklets3D(opts, originalDetections, allFeatures, startFrame, endFrame, tracklets, data)
 % CREATETRACKLETS This function creates short tracks composed of several detections.
 %   In the first stage our method groups detections into space-time groups.
 %   In the second stage a Binary Integer Program is solved for every space-time
@@ -90,8 +90,8 @@ fprintf('\n');
 %% FINALIZE TRACKLETS
 % Fit a low degree polynomial to include missing detections and smooth the tracklet
 trackletsToSmooth  = originalDetections(currentDetectionsIDX,:);
-featuresAppearance = allFeatures.appearance(currentDetectionsIDX);
-smoothedTracklets  = smoothTracklets3D(trackletsToSmooth, startFrame, params.window_width, featuresAppearance, params.min_length, currentInterval);
+featuresAppearance = allFeatures.appearance(currentDetectionsIDX,:);
+smoothedTracklets  = smoothTracklets3D(opts.num_cam, trackletsToSmooth, startFrame, params.window_width, featuresAppearance, params.min_length, currentInterval, data);
 
 % Assign IDs to all tracklets
 for i = 1:length(smoothedTracklets)
