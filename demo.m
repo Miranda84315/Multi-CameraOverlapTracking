@@ -13,6 +13,7 @@ opts.sequence = 1; % trainval-mini
 % Tracklets
 opts.optimization = 'KL';
 compute_L1_tracklets(opts);
+compute_L1_tracklets3D(opts);
 
 % Single-camera trajectories
 opts.optimization = 'KL';
