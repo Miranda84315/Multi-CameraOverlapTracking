@@ -8,8 +8,8 @@ classdef DataVideoReader < handle
     
     properties
         NumCameras = 4;
-        NumFrames =  [225, 225, 225, 225];
-        PartFrames = [225, 225, 225, 225];
+        NumFrames =  [810, 810, 810, 810];
+        PartFrames = [810, 810, 810, 810];
         MaxPart = [0, 0, 0, 0];
         DatasetPath = '';
         CurrentCamera = 1;
@@ -23,7 +23,7 @@ classdef DataVideoReader < handle
     methods
         function obj = DataVideoReader(datasetPath)
             obj.DatasetPath = datasetPath;
-            obj.Video = cv.VideoCapture(sprintf('%svideos/No1/cam%d.avi',obj.DatasetPath,obj.CurrentCamera), 'API','FFMPEG');
+            obj.Video = cv.VideoCapture(sprintf('%svideos/No3/cam%d.avi',obj.DatasetPath,obj.CurrentCamera), 'API','FFMPEG');
         end
         
         function img = getFrame(obj, iCam, iFrame)
@@ -45,7 +45,7 @@ classdef DataVideoReader < handle
                 obj.CurrentCamera = iCam;
                 obj.CurrentPart = iPart;
                 obj.PrevFrame = -1;
-                obj.Video = cv.VideoCapture(sprintf('%svideos/No1/cam%d.avi',obj.DatasetPath,obj.CurrentCamera), 'API','FFMPEG');
+                obj.Video = cv.VideoCapture(sprintf('%svideos/No3/cam%d.avi',obj.DatasetPath,obj.CurrentCamera), 'API','FFMPEG');
             end
             
             if currentFrame ~= obj.PrevFrame + 1

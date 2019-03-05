@@ -10,7 +10,8 @@ python detection.py --video_root D:/Code/AF_tracking/videos/ --save_root D:/Code
 
 start_time = [1, 1, 1, 1]
 start_sequence = 0
-end_sequence = 225
+end_sequence = 810
+#225
 
 
 def cal_localtime(icam, frame_num):
@@ -110,8 +111,8 @@ def object_detection(detection_graph, cam_num, video_root, save_root,
 
 def main():
     cam_num = 4
-    video_root = 'D:/Code/MultiCamOverlap/dataset/videos/No1/'
-    save_root = 'D:/Code/MultiCamOverlap/dataset/detections/'
+    video_root = 'D:/Code/MultiCamOverlap/dataset/videos/No3/'
+    save_root = 'D:/Code/MultiCamOverlap/dataset/detections/No3/'
     # MODEL_NAME
     MODEL_NAME = 'faster_rcnn_inception_v2_coco_2018_01_28'
     # Path to frozen detection graph. This is the actual model

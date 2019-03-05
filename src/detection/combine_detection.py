@@ -8,13 +8,13 @@ use Spectral Clustering to combined detections
 '''
 
 experiment_root = 'D:/Code/MultiCamOverlap/experiments/demo/'
-detection_root = 'D:/Code/MultiCamOverlap/dataset/detections/cam'
-matrix_save = 'D:/Code/MultiCamOverlap/dataset/calibration/information/'
-save_root = 'D:/Code/MultiCamOverlap/dataset/detections/'
+detection_root = 'D:/Code/MultiCamOverlap/dataset/detections/No3/cam'
+matrix_save = 'D:/Code/MultiCamOverlap/dataset/calibration/No3/information/'
+save_root = 'D:/Code/MultiCamOverlap/dataset/detections/No3/'
 
 start_time = [1, 1, 1, 1]
-NumFrames = [225, 225, 225, 225]
-PartFrames = [[225, 225, 225, 225]]
+NumFrames = [810, 810, 810, 810]
+PartFrames = [[810, 810, 810, 810]]
 cam_num = 4
 width = 1920
 height = 1080
@@ -109,7 +109,7 @@ def recomputeIndex(index, n, each_n):
 
 def main():
     startFrame = 0
-    endFrame = 225
+    endFrame = 810
     plot_img = False
 
     cmtx = np.loadtxt(matrix_save + 'intrinsics.txt')

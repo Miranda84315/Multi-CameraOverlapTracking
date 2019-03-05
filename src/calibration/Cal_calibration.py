@@ -112,12 +112,12 @@ def main():
     for icam in range(1, cam_num + 1):
         r, t, Rt = get_extrinsics(icam, cmtx, dist, objp[icam - 1], corners[icam - 1])
         np.savetxt(matrix_save + 'Rt' + str(icam) + '.txt', Rt)
-    
+
     Rt_all = []
     for i in range(1, cam_num + 1):
         Rt = np.loadtxt(matrix_save + 'Rt' + str(i) + '.txt')
         Rt_all.append(Rt)
-    
+
 
 if __name__ == '__main__':
     main()

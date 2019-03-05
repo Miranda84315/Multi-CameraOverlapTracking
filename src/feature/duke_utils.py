@@ -16,21 +16,21 @@ class DukeVideoReader:
 
     def __init__(self, dataset_path):
         self.NumCameras = 4
-        self.NumFrames = [225, 225, 225, 225]
-        self.PartMaxFrame = 225
+        self.NumFrames = [810, 810, 810, 810]
+        self.PartMaxFrame = 810
         self.MaxPart = [0, 0, 0, 0]
         self.PartFrames = []
-        self.PartFrames.append([225])
-        self.PartFrames.append([225])
-        self.PartFrames.append([225])
-        self.PartFrames.append([225])
+        self.PartFrames.append([810])
+        self.PartFrames.append([810])
+        self.PartFrames.append([810])
+        self.PartFrames.append([810])
         self.DatasetPath = dataset_path
         self.CurrentCamera = 1
         self.CurrentPart = 0
         self.PrevCamera = 1
         self.PrevFrame = -1
         self.PrevPart = 0
-        self.Video = cv2.VideoCapture('{:s}videos/No1/cam{:d}.avi'.format(self.DatasetPath, self.CurrentCamera), cv2.CAP_FFMPEG)
+        self.Video = cv2.VideoCapture('{:s}/videos/No3/cam{:d}.avi'.format(self.DatasetPath, self.CurrentCamera), cv2.CAP_FFMPEG)
 
     def getFrame(self, iCam, iFrame):
         #print('icam='+str(iCam))
@@ -53,7 +53,7 @@ class DukeVideoReader:
             self.CurrentCamera = iCam
             self.CurrentPart = iPart
             self.PrevFrame = -1
-            self.Video = cv2.VideoCapture('{:s}videos/No1/cam{:d}.avi'.format(self.DatasetPath, self.CurrentCamera), cv2.CAP_FFMPEG)
+            self.Video = cv2.VideoCapture('{:s}/videos/No3/cam{:d}.avi'.format(self.DatasetPath, self.CurrentCamera), cv2.CAP_FFMPEG)
         # Update time only if reading non-consecutive frames
         if not currentFrame == self.PrevFrame + 1:
             
