@@ -8,11 +8,11 @@ import cv2
         get all frame from video
 '''
 get_all = True
-get_one = False
+get_one = True
 
-dataset_root = 'D:/Code/MultiCamOverlap/dataset/calibration/'
-save_oneframe = 'D:/Code/MultiCamOverlap/dataset/calibration/'
-save_allframe = 'D:/Code/MultiCamOverlap/dataset/calibration/cam'
+dataset_root = 'D:/Code/MultiCamOverlap/dataset/videos/No3/'
+save_oneframe = 'D:/Code/MultiCamOverlap/dataset/calibration/No3/'
+save_allframe = 'D:/Code/MultiCamOverlap/dataset/calibration/No3/cam'
 cam_num = 4
 
 '''
@@ -39,9 +39,11 @@ if get_all:
         print('===== Load vodeo: ' + str(video_name) + ' =====')
         cap = cv2.VideoCapture(video_name)
         frame_num = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-
+        print('frame num = ', frame_num)
+'''
         for i in range(1, frame_num + 1):
             file_name = save_allframe + str(icam) + '/' + str(i) + '.jpg'
             print('save: ' + file_name)
             ret, frame = cap.read()
             cv2.imwrite(file_name, frame)
+'''

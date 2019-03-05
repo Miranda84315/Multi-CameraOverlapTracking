@@ -7,9 +7,9 @@ Use this to calucate intrinsics and extrinsics
 and save the reslut in npy file
 '''
 
-intrinsics_root = 'D:/Code/MultiCamOverlap/dataset/calibration/cam'
-extrinsics_root = 'D:/Code/MultiCamOverlap/dataset/calibration/cam'
-matrix_save = 'D:/Code/MultiCamOverlap/dataset/calibration/information/'
+intrinsics_root = 'D:/Code/MultiCamOverlap/dataset/calibration/No3/cam'
+extrinsics_root = 'D:/Code/MultiCamOverlap/dataset/calibration/No3/cam'
+matrix_save = 'D:/Code/MultiCamOverlap/dataset/calibration/No3/information/'
 cam_num = 4
 unit = 50
 
