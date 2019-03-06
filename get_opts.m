@@ -8,6 +8,7 @@ opts.gurobi_path     = 'C:/gurobi800/win64/matlab';
 opts.experiment_root = 'D:/Code/MultiCamOverlap/experiments';
 opts.experiment_dir = 'experiments';
 opts.experiment_name = 'demo_test';
+opts.sequence = 1;
 
 opts.reader = DataVideoReader(opts.dataset_path);
 
@@ -25,7 +26,7 @@ opts.use_groupping = 1;
 opts.num_cam = 4;
 opts.sequence = 1;
 opts.sequence_names = {'trainval'};
-opts.sequence_intervals = {1:225};
+opts.sequence_intervals = {1:810};
 opts.start_frames = [1, 1, 1, 1];
 opts.render_threshold = 0.05;
 opts.load_tracklets = 1;
@@ -47,8 +48,8 @@ trajectories = [];
 trajectories.appearance_groups = 1; % determined automatically when zero
 trajectories.alpha = 1;
 trajectories.beta = 0.01;
-trajectories.window_width = 60;
-trajectories.overlap = 30;
+trajectories.window_width = 100;%60
+trajectories.overlap = 50;%30
 trajectories.speed_limit = 80000;
 trajectories.indifference_time = 100;
 trajectories.threshold = 8;

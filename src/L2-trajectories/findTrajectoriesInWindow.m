@@ -3,7 +3,7 @@ trajectoriesInWindow = [];
 
 if isempty(trajectories), return; end
 
-trajectoryStartFrame = [trajectories.startFrame]; %cell2mat({trajectories.startFrame});
-trajectoryEndFrame   = [trajectories.endFrame]; % cell2mat({trajectories.endFrame});
+trajectoryStartFrame = [trajectories.segmentStart]; %cell2mat({trajectories.startFrame});
+trajectoryEndFrame   = [trajectories.segmentEnd]; % cell2mat({trajectories.endFrame});
 trajectoriesInWindow  = find( (trajectoryEndFrame >= startTime) .* (trajectoryStartFrame <= endTime) );
 

@@ -54,6 +54,7 @@ for i = 1:length(newTrajectories)
         rows = ismember(newData(:,1), trackletFrames);
         
         tracklet.data = newData(rows,:);
+        tracklet.center =  [median(newData(rows,3)),median(newData(rows,4))] ;
         
         tracklet.startFrame = min(tracklet.data(:,1));
         tracklet.endFrame = max(tracklet.data(:,1));

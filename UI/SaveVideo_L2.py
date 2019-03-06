@@ -13,13 +13,13 @@ video/camera2_result.avi
 video/camera8_result.avi
 '''
 
-experiment_root = 'D:/Code/MultiCamOverlap/experiments/demo/'
+experiment_root = 'D:/Code/MultiCamOverlap/experiments/demo_test/'
 visual_root = 'D:/Code/MultiCamOverlap/UI/data/'
-video_root = 'D:/Code/MultiCamOverlap/dataset/videos/No1/'
+video_root = 'D:/Code/MultiCamOverlap/dataset/videos/No3/'
 
 start_time = [1, 1, 1, 1]
-NumFrames = [225, 225, 225, 225]
-PartFrames = [[225, 225, 225, 225]]
+NumFrames = [810, 810, 810, 810]
+PartFrames = [[810, 810, 810, 810]]
 cam_num = 4
 threshold_durations = 10 * 25
 board_A = 10
@@ -50,23 +50,25 @@ def simple_data(all_data, icam):
     # [:, 0]: id / [:, 1]: start time in camera1 / ... / [:, 8]: start time in carera8
     # because it will cost many time
     # so i save the nparray to id_data.npy
-    file_name = visual_root + 'id_data' + str(icam) + '.npy'
-    if os.path.isfile(file_name):
+    '''    if os.path.isfile(file_name):
         id_data = np.load(file_name)
         return id_data
     else:
-        total_id = np.unique(all_data[:, 1])
-        id_data = np.zeros((len(total_id), 2))
-        for id_num in total_id:
-            print(id_num)
-            id_data[int(id_num) - 1, 0] = id_num
-            data_new = [
-                int(all_data[i, 0]) for i in range(len(all_data))
-                if int(all_data[i, 1]) == id_num
-            ]
-            id_data[int(id_num) - 1, 1] = np.min(data_new)
-        np.save(file_name, id_data)
-        return id_data
+    '''
+    file_name = visual_root + 'id_data' + str(icam) + '.npy'
+
+    total_id = np.unique(all_data[:, 1])
+    id_data = np.zeros((len(total_id), 2))
+    for id_num in total_id:
+        print(id_num)
+        id_data[int(id_num) - 1, 0] = id_num
+        data_new = [
+            int(all_data[i, 0]) for i in range(len(all_data))
+            if int(all_data[i, 1]) == id_num
+        ]
+        id_data[int(id_num) - 1, 1] = np.min(data_new)
+    np.save(file_name, id_data)
+    return id_data
 
 
 def random_color(number_people):
@@ -238,9 +240,9 @@ def cal_checkerboard(icam, data):
 
 def main():
     startFrame_global = 0
-    endFrame_global = 225
+    endFrame_global = 810
 
-    for icam in range(1, cam_num + 1):
+    for icam in range(4, cam_num + 1):
         # cam_num + 1):
         global durations
         durations = get_info_visitors(icam, startFrame_global, endFrame_global)

@@ -12,7 +12,7 @@ for k = 1:size(detections_in_interval,1)
     newbb = pose(1:4);
     feet = feetPosition(newbb);
     
-    if detections_in_interval(k,7)< 0.8
+    if detections_in_interval(k,7)< 0.40
         valid(k) = 0;
     end
     

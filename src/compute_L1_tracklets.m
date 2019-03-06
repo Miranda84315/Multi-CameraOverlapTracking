@@ -16,7 +16,7 @@ for iCam = 1:4
     % Load OpenPose detections for current camera
     % -- line 15 will load variable [detections], contains [n x 56] array by
     % -- openpose detector
-    load(fullfile(opts.dataset_path, 'detections', sprintf('cam%d.mat',iCam)));
+    load(fullfile(opts.dataset_path, 'detections/No3', sprintf('cam%d.mat',iCam)));
     detections = double(detections);
     % Load features for all detections
     % -- line 20 will load from ...src\triplet-reid\experiments\demo\L0-features
@@ -43,6 +43,7 @@ for iCam = 1:4
     % -- each tracklets.windows_width(50 frame) to compute
     for window_start_frame   = start_frame : opts.tracklets.window_width : end_frame
         fprintf('%d/%d\n', window_start_frame, end_frame);
+        %window_start_frame = window_start_frame + opts.tracklets.window_width ;
         
         % Retrieve detections in current window
         window_end_frame     = window_start_frame + opts.tracklets.window_width - 1;
