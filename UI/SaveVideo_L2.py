@@ -242,7 +242,7 @@ def main():
     startFrame_global = 0
     endFrame_global = 810
 
-    for icam in range(4, cam_num + 1):
+    for icam in range(1, cam_num + 1):
         # cam_num + 1):
         global durations
         durations = get_info_visitors(icam, startFrame_global, endFrame_global)

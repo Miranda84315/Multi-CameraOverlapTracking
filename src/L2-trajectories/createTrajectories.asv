@@ -60,8 +60,8 @@ end
 % -- each identity each struct
 newTrajectories = trackletsToTrajectories(tracklets, labels);
 % -- check every new trahectories is from edge!!!
-checkTrajectories = checkFromEdge(newTrajectories, startTime);
-smoothTrajectories = recomputeTrajectories(checkTrajectories);
+checkTrajectories = checkFromEdge(newTrajectories);
+smoothTrajectories = recomputeTrajectories(newTrajectories);
 
 outputTrajectories = inputTrajectories;
 outputTrajectories(currentTrajectoriesInd) = [];
