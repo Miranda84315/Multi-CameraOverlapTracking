@@ -11,10 +11,10 @@ for i = 1 : numTracklets
     
     detections = cell2mat({tracklets(i).data});
         
-    % 2d points
+    % 2d points % old for openpose []
     bb = detections( :, [3,4,5,6,1] );
-    x = 0.5*(bb(:,1) + bb(:,3));
-    y = 0.5*(bb(:,2) + bb(:,4));
+    x = bb(:,1) + bb(:,3);%0.5*(bb(:,1) + bb(:,3));
+    y = bb(:,2) + bb(:,4);%0.5*(bb(:,2) + bb(:,4));
     t = bb(:,5);
     centersView{i} = [x,y,t];
 
