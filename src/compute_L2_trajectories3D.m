@@ -22,7 +22,7 @@ while startFrame <= global2local(opts.start_frames(opts.current_camera), sequenc
     clc; fprintf('Window %d...%d\n', startFrame, endFrame);
 
     % Compute trajectories in current time window
-    trajectories = createTrajectories( opts, trajectories, startFrame, endFrame);
+    trajectories = createTrajectories3D( opts, trajectories, startFrame, endFrame);
 
     % Update loop range
     startFrame = endFrame   - opts.trajectories.overlap;
@@ -30,6 +30,17 @@ while startFrame <= global2local(opts.start_frames(opts.current_camera), sequenc
 end
 
 % Convert trajectories 
+
+
+for iCam = 1:opts.num_cam
+    filename = sprintf('%s/%s/L0-features/features%d.mat',opts.experiment_root,opts.experiment_name,iCam)
+    features_temp   = load(filename);
+    detections_temp = load(fullfile(opts.dataset_path, 'detections/No3', sprintf('cam%d.mat',iCam)));
+    data{iCam,1} = double(features_temp.features');
+    data{iCam,2} = detections_temp.detections;
+end
+clear detections_temp features_temp iCam
+
 % -- get all data from trajectories include id frame xy point
 trackerOutputRaw = trajectoriesToTop(trajectories);
 % Interpolate missing detections
@@ -45,14 +56,13 @@ trackerOutput = sortrows(trackerOutputRemoved,[2 1]);
 
 %% Save trajectories
 fprintf('Saving results\n');
-fileOutput = trackerOutput(:, [1:6]);
-filename_save = sprintf('%s/%s/L2-trajectories/L2_cam%d.mat',opts.experiment_root, opts.experiment_name, iCam);
+fileOutput = trackerOutput(:, [1:20]);
+filename_save = sprintf('%s/%s/L2-trajectories/L2_cam.mat',opts.experiment_root, opts.experiment_name);
 save(filename_save,'fileOutput');
 
-dlmwrite(sprintf('%s/%s/L2-trajectories/cam%d_%s.txt', ...
+dlmwrite(sprintf('%s/%s/L2-trajectories/cam_%s.txt', ...
     opts.experiment_root, ...
     opts.experiment_name, ...
-    iCam, ...
     opts.sequence_names{opts.sequence}), ...
     fileOutput, 'delimiter', ' ', 'precision', 6);
 

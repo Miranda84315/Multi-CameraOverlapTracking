@@ -12,28 +12,16 @@ end
 
 featureVectors      = {tracklets.feature};
 % adaptive number of appearance groups
-if params.appearance_groups == 0
-    % Increase number of groups until no group is too large to solve 
-    while true
-        params.appearance_groups = params.appearance_groups + 1;
-        appearanceGroups    = kmeans( cell2mat(featureVectors'), params.appearance_groups, 'emptyaction', 'singleton', 'Replicates', 10);
-        uid = unique(appearanceGroups);
-        freq = [histc(appearanceGroups(:),uid)];
-        largestGroupSize = max(freq);
-        % The BIP solver might run out of memory for large graphs
-        if largestGroupSize <= 150
-            break
-        end
+% fixed number of appearance groups
+%{
+all_feature = [];
+for i = 1:size(featureVectors, 2)
+    if(cell2mat(featureVectors{i}'))
+        %-----這裡有大bug , 如果是[] 要怎麼排除 
+    all_feature = [all_feature; cell2mat(featureVectors{i}')];
     end
-else
-    % fixed number of appearance groups
-    all_feature = [];
-    for i = 1:size(featureVectors, 2)
-        all_feature = [all_feature; cell2mat(featureVectors{i}')]
-    end
-    appearanceGroups    = ones(25);
-    appearanceGroups    = kmeans(all_feature, params.appearance_groups, 'emptyaction', 'singleton', 'Replicates', 10);
-end
+%}
+appearanceGroups    = ones(size(tracklets, 1), 1);
 % solve separately for each appearance group
 allGroups = unique(appearanceGroups);
 
@@ -47,15 +35,17 @@ for i = 1 : length(allGroups)
     sameLabels  = pdist2(labels(indices), labels(indices)) == 0;
     
     % compute appearance and spacetime scores
-    appearanceAffinity = getAppearanceMatrix3D(featureVectors(indices), params.threshold);
+    appearanceAffinity = getAppearanceMatrix3D(opts.num_cam, featureVectors(indices), params.threshold);
     [spacetimeAffinity, impossibilityMatrix, indifferenceMatrix] = getSpaceTimeAffinity(tracklets(indices), params.beta, params.speed_limit, params.indifference_time);
     
     % compute the correlation matrix
-    correlationMatrix = (appearanceAffinity + spacetimeAffinity)/2;
+    correlationMatrix = (appearanceAffinity*1.5 + spacetimeAffinity*0.5)/2;
     correlationMatrix = correlationMatrix .* indifferenceMatrix;
 
     correlationMatrix(impossibilityMatrix == 1) = -inf;
     correlationMatrix(sameLabels) = 1;
+    correlationMatrix(correlationMatrix > 0.60) = 1;
+    
     
     % show appearance group tracklets
     if opts.visualize, trajectoriesVisualizePart2; end

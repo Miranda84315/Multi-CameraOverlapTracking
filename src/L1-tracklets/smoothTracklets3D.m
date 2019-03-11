@@ -73,6 +73,9 @@ for i = 1:numTracklets
     medianFeature = cell(1, num_cam);
     for c=1:num_cam
         medianFeature{1, c} = median(cell2mat(featuresAppearance(mask, c)));
+        if (size(cell2mat(featuresAppearance(mask, c)), 1) == 1)
+            medianFeature{1, c} = cell2mat(featuresAppearance(mask, c));
+        end
         if isnan(medianFeature{1, c})
             medianFeature{1, c} = [];
         end

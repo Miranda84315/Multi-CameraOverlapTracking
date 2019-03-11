@@ -59,7 +59,8 @@ end
 % merge co-identified tracklets to extended tracklets
 % -- each identity each struct
 newTrajectories = trackletsToTrajectories(tracklets, labels);
-smoothTrajectories = recomputeTrajectories(newTrajectories);
+checkTrajectories = checkFromEdge3D(newTrajectories, startTime);
+smoothTrajectories = recomputeTrajectories(checkTrajectories);
 
 outputTrajectories = inputTrajectories;
 outputTrajectories(currentTrajectoriesInd) = [];
