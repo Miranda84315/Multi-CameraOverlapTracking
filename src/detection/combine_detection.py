@@ -110,7 +110,7 @@ def recomputeIndex(index, n, each_n):
 def main():
     startFrame = 0
     endFrame = 810
-    plot_img = False
+    plot_img = True
 
     cmtx = np.loadtxt(matrix_save + 'intrinsics.txt')
     dist = np.loadtxt(matrix_save + 'distCoeffs.txt')
@@ -173,7 +173,7 @@ def main():
 
     total_detections = np.array(total_detections).reshape((len(total_detections), 7))
     print(total_detections)
-    scipy.io.savemat(save_root + 'camera_all.mat', mdict={'detections': total_detections})
+    #scipy.io.savemat(save_root + 'camera_all.mat', mdict={'detections': total_detections})
 
 
 if __name__ == '__main__':

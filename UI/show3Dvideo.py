@@ -72,6 +72,15 @@ def draw_bb(img, icam, data):
     return img
 
 
+def draw_traj(img, frame, data):
+    for detection in data:
+        color_id = tuple(color[int(detection[1])])
+        px = int(detection[2])
+        py = int(detection[3])
+        cv2.circle(img, (px, py), 12, color_id, -1)
+    return img
+
+
 def main():
     startFrame = 0
     endFrame = 810
@@ -86,6 +95,8 @@ def main():
     height = 1080
     width = 1920
     out = cv2.VideoWriter(out_filename, fourcc, fps, (width, height))
+    traj_filename = experiment_root + 'video-results/trajectory_result.avi'
+    traj = cv2.VideoWriter(traj_filename, fourcc, fps, (800, 700))
 
     filename = [video_root + 'cam1.avi', video_root + 'cam2.avi', video_root + 'cam3.avi', video_root + 'cam4.avi']
 
@@ -107,13 +118,20 @@ def main():
         img_bottom = np.concatenate((img_temp[2], img_temp[3]), axis=0)
         img = np.concatenate((img_top, img_bottom), axis=1)
         img = cv2.resize(img, (1920, 1080))
+
         cv2.putText(img, str(current_frame), (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
-        cv2.imshow("video2", img)
+        #cv2.imshow("video2", img)
+        #cv2.waitKey(1)
+        trajectory = cv2.imread('data/BasketballCourt.png')
+        trajectory_img = cv2.resize(draw_traj(trajectory, current_frame, ind), (800, 700))
+        cv2.imshow("video", trajectory_img)
         cv2.waitKey(1)
         print('frame = ' + str(current_frame) + ' / ' + str(endFrame))
         out.write(img)
+        traj.write(trajectory_img)
 
     out.release()
+    traj.release()
     cv2.destroyAllWindows()
 
 
