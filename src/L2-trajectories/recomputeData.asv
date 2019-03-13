@@ -1,0 +1,5 @@
+function allData = recomputeData( allData )
+
+for icam=1:4
+    index = icam*4+1;
+end

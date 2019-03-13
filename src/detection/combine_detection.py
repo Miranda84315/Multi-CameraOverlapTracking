@@ -3,6 +3,7 @@ import scipy.io
 import matplotlib.pyplot as plt
 from scipy.optimize import fsolve
 from sklearn.cluster import SpectralClustering
+import cv2
 '''
 use Spectral Clustering to combined detections
 '''
@@ -36,6 +37,7 @@ def load_detection(cam_num):
 
 
 #   by ugly
+# 2D to 3D
 def project_3d(u, v, cameraMatrix, distCoeffs, Rt):
     fx = cameraMatrix[0, 0]
     fy = cameraMatrix[1, 1]
@@ -66,6 +68,17 @@ def project_3d(u, v, cameraMatrix, distCoeffs, Rt):
                 y_one - ((Rt[1][0] * X + Rt[1][1] * Y + Rt[1][3]) / (Rt[2][0] * X + Rt[2][1] * Y + Rt[2][3]))]
     [world_x, world_y] = fsolve(f2, [0, 0])
     return world_x, world_y
+
+
+# 3D to 2D
+def point3Dto2D(world_x, world_y, cameraMatrix, distCoeffs, Rt):
+    world_point = np.array([[world_x, world_y, 0.]])
+    r = Rt[:, 0:3]
+    t = Rt[:, 3:]
+    imagePoints, jacobian2 = cv2.projectPoints(world_point, r, t, cameraMatrix, distCoeffs)
+    img_x = imagePoints[0][0][0]
+    img_y = imagePoints[0][0][1]
+    return img_x, img_y
 
 
 def calucate_distance(x1, y1, x2, y2):

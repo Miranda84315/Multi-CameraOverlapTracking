@@ -2,8 +2,9 @@ function [ detectionsUpdated ] = fillTrajectories( detections )
 % This function adds points by interpolation to the resulting trajectories,
 % so that trajectories are complete and results are less influenced by
 % false negative detections
+% detections = keyData;
 
-detections = sortrows(detections,[1 3 4 5 6]);
+detections = sortrows(detections,[1 3 4]);
 
 
 detectionsUpdated = detections;
@@ -54,7 +55,7 @@ for i = 1 : length(personIDs)
         postDetection = detections( (detections(:,2) == personID) .* detections(:,1) == missingFrames(endInd(k)) + 1, :);
         
         
-        for c = 3:size(detections,2)
+        for c = 3:4
            
             interpolatedDetections(:,c) = linspace(preDetection(c),postDetection(c),size(interpolatedDetections,1));
             

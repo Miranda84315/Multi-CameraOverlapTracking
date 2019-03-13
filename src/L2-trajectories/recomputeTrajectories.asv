@@ -16,7 +16,6 @@ for i = 1:length(newTrajectories)
     alldata = {newTrajectories(i).tracklets(:).data};
     alldata = cell2mat(alldata');
     alldata = sortrows(alldata,2);
-    alldata = recomputeData(alldata);
     [~, uniqueRows] = unique(alldata(:,1));
     
     alldata = alldata(uniqueRows,:);
@@ -36,10 +35,7 @@ for i = 1:length(newTrajectories)
 %     end
     
     keyData(:,2) = -1;
-    % only smooth 3D_x, 3Dy
-    newData = fillTrajectories(keyData);
-    % add cam1~cam4's original data
-    
+    newData = fillTrajectories(keyData(:,));
     
     newTrajectory = newTrajectories(i);
     sampleTracklet = newTrajectories(i).tracklets(1);

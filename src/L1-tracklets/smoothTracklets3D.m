@@ -61,6 +61,8 @@ for i = 1:numTracklets
     end
     
     % Fit left, top, right, bottom
+    %{
+   [!!!] if use this, result is not good!
     for k = 5:20
         real_ind = frames - start + 1; 
         points    = currentTracklet(real_ind, k);
@@ -68,6 +70,7 @@ for i = 1:numTracklets
         newpoints = polyval(p, datapoints);
         currentTracklet(:,k) = newpoints';
     end
+    %}
     
     % Compute appearance features
     medianFeature = cell(1, num_cam);
