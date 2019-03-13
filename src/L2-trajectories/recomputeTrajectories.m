@@ -1,7 +1,7 @@
-function newTrajectories = recomputeTrajectories( newTrajectories )
+function newTrajectories = recomputeTrajectories( newTrajectories, num_cam )
 %RECOMPUTETRAJECTORIES Summary of this function goes here
 %   Detailed explanation goes here
-
+% num_cam = opts.num_cam;
 % newTrajectories = checkTrajectories;
 
 segmentLength = 15;
@@ -16,7 +16,6 @@ for i = 1:length(newTrajectories)
     alldata = {newTrajectories(i).tracklets(:).data};
     alldata = cell2mat(alldata');
     alldata = sortrows(alldata,2);
-    alldata = recomputeData(alldata);
     [~, uniqueRows] = unique(alldata(:,1));
     
     alldata = alldata(uniqueRows,:);
@@ -37,7 +36,23 @@ for i = 1:length(newTrajectories)
     
     keyData(:,2) = -1;
     % only smooth 3D_x, 3Dy
-    newData = fillTrajectories(keyData);
+    newData = fillTrajectories(keyData(:, 1:4));
+    newData = sortrows(newData, 1);
+    
+    for k=1:size(newData, 1)
+        frame = newData(k, 1);
+        ind = find(alldata(:, 1)== frame);
+        if isempty(ind)
+            newData(k, 5:20) = -1;
+        else
+            newData(k, 5:20) = alldata(ind, 5:20);
+        end
+    end
+        
+        
+    
+    %ind = alldata(:,1) == newData(:,1);
+    %newData(ind, 5:20) = alldata(ind, 5:20);
     % add cam1~cam4's original data
     
     

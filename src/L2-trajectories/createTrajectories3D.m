@@ -60,7 +60,7 @@ end
 % -- each identity each struct
 newTrajectories = trackletsToTrajectories(tracklets, labels);
 checkTrajectories = checkFromEdge3D(newTrajectories, startTime);
-smoothTrajectories = recomputeTrajectories(checkTrajectories);
+smoothTrajectories = recomputeTrajectories(checkTrajectories, opts.num_cam);
 
 outputTrajectories = inputTrajectories;
 outputTrajectories(currentTrajectoriesInd) = [];

@@ -55,7 +55,7 @@ for i = 1 : length(personIDs)
         postDetection = detections( (detections(:,2) == personID) .* detections(:,1) == missingFrames(endInd(k)) + 1, :);
         
         
-        for c = 3:4
+        for c = 3:size(detections, 2)
            
             interpolatedDetections(:,c) = linspace(preDetection(c),postDetection(c),size(interpolatedDetections,1));
             
