@@ -97,16 +97,23 @@ def main():
 
     for current_frame in range(startFrame, endFrame):
         ind = [fileOutput[i, :] for i in range(0, len(fileOutput)) if fileOutput[i, 0] == current_frame + 1]
-        for icam in range(1, 3):
+        img_temp = []
+        for icam in range(1, cam_num + 1):
             ret, frame_img = cap[icam-1].read()
             frame_img = draw_bb(frame_img, icam, ind)
+            img_temp.append(frame_img)
 
-            cv2.putText(frame_img, str(current_frame), (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
-            cv2.imshow("video2", frame_img)
-            cv2.waitKey(1)
-            print('frame = ' + str(current_frame) + ' / ' + str(endFrame))
-            #out.write(frame_img)
-        #out.release()
+        img_top = np.concatenate((img_temp[0], img_temp[1]), axis=0)
+        img_bottom = np.concatenate((img_temp[2], img_temp[3]), axis=0)
+        img = np.concatenate((img_top, img_bottom), axis=1)
+        img = cv2.resize(img, (1920, 1080))
+        cv2.putText(img, str(current_frame), (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
+        cv2.imshow("video2", img)
+        cv2.waitKey(1)
+        print('frame = ' + str(current_frame) + ' / ' + str(endFrame))
+        out.write(img)
+
+    out.release()
     cv2.destroyAllWindows()
 
 
