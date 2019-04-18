@@ -180,8 +180,8 @@ def main():
             plt.plot(new_detection[:, 1], new_detection[:, 2], 'y^')
             plt.xlabel('x')
             plt.ylabel('y')
-            plt.legend(['bo', 'go', 'ro', 'co'], ['cam1', 'cam2', 'cam3', 'cam4'], loc='upper left')
-            plt.title('Detections on a unified coordinate system\nBefore Clustering')
+            #plt.legend(['bo', 'go', 'ro', 'co'], ['cam1', 'cam2', 'cam3', 'cam4'], loc='upper left')
+            plt.title('Detections on a unified coordinate system\nAfter Clustering')
             plt.show()
 
     total_detections = np.array(total_detections).reshape((len(total_detections), 7))

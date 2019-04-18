@@ -8,7 +8,7 @@ create_experiment_dir(opts);
 opts.sequence = 1; % trainval-mini
 
 % compute feature
-%compute_L0_features(opts);
+compute_L0_features(opts);
 
 % Tracklets
 opts.optimization = 'KL';

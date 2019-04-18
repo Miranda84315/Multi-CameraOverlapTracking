@@ -4,6 +4,8 @@ import cv2
 import tensorflow as tf
 import scipy.io
 from object_detection.utils import label_map_util
+
+import time
 '''
 python detection.py --video_root D:/Code/AF_tracking/videos/ --save_root D:/Code/AF_tracking/dataset/detections/new_delete_other/ --cam_num 4
 '''
@@ -98,13 +100,14 @@ def object_detection(detection_graph, cam_num, video_root, save_root,
                                 detections.append(temp)
                     cv2.imshow("video", frame_img)
                     cv2.waitKey(1)
+
                     print(frame)
                 detections = np.array(detections)
                 detections = detections.reshape((len(detections),
                                                  9))  # 2d array of 3x3
-                scipy.io.savemat(
-                    save_root + 'cam' + str(icam) + '.mat',
-                    mdict={'detections': detections})
+                #scipy.io.savemat(
+                #    save_root + 'cam' + str(icam) + '.mat',
+                #    mdict={'detections': detections})
 
     cv2.destroyAllWindows()
 
