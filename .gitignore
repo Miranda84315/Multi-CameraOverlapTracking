@@ -8,3 +8,4 @@ experiments/
 *.avi
 *.mat
 UI/data/
+*.driveupload
