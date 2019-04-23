@@ -7,7 +7,7 @@ opts.dataset_path    = 'D:/Code/MultiCamOverlap/dataset';
 opts.gurobi_path     = 'C:/gurobi800/win64/matlab';
 opts.experiment_root = 'D:/Code/MultiCamOverlap/experiments';
 opts.experiment_dir = 'experiments';
-opts.experiment_name = 'demo_3DNo3';
+opts.experiment_name = 'Player05';
 opts.sequence = 1;
 
 opts.reader = DataVideoReader(opts.dataset_path);
@@ -26,7 +26,7 @@ opts.use_groupping = 1;
 opts.num_cam = 4;
 opts.sequence = 1;
 opts.sequence_names = {'trainval'};
-opts.sequence_intervals = {1:810};
+opts.sequence_intervals = {1:208};
 opts.start_frames = [1, 1, 1, 1];
 opts.render_threshold = 0.05;
 opts.load_tracklets = 1;

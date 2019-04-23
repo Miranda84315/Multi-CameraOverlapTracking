@@ -7,12 +7,12 @@ import cv2
     2. To get calibration image, each frame from video:
         get all frame from video
 '''
-get_all = True
+get_all = False
 get_one = True
 
-dataset_root = 'D:/Code/MultiCamOverlap/dataset/videos/No3/'
-save_oneframe = 'D:/Code/MultiCamOverlap/dataset/calibration/No3/'
-save_allframe = 'D:/Code/MultiCamOverlap/dataset/calibration/No3/cam'
+dataset_root = 'D:/Code/MultiCamOverlap/dataset/videos/Player05/track1/'
+save_oneframe = 'D:/Code/MultiCamOverlap/dataset/calibration/Player05/'
+save_allframe = 'D:/Code/MultiCamOverlap/dataset/calibration/Player05/cam'
 cam_num = 4
 
 '''
@@ -24,6 +24,7 @@ if get_one:
         print('===== Load vodeo: ' + str(video_name) + ' =====')
         cap = cv2.VideoCapture(video_name)
         frame_num = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+        print('frame num = ', frame_num)
 
         file_name = save_oneframe + 'cam' + str(icam) + '.jpg'
         print('save: ' + file_name)

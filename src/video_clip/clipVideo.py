@@ -2,14 +2,14 @@ import cv2
 import os
 video_root = 'D:/Data/0317/'
 video_filename = [
-    'XVR_ch1_main_20190317083958_20190317100000.avi', 
-    'XVR_ch2_main_20190317083958_20190317100000.avi',
-    'XVR_ch3_main_20190317083958_20190317100000.avi',
-    'XVR_ch4_main_20190317083958_20190317100000.avi']
-save_root = 'D:/Data/dataset/Player05/track'
+    'XVR_ch1_main_20190317160000_20190317162500.avi',
+    'XVR_ch2_main_20190317160000_20190317162500.avi',
+    'XVR_ch3_main_20190317160000_20190317162500.avi',
+    'XVR_ch4_main_20190317160000_20190317162500.avi']
+save_root = 'D:/Data/dataset/Player10/track'
 fps = 15
-frame_start = [28546, 30191, 31384, 32814, 50704, 51783, 52176, 52530]
-frame_end = [28753, 30580, 31832, 32971, 51500, 51970, 52373, 52684]
+frame_start = [12791, 13925, 14940, 15868, 20078, 20401, 20764, 21228]
+frame_end = [13109, 14277, 15250, 16061, 20236, 20559, 20999, 21452]
 
 for track in range(0, 8):
     path = save_root + str(track + 1)
