@@ -2,16 +2,15 @@ import numpy as np
 import scipy.io
 import matplotlib.pyplot as plt
 from scipy.optimize import fsolve
-from sklearn.cluster import SpectralClustering
+from sklearn.cluster import SpectralClustering, AgglomerativeClustering
 import cv2
 '''
 use Spectral Clustering to combined detections
 '''
 
-experiment_root = 'D:/Code/MultiCamOverlap/experiments/demo/'
-detection_root = 'D:/Code/MultiCamOverlap/dataset/detections/No3/cam'
-matrix_save = 'D:/Code/MultiCamOverlap/dataset/calibration/No3/information/'
-save_root = 'D:/Code/MultiCamOverlap/dataset/detections/No3/'
+detection_root = 'D:/Code/MultiCamOverlap/dataset/detections/Player05/track1/cam'
+matrix_save = 'D:/Code/MultiCamOverlap/dataset/calibration/Player05/information/'
+save_root = 'D:/Code/MultiCamOverlap/dataset/detections/Player05/track1/'
 
 start_time = [1, 1, 1, 1]
 NumFrames = [810, 810, 810, 810]
@@ -122,7 +121,7 @@ def recomputeIndex(index, n, each_n):
 
 def main():
     startFrame = 0
-    endFrame = 810
+    endFrame = 10#208
     plot_img = True
 
     cmtx = np.loadtxt(matrix_save + 'intrinsics.txt')
@@ -153,9 +152,17 @@ def main():
 
         # 1. get similarity matrix  2. count max camera's detection 3. spectral clustering and get labels 
         similarity_Matrix = getSimilarityMatrix(detection)
+        print(detection)
+        print('--------------')
+        print(similarity_Matrix)
         _, counts = np.unique(detection[:, 0], return_counts=True)
-        sc = SpectralClustering(max(counts), affinity='precomputed', n_init=100)
-        sc.fit(similarity_Matrix)
+        # -- (1) use spectral clustering
+        #sc = SpectralClustering(n_clusters=5, affinity='precomputed', n_init=10)
+        #sc.fit(similarity_Matrix)
+
+        # -- (2) use Hierarchical Clustering, directly using detection's xy point
+        sc = AgglomerativeClustering(n_clusters=5)
+        sc.fit(detection[:, 1:3])
         label = np.array(sc.labels_).reshape((len(detection), 1))
         # combined detection and label
         detection = np.append(detection, label, axis=1)
@@ -176,12 +183,12 @@ def main():
         if plot_img is True:
             new_detection = np.array(new_detection)
             for i in range(0, len(detection)):
-                plt.plot(detection[i, 1], detection[i, 2], color[int(detection[i, 3])])
-            plt.plot(new_detection[:, 1], new_detection[:, 2], 'y^')
+                plt.plot(detection[i, 1], detection[i, 2], 'ko')#color[int(detection[i, 3])])
+            #plt.plot(new_detection[:, 1], new_detection[:, 2], 'y^')
             plt.xlabel('x')
             plt.ylabel('y')
             #plt.legend(['bo', 'go', 'ro', 'co'], ['cam1', 'cam2', 'cam3', 'cam4'], loc='upper left')
-            plt.title('Detections on a unified coordinate system\nAfter Clustering')
+            plt.title('Before Clustering')
             plt.show()
 
     total_detections = np.array(total_detections).reshape((len(total_detections), 7))

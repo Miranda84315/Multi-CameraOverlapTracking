@@ -4,20 +4,29 @@ import cv2
 import tensorflow as tf
 import scipy.io
 from object_detection.utils import label_map_util
-
+from matplotlib.path import Path
 '''
 python detection.py --video_root D:/Code/AF_tracking/videos/ --save_root D:/Code/AF_tracking/dataset/detections/new_delete_other/ --cam_num 4
 '''
 
 start_time = [1, 1, 1, 1]
 start_sequence = 0
-end_sequence = 810
-#225
+end_sequence = 208
+
+p1 = Path([(321, 685), (1605, 644), (1918, 731), (1914, 1075), (0, 1080), (0, 794)])
+p2 = Path([(2, 558), (795, 520), (1858, 677), (1691, 1077), (0, 1075)])
+p3 = Path([(0, 455), (792, 388), (1905, 738), (1391, 1077), (0, 1072)])
+p4 = Path([(51, 478), (462, 1074), (811, 1075), (1732, 658), (921, 484)])
+p = [p1, p2, p3, p4]
 
 
 def cal_localtime(icam, frame_num):
     # get the real locat time
     return frame_num - start_time[icam - 1] + 1
+
+
+def inROI(icam, x, y):
+    return p[icam-1].contains_points([(x, y)])[0]
 
 
 def object_detection(detection_graph, cam_num, video_root, save_root,
@@ -96,7 +105,11 @@ def object_detection(detection_graph, cam_num, video_root, save_root,
                                     icam, frame_local + 1, left, top, width,
                                     height, scores_new[i], feet_x, feet_y
                                 ]
-                                detections.append(temp)
+                                roi = inROI(icam, feet_x, feet_y)
+                                if roi:
+                                    detections.append(temp)
+                                else:
+                                    print('out')
                     cv2.imshow("video", frame_img)
                     cv2.waitKey(1)
 
@@ -104,17 +117,16 @@ def object_detection(detection_graph, cam_num, video_root, save_root,
                 detections = np.array(detections)
                 detections = detections.reshape((len(detections),
                                                  9))  # 2d array of 3x3
-                #scipy.io.savemat(
-                #    save_root + 'cam' + str(icam) + '.mat',
-                #    mdict={'detections': detections})
-
+                scipy.io.savemat(
+                    save_root + 'cam' + str(icam) + '.mat',
+                    mdict={'detections': detections})
     cv2.destroyAllWindows()
 
 
 def main():
     cam_num = 4
-    video_root = 'D:/Code/MultiCamOverlap/dataset/videos/No3/'
-    save_root = 'D:/Code/MultiCamOverlap/dataset/detections/No3/'
+    video_root = 'D:/Code/MultiCamOverlap/dataset/videos/Player05/track1/'
+    save_root = 'D:/Code/MultiCamOverlap/dataset/detections/Player05/track1/'
     # MODEL_NAME
     MODEL_NAME = 'faster_rcnn_inception_v2_coco_2018_01_28'
     # Path to frozen detection graph. This is the actual model
