@@ -4,6 +4,8 @@ import numpy as np
 image_root = 'D:/Code/MultiCamOverlap/dataset/calibration/Player05/cam'
 matrix_save = 'D:/Code/MultiCamOverlap/dataset/calibration/Player05/information/temp_corner'
 global refPt
+get_Corner = False
+get_ROI = True
 
 
 def get_coordinate(event, x, y, flags, param):

@@ -5,7 +5,6 @@ import tensorflow as tf
 import scipy.io
 from object_detection.utils import label_map_util
 
-import time
 '''
 python detection.py --video_root D:/Code/AF_tracking/videos/ --save_root D:/Code/AF_tracking/dataset/detections/new_delete_other/ --cam_num 4
 '''
