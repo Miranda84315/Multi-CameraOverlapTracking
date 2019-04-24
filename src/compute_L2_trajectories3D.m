@@ -35,7 +35,7 @@ end
 for iCam = 1:opts.num_cam
     filename = sprintf('%s/%s/L0-features/features%d.mat',opts.experiment_root,opts.experiment_name,iCam)
     features_temp   = load(filename);
-    detections_temp = load(fullfile(opts.dataset_path, 'detections/No3', sprintf('cam%d.mat',iCam)));
+    detections_temp = load(fullfile(opts.dataset_path, 'detections/Player05/track1', sprintf('cam%d.mat',iCam)));
     data{iCam,1} = double(features_temp.features');
     data{iCam,2} = detections_temp.detections;
 end

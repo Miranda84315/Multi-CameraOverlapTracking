@@ -13,13 +13,13 @@ video/camera2_result.avi
 video/camera8_result.avi
 '''
 
-experiment_root = 'D:/Code/MultiCamOverlap/experiments/demo_3DNo3/'
+experiment_root = 'D:/Code/MultiCamOverlap/experiments/Player05/'
 visual_root = 'D:/Code/MultiCamOverlap/UI/data/'
-video_root = 'D:/Code/MultiCamOverlap/dataset/videos/No3/'
+video_root = 'D:/Code/MultiCamOverlap/dataset/videos/Player05/track1/'
 
 start_time = [1, 1, 1, 1]
-NumFrames = [810, 810, 810, 810]
-PartFrames = [[810, 810, 810, 810]]
+NumFrames = [208, 208, 208, 208]
+PartFrames = [[208, 208, 208, 208]]
 cam_num = 4
 threshold_durations = 10 * 25
 board_A = 10
@@ -83,7 +83,7 @@ def draw_traj(img, frame, data):
 
 def main():
     startFrame = 0
-    endFrame = 810
+    endFrame = 208
 
     global fileOutput
     global color
