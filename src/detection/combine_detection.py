@@ -3,6 +3,7 @@ import scipy.io
 import matplotlib.pyplot as plt
 from scipy.optimize import fsolve
 from sklearn.cluster import SpectralClustering, AgglomerativeClustering
+import scipy.cluster.hierarchy as hcluster
 import cv2
 '''
 use Spectral Clustering to combined detections
@@ -121,7 +122,7 @@ def recomputeIndex(index, n, each_n):
 
 def main():
     startFrame = 0
-    endFrame = 10#208
+    endFrame = 208
     plot_img = True
 
     cmtx = np.loadtxt(matrix_save + 'intrinsics.txt')
@@ -151,17 +152,33 @@ def main():
             detection[i, 2] = y
 
         # 1. get similarity matrix  2. count max camera's detection 3. spectral clustering and get labels 
-        similarity_Matrix = getSimilarityMatrix(detection)
-        print(detection)
-        print('--------------')
-        print(similarity_Matrix)
         _, counts = np.unique(detection[:, 0], return_counts=True)
+
+        thresh = 160
+        clusters = hcluster.fclusterdata(detection[:, 1:3], thresh, criterion="distance")
+        if plot_img is True:
+            plt.scatter(*np.transpose(detection[:, 1:3]), c=clusters)
+            plt.axis("equal")
+            title = "threshold: %f, number of clusters: %d" % (thresh, len(set(clusters)))
+            plt.title(title)
+            plt.show()
+
+        fcluster_count = len(set(clusters))
+        _, counts2 = np.unique(clusters, return_counts=True)
+        for i in counts2:
+            if i > 4:
+                fcluster_count += 1
+
+        true_counts = 5 if max(counts) == 5 else fcluster_count
+        if true_counts > 5:
+            true_counts = 5
         # -- (1) use spectral clustering
-        #sc = SpectralClustering(n_clusters=5, affinity='precomputed', n_init=10)
-        #sc.fit(similarity_Matrix)
+        # similarity_Matrix = getSimilarityMatrix(detection)
+        # sc = SpectralClustering(n_clusters=5, affinity='precomputed', n_init=10)
+        # sc.fit(similarity_Matrix)
 
         # -- (2) use Hierarchical Clustering, directly using detection's xy point
-        sc = AgglomerativeClustering(n_clusters=5)
+        sc = AgglomerativeClustering(n_clusters=true_counts)
         sc.fit(detection[:, 1:3])
         label = np.array(sc.labels_).reshape((len(detection), 1))
         # combined detection and label
@@ -169,7 +186,7 @@ def main():
 
         # calucate new detection using mean x, y-point.
         new_detection = []
-        for i in range(0, max(counts)):
+        for i in range(0, true_counts):
             info_detection = [current_frame + 1]
             coordinate = np.array([detection[k, 1:3] for k in range(0, len(detection)) if detection[k, 3] == i])
             index = [original_index[k] for k in range(0, len(original_index)) if label[k] == i]
@@ -182,18 +199,23 @@ def main():
         # plot result after clustering
         if plot_img is True:
             new_detection = np.array(new_detection)
+            # -- << plot each original detection >>
             for i in range(0, len(detection)):
-                plt.plot(detection[i, 1], detection[i, 2], 'ko')#color[int(detection[i, 3])])
-            #plt.plot(new_detection[:, 1], new_detection[:, 2], 'y^')
+                plt.plot(detection[i, 1], detection[i, 2], color[int(detection[i, 3])])
+            # -- << plot new detection with circle point >>
+            #for i in range(0, len(new_detection)):
+            #    plt.plot(new_detection[i, 1], new_detection[i, 2], color[int(detection[i, 3])])
+            # -- << plot new detection with triangle point >>
+            plt.plot(new_detection[:, 1], new_detection[:, 2], 'y^')
             plt.xlabel('x')
             plt.ylabel('y')
             #plt.legend(['bo', 'go', 'ro', 'co'], ['cam1', 'cam2', 'cam3', 'cam4'], loc='upper left')
-            plt.title('Before Clustering')
+            plt.title('using fclusterdata to determine the number of cluster')
             plt.show()
 
     total_detections = np.array(total_detections).reshape((len(total_detections), 7))
     print(total_detections)
-    #scipy.io.savemat(save_root + 'camera_all.mat', mdict={'detections': total_detections})
+    scipy.io.savemat(save_root + 'camera_all.mat', mdict={'detections': total_detections})
 
 
 if __name__ == '__main__':
