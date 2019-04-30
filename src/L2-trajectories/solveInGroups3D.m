@@ -36,15 +36,17 @@ for i = 1 : length(allGroups)
     
     % compute appearance and spacetime scores
     appearanceAffinity = getAppearanceMatrix3D(opts.num_cam, featureVectors(indices), params.threshold);
-    [spacetimeAffinity, impossibilityMatrix, indifferenceMatrix] = getSpaceTimeAffinity(tracklets(indices), params.beta, params.speed_limit, params.indifference_time);
+    [spacetimeAffinity, impossibilityMatrix, indifferenceMatrix] = getSpaceTimeAffinity_new(tracklets(indices), params.beta, params.speed_limit, params.indifference_time);
     
     % compute the correlation matrix
-    correlationMatrix = (appearanceAffinity*1.5 + spacetimeAffinity*0.5)/2;
+    %correlationMatrix = (appearanceAffinity + spacetimeAffinity)/2;
+    %correlationMatrix = correlationMatrix .* indifferenceMatrix;
+    correlationMatrix =(appearanceAffinity + spacetimeAffinity - 1);
     correlationMatrix = correlationMatrix .* indifferenceMatrix;
-
+    
     correlationMatrix(impossibilityMatrix == 1) = -inf;
     correlationMatrix(sameLabels) = 1;
-    correlationMatrix(correlationMatrix > 0.60) = 1;
+    %correlationMatrix(correlationMatrix > 0.60) = 1;
     
     
     % show appearance group tracklets

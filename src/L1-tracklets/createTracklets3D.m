@@ -50,7 +50,9 @@ for spatialGroupID = 1 : max(spatialGroupIDs)
     spatialGroupDetectionFrames     = detectionFrames(elements,:);
     spatialGroupEstimatedVelocity   = estimatedVelocity(elements,:);
     % -- impMatrix is record the impossible matrix(velocity>speed.limit)
-    [motionCorrelation, impMatrix]  = motionAffinity(spatialGroupDetectionCenters,spatialGroupDetectionFrames,spatialGroupEstimatedVelocity,params.speed_limit, params.beta);
+    %[motionCorrelation, impMatrix]  = motionAffinity(spatialGroupDetectionCenters,spatialGroupDetectionFrames,spatialGroupEstimatedVelocity,params.speed_limit, params.beta);
+    [motionCorrelation, impMatrix]  = motionAffinity_new(spatialGroupDetectionCenters, spatialGroupDetectionFrames, params.speed_limit);
+    
     
     % Combine affinities into correlations
     % -- discount is the paper Optimization part e^(-bt)
@@ -59,7 +61,8 @@ for spatialGroupID = 1 : max(spatialGroupIDs)
     discountMatrix                  = min(1, -log(intervalDistance/params.window_width));
 %     correlationMatrix               = motionCorrelation + appearanceCorrelation; 
 %     correlationMatrix               = correlationMatrix .* discountMatrix;
-    correlationMatrix               = motionCorrelation .* discountMatrix + appearanceCorrelation; 
+    %correlationMatrix               = motionCorrelation .* discountMatrix + appearanceCorrelation -1; 
+    correlationMatrix               = motionCorrelation + appearanceCorrelation -1; 
     correlationMatrix(impMatrix==1) = -inf;
     
     % Show spatial grouping and correlations

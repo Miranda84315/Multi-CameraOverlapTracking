@@ -1,4 +1,4 @@
-function compute_L2_trajectories3D(opts)
+function compute_L2_trajectories3D_new(opts)
 % Computes single-camera trajectories from tracklets
 % Initialize
 % -- load tracklets from L1-tracklet.mat

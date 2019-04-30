@@ -117,9 +117,9 @@ def object_detection(detection_graph, cam_num, video_root, save_root,
                 detections = np.array(detections)
                 detections = detections.reshape((len(detections),
                                                  9))  # 2d array of 3x3
-                scipy.io.savemat(
-                    save_root + 'cam' + str(icam) + '.mat',
-                    mdict={'detections': detections})
+                #scipy.io.savemat(
+                #    save_root + 'cam' + str(icam) + '.mat',
+                #    mdict={'detections': detections})
     cv2.destroyAllWindows()
 
 

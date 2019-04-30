@@ -3,7 +3,7 @@ function opts = get_opts()
 addpath(genpath('src'))
 
 opts = [];
-opts.dataset_path    = 'D:/Code/MultiCamOverlap/dataset';
+opts.dataset_path    = 'D:/Code/MultiCamOverlap/dataset/';
 opts.gurobi_path     = 'C:/gurobi800/win64/matlab';
 opts.experiment_root = 'D:/Code/MultiCamOverlap/experiments';
 opts.experiment_dir = 'experiments';
@@ -48,8 +48,8 @@ trajectories = [];
 trajectories.appearance_groups = 1; % determined automatically when zero
 trajectories.alpha = 1;
 trajectories.beta = 0.01;
-trajectories.window_width = 100;%60
-trajectories.overlap = 50;%30
+trajectories.window_width = 30;%100;%60
+trajectories.overlap = 15;%50;%30
 trajectories.speed_limit = 80000;
 trajectories.indifference_time = 100;
 trajectories.threshold = 8;

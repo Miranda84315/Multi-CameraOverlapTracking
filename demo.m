@@ -5,7 +5,6 @@ create_experiment_dir(opts);
 %% Run Tracker
 
 % opts.visualize = true;
-opts.sequence = 1; % trainval-mini
 
 % compute feature
 compute_L0_features(opts);

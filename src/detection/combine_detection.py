@@ -121,8 +121,8 @@ def recomputeIndex(index, n, each_n):
 
 
 def main():
-    startFrame = 0
-    endFrame = 208
+    startFrame = 19
+    endFrame = 21#208
     plot_img = True
 
     cmtx = np.loadtxt(matrix_save + 'intrinsics.txt')
@@ -206,16 +206,16 @@ def main():
             #for i in range(0, len(new_detection)):
             #    plt.plot(new_detection[i, 1], new_detection[i, 2], color[int(detection[i, 3])])
             # -- << plot new detection with triangle point >>
-            plt.plot(new_detection[:, 1], new_detection[:, 2], 'y^')
+            #plt.plot(new_detection[:, 1], new_detection[:, 2], 'y^')
             plt.xlabel('x')
             plt.ylabel('y')
             #plt.legend(['bo', 'go', 'ro', 'co'], ['cam1', 'cam2', 'cam3', 'cam4'], loc='upper left')
-            plt.title('using fclusterdata to determine the number of cluster')
+            plt.title('Before clustering')
             plt.show()
 
     total_detections = np.array(total_detections).reshape((len(total_detections), 7))
     print(total_detections)
-    scipy.io.savemat(save_root + 'camera_all.mat', mdict={'detections': total_detections})
+    #scipy.io.savemat(save_root + 'camera_all.mat', mdict={'detections': total_detections})
 
 
 if __name__ == '__main__':
