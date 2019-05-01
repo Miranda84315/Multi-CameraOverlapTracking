@@ -1,4 +1,4 @@
-function result = solveInGroups3D(opts, tracklets, labels)
+function result = solveInGroups3D_new(opts, tracklets, labels)
 %{
 tracklets = tracklets(inAssociation);
 labels = trackletLabels(inAssociation);
@@ -36,24 +36,43 @@ for i = 1 : length(allGroups)
     
     % compute appearance and spacetime scores
     appearanceAffinity = getAppearanceMatrix3D(opts.num_cam, featureVectors(indices), params.threshold);
-    [spacetimeAffinity, impossibilityMatrix, indifferenceMatrix] = getSpaceTimeAffinity(tracklets(indices), params.beta, params.speed_limit, params.indifference_time);
-    
+    [~, impossibilityMatrix, indifferenceMatrix] = getSpaceTimeAffinity_new(tracklets(indices), params.beta, params.speed_limit, params.indifference_time);
+    [spacetimeAffinity, distanceMatrix] = getFirstandFinal(opts, tracklets(indices), labels(indices));
+
     % compute the correlation matrix
-    %correlationMatrix = (appearanceAffinity + spacetimeAffinity)/2;
-    %correlationMatrix = correlationMatrix .* indifferenceMatrix;
-    correlationMatrix =(appearanceAffinity + spacetimeAffinity - 1);
-    correlationMatrix = correlationMatrix .* indifferenceMatrix;
+    correlationMatrix =(appearanceAffinity + spacetimeAffinity) - 1;
+    % new idea
+    %correlationMatrix =distanceMatrix + (1- appearanceAffinity);
     
     correlationMatrix(impossibilityMatrix == 1) = -inf;
     correlationMatrix(sameLabels) = 1;
-    %correlationMatrix(correlationMatrix > 0.60) = 1;
     
+    % my design clustering
+    correlationMatrix(sameLabels) = 0;
+    for j=1:length(correlationMatrix)
+        [~, correlationMatrix(j, j)] = max(correlationMatrix(j,:));
+    end
+    
+    sizeCorrelation = length(correlationMatrix);
+    for j=1:sizeCorrelation
+        index_1 = j;    % self
+        index_2 = correlationMatrix(j, j);  %max index
+        index_3 = correlationMatrix(correlationMatrix(j, j), correlationMatrix(j, j)); %max index id
+        if index_1 == index_3
+            correlationMatrix(j, sizeCorrelation+1) = min(index_1, index_2);
+        else
+            correlationMatrix(j, sizeCorrelation+1) = index_1;
+        end
+    end
+    
+    result_appearance{i}.labels = correlationMatrix(:, sizeCorrelation+1);
     
     % show appearance group tracklets
-    if opts.visualize, trajectoriesVisualizePart2; end
+    %if opts.visualize, trajectoriesVisualizePart2; end
     
     % solve the optimization problem
     solutionTime = tic;
+    %{
     if strcmp(opts.optimization,'AL-ICM')
         result_appearance{i}.labels  = AL_ICM(sparse(correlationMatrix));
     elseif strcmp(opts.optimization,'KL')
@@ -62,6 +81,7 @@ for i = 1 : length(allGroups)
         initialSolution = KernighanLin(correlationMatrix);
         result_appearance{i}.labels  = BIPCC(correlationMatrix, initialSolution);
     end
+    %}
     
     trajectorySolutionTime = toc(solutionTime);
     trajectorySolverTime = trajectorySolverTime + trajectorySolutionTime;

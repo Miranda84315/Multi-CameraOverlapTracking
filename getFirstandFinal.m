@@ -1,7 +1,7 @@
-function FirstFinalData = getFirstandFinal(opts, tracklets_window, labels)
+function [spacetimeAffinity, distanceMatrix] = getFirstandFinal(opts, tracklets_window, labels)
 %{
-tracklets_window = tracklets(inAssociation);
-labels = trackletLabels(inAssociation);
+tracklets_window = tracklets(indices);
+labels = labels(indices);
 %}
 
 FirstFinalData = zeros(length(tracklets_window), 4);
@@ -20,7 +20,7 @@ xDiff           = endX - startX';
 yDiff           = endY - startY';
 
 distanceMatrix  = sqrt(xDiff.^2 + yDiff.^2);
-distanceMatrix  =1 ./ (1 + distanceMatrix/100 );
+spacetimeAffinity  =1 ./ (1 + distanceMatrix/100 );
 
 params = opts.trajectories;
 sameLabels  = pdist2(labels, labels) == 0;
@@ -30,9 +30,13 @@ frameDifference = pdist2(Frame, Frame, @(frame1, frame2) (frame1 - frame2)/15);
 
 [~, impossibilityMatrix, ~] = getSpaceTimeAffinity_new(tracklets_window, params.beta, params.speed_limit, params.indifference_time);
     
-distanceMatrix(frameDifference  ~= 1) = -inf;
+distanceMatrix(frameDifference  ~= 1) = inf;
+distanceMatrix = triu(distanceMatrix) + triu(distanceMatrix)';
 distanceMatrix(sameLabels) = 1;
 
+spacetimeAffinity(frameDifference  ~= 1) = -inf;
+spacetimeAffinity = triu(spacetimeAffinity) + triu(spacetimeAffinity)';
+spacetimeAffinity(sameLabels) = 1;
 
 
 end

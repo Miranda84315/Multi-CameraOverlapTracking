@@ -12,7 +12,8 @@ function output = fillandSmoothTrajectories( detections, num_cam )
 
     for i = 1 : length(personIDs)
         personID = personIDs(i);
-        cam_detection = zeros(max_frame, 20);
+        temp_size = size(detections(detections(:, 2) ==personID, 1:4), 1);
+        cam_detection = zeros(temp_size, 20);
         cam_detection(:, 1:4) = detections(detections(:, 2) ==personID, 1:4);
         cam_detection = sortrows(cam_detection, 1);
         for cam=1:num_cam

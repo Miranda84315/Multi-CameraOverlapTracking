@@ -30,20 +30,23 @@ for i = 1 : length(currentTrajectories)
        trackletLabels   = [trackletLabels; i]; %#ok
 
        inAssociation(length(trackletLabels)) = true; %#ok
+       if k ~=length(currentTrajectories(i).tracklets) 
+           inAssociation(length(trackletLabels)) = false; %#ok
+       end
        % Use the last five values
    end
 end
 inAssociation = logical(inAssociation);
 
 % show all tracklets
-if opts.visualize, trajectoriesVisualizePart1; end
+%if opts.visualize, trajectoriesVisualizePart1; end
 
 % ----- my method
-FirstFinalData = getFirstandFinal(opts, tracklets(inAssociation), trackletLabels(inAssociation));
+%distanceMatrix = getFirstandFinal(opts, tracklets(inAssociation), trackletLabels(inAssociation));
 
 
 % solve the graph partitioning problem for each appearance group
-result = solveInGroups3D(opts, tracklets(inAssociation), trackletLabels(inAssociation));
+result = solveInGroups3D_new(opts, tracklets(inAssociation), trackletLabels(inAssociation));
 
 % merge back solution. Tracklets that were associated are now merged back
 % with the rest of the tracklets that were sharing the same trajectory
@@ -59,12 +62,13 @@ end
 % merge co-identified tracklets to extended tracklets
 % -- each identity each struct
 newTrajectories = trackletsToTrajectories(tracklets, labels);
-checkTrajectories = checkFromEdge3D(newTrajectories, startTime);
-smoothTrajectories = recomputeTrajectories(checkTrajectories, opts.num_cam);
+%checkTrajectories = checkFromEdge3D(newTrajectories, startTime);
+smoothTrajectories = recomputeTrajectories(newTrajectories, opts.num_cam);
 
 outputTrajectories = inputTrajectories;
 outputTrajectories(currentTrajectoriesInd) = [];
-outputTrajectories = [outputTrajectories; smoothTrajectories];
+outputTrajectories = [smoothTrajectories; outputTrajectories];
+%outputTrajectories = [outputTrajectories; smoothTrajectories];
 
 % show merged tracklets in window 
 if opts.visualize, trajectoriesVisualizePart3; end

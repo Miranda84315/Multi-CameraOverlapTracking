@@ -2,7 +2,7 @@ function newTrajectories = recomputeTrajectories( newTrajectories, num_cam )
 %RECOMPUTETRAJECTORIES Summary of this function goes here
 %   Detailed explanation goes here
 % num_cam = opts.num_cam;
-% newTrajectories = checkTrajectories;
+% newTrajectories = newTrajectories;
 
 segmentLength = 15;
 
@@ -22,7 +22,8 @@ for i = 1:length(newTrajectories)
     dataFrames = alldata(:,1);
     
     frames = segmentStart:segmentEnd;
-    interestingFrames = round([min(dataFrames), frames(1) + segmentLength/2:segmentLength:frames(end),  max(dataFrames)]);
+    interestingFrames = round([min(dataFrames):segmentLength:frames(end), max(dataFrames)]);
+    %interestingFrames = round([min(dataFrames), frames(1) + segmentLength/2:segmentLength:frames(end),  max(dataFrames)]);
         
     keyData = alldata(ismember(dataFrames,interestingFrames),:);
     
@@ -36,6 +37,7 @@ for i = 1:length(newTrajectories)
     
     keyData(:,2) = -1;
     % only smooth 3D_x, 3Dy
+    %newData = alldata(:, 1:4);
     newData = fillTrajectories(keyData(:, 1:4));
     newData = sortrows(newData, 1);
     

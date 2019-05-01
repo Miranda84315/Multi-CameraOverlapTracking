@@ -26,8 +26,9 @@ if get_one:
         frame_num = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
         print('frame num = ', frame_num)
 
-        file_name = save_oneframe + 'cam' + str(icam) + '.jpg'
+        file_name = save_oneframe + 'cam' + str(icam) + '2.jpg'
         print('save: ' + file_name)
+        cap.set(1, 15)
         ret, frame = cap.read()
         cv2.imwrite(file_name, frame)
 
