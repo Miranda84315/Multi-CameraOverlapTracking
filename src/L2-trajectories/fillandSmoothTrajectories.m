@@ -28,6 +28,7 @@ function output = fillandSmoothTrajectories( detections, num_cam )
             missingFrames = setdiff([startFrame:endFrame]', relevantDetections(:, 1));
 
             if isempty(missingFrames)
+                cam_detection(:, index:index+3) = relevantDetections(:, 3:6);
                 continue;
             end
 
