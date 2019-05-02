@@ -65,7 +65,7 @@ def object_detection(detection_graph, cam_num, video_root, save_root,
                     classes_new = np.squeeze(classes).astype(np.int32)
                     scores_new = np.squeeze(scores)
                     category_index_new = category_index
-                    max_boxes_to_draw = 5
+                    max_boxes_to_draw = 10
                     min_score_thresh = .85
                     for i in range(min(max_boxes_to_draw, boxes_new.shape[0])):
                         if scores_new is None or (scores_new[i] >

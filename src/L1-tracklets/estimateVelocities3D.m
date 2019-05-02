@@ -2,6 +2,10 @@ function estimatedVelocities = estimateVelocities3D(originalDetections, startFra
 % This function estimates the velocity of a detection by calculating the component-wise
 % median of velocities required to reach a specified number of nearest neighbors.
 % Neighbors that exceed a specified speed limit are not considered.
+%{
+nearestNeighbors = params.nearest_neighbors;
+speedLimit = params.speed_limit;
+%}
 
 % Find detections in search range
 searchRangeMask    = intervalSearch(originalDetections(:,1), startFrame - nearestNeighbors, endFrame+ nearestNeighbors);
