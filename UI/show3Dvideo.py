@@ -13,13 +13,15 @@ video/camera2_result.avi
 video/camera8_result.avi
 '''
 
-experiment_root = 'D:/Code/MultiCamOverlap/experiments/Player05/'
+track_num = '2/'
+video_dir = 'D:/Code/MultiCamOverlap/dataset/videos/Player05/track'
+experiment_dir = 'D:/Code/MultiCamOverlap/experiments/Player05/track'
+
+experiment_root = experiment_dir + track_num
 visual_root = 'D:/Code/MultiCamOverlap/UI/data/'
-video_root = 'D:/Code/MultiCamOverlap/dataset/videos/Player05/track1/'
+video_root = video_dir + track_num
 
 start_time = [1, 1, 1, 1]
-NumFrames = [208, 208, 208, 208]
-PartFrames = [[208, 208, 208, 208]]
 cam_num = 4
 threshold_durations = 10 * 25
 board_A = 10
@@ -27,15 +29,6 @@ board_B = 8
 width = 1920
 height = 1080
 fps = 15
-
-
-def calucate_part(icam, frame):
-    sum_frame = 0
-    for part_num in range(0, 1):
-        previs_sum = sum_frame
-        sum_frame += PartFrames[part_num][icam - 1]
-        if sum_frame >= frame + 1:
-            return part_num, frame - previs_sum
 
 
 def load_mat():
@@ -83,7 +76,7 @@ def draw_traj(img, frame, data):
 
 def main():
     startFrame = 0
-    endFrame = 208
+    endFrame = 390
 
     global fileOutput
     global color
@@ -91,11 +84,11 @@ def main():
     color = random_color(len(set(fileOutput[:, 1])))
 
     fourcc = cv2.VideoWriter_fourcc(*'XVID')
-    out_filename = experiment_root + 'video-results/camera_result_v2.avi'
+    out_filename = experiment_root + 'camera_result.avi'
     height = 1080
     width = 1920
     out = cv2.VideoWriter(out_filename, fourcc, fps, (width, height))
-    traj_filename = experiment_root + 'video-results/trajectory_result_v2.avi'
+    traj_filename = experiment_root + 'trajectory_result.avi'
     traj = cv2.VideoWriter(traj_filename, fourcc, fps, (800, 700))
 
     filename = [video_root + 'cam1.avi', video_root + 'cam2.avi', video_root + 'cam3.avi', video_root + 'cam4.avi']

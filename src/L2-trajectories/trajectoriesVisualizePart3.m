@@ -27,7 +27,7 @@ for k = 1:numTrajectories
     end
     
 end
-pause(0.5);
+pause(1);
 %hold off;
 drawnow;
 

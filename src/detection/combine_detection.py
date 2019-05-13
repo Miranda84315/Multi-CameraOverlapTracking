@@ -5,21 +5,38 @@ from scipy.optimize import fsolve
 from sklearn.cluster import SpectralClustering, AgglomerativeClustering
 import scipy.cluster.hierarchy as hcluster
 import cv2
+import os
+from argparse import ArgumentParser
 '''
 use Spectral Clustering to combined detections
+combine_detection.py --track 2/ --endFrame 390
 '''
 
-detection_root = 'D:/Code/MultiCamOverlap/dataset/detections/Player05/track1/cam'
-matrix_save = 'D:/Code/MultiCamOverlap/dataset/calibration/Player05/information/'
-save_root = 'D:/Code/MultiCamOverlap/dataset/detections/Player05/track1/'
+parser = ArgumentParser(description='combine detection')
+parser.add_argument('--track', type=str, required=True, help='Input cam number')
+parser.add_argument('--endFrame', type=int, required=True, help='Input cam number')
 
-start_time = [1, 1, 1, 1]
-NumFrames = [810, 810, 810, 810]
-PartFrames = [[810, 810, 810, 810]]
+args = parser.parse_args()
+
+detection_dir = 'D:/Code/MultiCamOverlap/dataset/detections/Player05/track'
+track = args.track
+
+#'2/'
+
+detection_root = detection_dir + track
+matrix_save = 'D:/Code/MultiCamOverlap/dataset/calibration/Player05/information/'
+save_root = detection_dir + track
+save_img = detection_root + 'img/'
+
 cam_num = 4
 width = 1920
 height = 1080
-color = ['bo', 'go', 'ro', 'co', 'mo']
+color = ['bo', 'go', 'ro', 'co', 'mo', 'ko']
+
+
+def createFolder(directory):
+    if not os.path.exists(directory):
+        os.makedirs(directory)
 
 
 def load_detection(cam_num):
@@ -27,7 +44,7 @@ def load_detection(cam_num):
     num_each_camera = [0]
     temp = 0
     for icam in range(1, cam_num + 1):
-        load_file = detection_root + str(icam) + '.mat'
+        load_file = detection_root + 'cam' + str(icam) + '.mat'
         data = scipy.io.loadmat(load_file)
         data = data['detections']
         num_each_camera.append(temp + len(data))
@@ -121,13 +138,17 @@ def recomputeIndex(index, n, each_n):
 
 
 def main():
-    startFrame = 19
-    endFrame = 21#208
+    startFrame = 0
+    endFrame = args.endFrame
     plot_img = True
 
     cmtx = np.loadtxt(matrix_save + 'intrinsics.txt')
     dist = np.loadtxt(matrix_save + 'distCoeffs.txt')
     Rt = []
+
+    createFolder(save_root)
+    createFolder(save_img)
+
     for i in range(1, cam_num + 1):
         Rt_temp = np.loadtxt(matrix_save + 'Rt' + str(i) + '.txt')
         Rt.append(Rt_temp)
@@ -156,12 +177,12 @@ def main():
 
         thresh = 160
         clusters = hcluster.fclusterdata(detection[:, 1:3], thresh, criterion="distance")
-        if plot_img is True:
-            plt.scatter(*np.transpose(detection[:, 1:3]), c=clusters)
-            plt.axis("equal")
-            title = "threshold: %f, number of clusters: %d" % (thresh, len(set(clusters)))
-            plt.title(title)
-            plt.show()
+        #if plot_img is True:
+        #    plt.scatter(*np.transpose(detection[:, 1:3]), c=clusters)
+        #    plt.axis("equal")
+        #    title = "threshold: %f, number of clusters: %d" % (thresh, len(set(clusters)))
+        #    plt.title(title)
+        #    plt.show()
 
         fcluster_count = len(set(clusters))
         _, counts2 = np.unique(clusters, return_counts=True)
@@ -181,6 +202,13 @@ def main():
         sc = AgglomerativeClustering(n_clusters=true_counts)
         sc.fit(detection[:, 1:3])
         label = np.array(sc.labels_).reshape((len(detection), 1))
+        _, counts = np.unique(label, return_counts=True)
+        #print(counts)
+        if max(counts) >= 5:
+            true_counts += 1
+            sc = AgglomerativeClustering(n_clusters=true_counts)
+            sc.fit(detection[:, 1:3])
+            label = np.array(sc.labels_).reshape((len(detection), 1))
         # combined detection and label
         detection = np.append(detection, label, axis=1)
 
@@ -206,16 +234,18 @@ def main():
             #for i in range(0, len(new_detection)):
             #    plt.plot(new_detection[i, 1], new_detection[i, 2], color[int(detection[i, 3])])
             # -- << plot new detection with triangle point >>
-            #plt.plot(new_detection[:, 1], new_detection[:, 2], 'y^')
+            plt.plot(new_detection[:, 1], new_detection[:, 2], 'y^')
             plt.xlabel('x')
             plt.ylabel('y')
             #plt.legend(['bo', 'go', 'ro', 'co'], ['cam1', 'cam2', 'cam3', 'cam4'], loc='upper left')
-            plt.title('Before clustering')
-            plt.show()
+            plt.title('clustering')
+            plt.savefig(save_img + str(current_frame) + '.png')
+            #plt.show()
+            plt.close()
 
     total_detections = np.array(total_detections).reshape((len(total_detections), 7))
     print(total_detections)
-    #scipy.io.savemat(save_root + 'camera_all.mat', mdict={'detections': total_detections})
+    scipy.io.savemat(save_root + 'camera_all.mat', mdict={'detections': total_detections})
 
 
 if __name__ == '__main__':

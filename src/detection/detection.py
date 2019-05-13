@@ -11,13 +11,33 @@ python detection.py --video_root D:/Code/AF_tracking/videos/ --save_root D:/Code
 
 start_time = [1, 1, 1, 1]
 start_sequence = 0
-end_sequence = 208
+end_sequence = 0
+
+video_dir = 'D:/Code/MultiCamOverlap/dataset/videos/Player05/track'
+save_dir = 'D:/Code/MultiCamOverlap/dataset/detections/Player05/track'
+track_num = '2/'
 
 p1 = Path([(321, 685), (1605, 644), (1918, 731), (1914, 1075), (0, 1080), (0, 794)])
 p2 = Path([(2, 558), (795, 520), (1858, 677), (1691, 1077), (0, 1075)])
 p3 = Path([(0, 455), (792, 388), (1905, 738), (1391, 1077), (0, 1072)])
 p4 = Path([(51, 478), (462, 1074), (811, 1075), (1732, 658), (921, 484)])
 p = [p1, p2, p3, p4]
+
+
+def createFolder(directory):
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
+
+def get_frame_number(cam_num, video_root):
+    frame = []
+    for icam in range(1, cam_num + 1):
+        filename = video_root + 'cam' + str(icam) + '.avi'
+        cap = cv2.VideoCapture(filename)
+        frame_num = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+        print('frame num = ', frame_num)
+        frame.append(frame_num)
+    return min(frame)
 
 
 def cal_localtime(icam, frame_num):
@@ -115,18 +135,19 @@ def object_detection(detection_graph, cam_num, video_root, save_root,
 
                     print(frame)
                 detections = np.array(detections)
-                detections = detections.reshape((len(detections),
-                                                 9))  # 2d array of 3x3
-                #scipy.io.savemat(
-                #    save_root + 'cam' + str(icam) + '.mat',
-                #    mdict={'detections': detections})
+                detections = detections.reshape((len(detections), 9))  # 2d array of 3x3
+                scipy.io.savemat(
+                    save_root + 'cam' + str(icam) + '.mat',
+                    mdict={'detections': detections})
     cv2.destroyAllWindows()
 
 
 def main():
     cam_num = 4
-    video_root = 'D:/Code/MultiCamOverlap/dataset/videos/Player05/track1/'
-    save_root = 'D:/Code/MultiCamOverlap/dataset/detections/Player05/track1/'
+    video_root = video_dir + track_num
+    save_root = save_dir + track_num
+    createFolder(video_root)
+    createFolder(save_root)
     # MODEL_NAME
     MODEL_NAME = 'faster_rcnn_inception_v2_coco_2018_01_28'
     # Path to frozen detection graph. This is the actual model
@@ -149,9 +170,14 @@ def main():
         label_map, max_num_classes=NUM_CLASSES, use_display_name=True)
     category_index = label_map_util.create_category_index(categories)
 
+    global end_sequence
+    end_sequence = get_frame_number(cam_num, video_root)
     object_detection(detection_graph, cam_num, video_root, save_root,
                      category_index)
 
 
 if __name__ == '__main__':
     main()
+    system_cmd = 'C:/Users/Owner/Anaconda3/envs/tensorflow/python.exe combine_detection.py --track ' + track_num + ' --endFrame ' + str(end_sequence)
+    print(system_cmd)
+    os.system(system_cmd)
