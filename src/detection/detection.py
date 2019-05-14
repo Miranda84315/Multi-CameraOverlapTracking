@@ -15,7 +15,7 @@ end_sequence = 0
 
 video_dir = 'D:/Code/MultiCamOverlap/dataset/videos/Player05/track'
 save_dir = 'D:/Code/MultiCamOverlap/dataset/detections/Player05/track'
-track_num = '2/'
+track_num = '3/'
 
 p1 = Path([(321, 685), (1605, 644), (1918, 731), (1914, 1075), (0, 1080), (0, 794)])
 p2 = Path([(2, 558), (795, 520), (1858, 677), (1691, 1077), (0, 1075)])

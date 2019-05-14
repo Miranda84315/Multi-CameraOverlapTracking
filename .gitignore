@@ -9,3 +9,4 @@ experiments/
 *.mat
 UI/data/
 *.driveupload
+src/external/mexopencv330/

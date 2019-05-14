@@ -16,4 +16,5 @@ compute_L1_tracklets3D(opts);
 % Single-camera trajectories
 %compute_L2_trajectories(opts);
 compute_L2_trajectories3D(opts);
-
+opts.eval_dir = 'L2-trajectories';
+evaluate(opts);
