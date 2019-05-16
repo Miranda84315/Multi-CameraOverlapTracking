@@ -5,11 +5,13 @@ import numpy as np
 import time
 import pandas as pd
 from scipy.optimize import fsolve
-
+'''
+PlayerX(1~52) - trackY(1~8)
+要記得改 line 12 ~ 13 的 PlayerX 以及 line14 的 trackY
+'''
 video_dir = 'D:/Code/MultiCamOverlap/dataset/videos/Player05/track'
 save_dir = 'D:/Code/MultiCamOverlap/dataset/ground_truth/Player05/track'
-matrix_save = 'D:/Code/MultiCamOverlap/dataset/calibration/Player05/information/'
-track_num = '1/'
+track_num = '2/'
 
 video_root = video_dir + track_num
 save_root = save_dir + track_num
@@ -65,7 +67,7 @@ def project_3d(u, v, cameraMatrix, distCoeffs, Rt):
     p2 = distCoeffs[3]
     x_two = (u - cx) / fx
     y_two = (v - cy) / fy
-    
+
     def f1(x):
         x_one = float(x[0])
         y_one = float(x[1])
@@ -146,31 +148,34 @@ def main():
     print('\n\ntime: ', elapsed)
     cv2.destroyAllWindows()
 
-    cmtx = np.loadtxt(matrix_save + 'intrinsics.txt')
-    dist = np.loadtxt(matrix_save + 'distCoeffs.txt')
-    Rt = []
+    have3D = False
+    if have3D:
+        matrix_save = 'D:/Code/MultiCamOverlap/dataset/calibration/Player05/information/'
+        cmtx = np.loadtxt(matrix_save + 'intrinsics.txt')
+        dist = np.loadtxt(matrix_save + 'distCoeffs.txt')
+        Rt = []
 
-    for i in range(1, 5):
-        Rt_temp = np.loadtxt(matrix_save + 'Rt' + str(i) + '.txt')
-        Rt.append(Rt_temp)
+        for i in range(1, 5):
+            Rt_temp = np.loadtxt(matrix_save + 'Rt' + str(i) + '.txt')
+            Rt.append(Rt_temp)
 
-    gt = load_mat(save_root + 'gt_data.mat')
-    end_sequence = max(gt[:, 0])
-    gt_all = np.zeros((5 * end_sequence, 4))
-    for frame in range(1, end_sequence + 1):
-        for id_num in range(1, 6):
-            gt_all[(id_num - 1) * end_sequence + frame - 1, 0] = frame
-            gt_all[(id_num - 1) * end_sequence + frame - 1, 1] = id_num
-            gt_temp = np.array([gt[i, [1, 3, 4, 5, 6]] for i in range(len(gt)) if gt[i, 0] == frame and gt[i, 2] == id_num])
-            for icam, left, top, w, h in gt_temp:
-                feet_x = int(left + (w/2))
-                feet_y = int(top + h)
-                x, y = project_3d(feet_x, feet_y, cmtx, dist, Rt[icam - 1])
-                gt_all[(id_num - 1) * end_sequence + frame - 1, 2] += x
-                gt_all[(id_num - 1) * end_sequence + frame - 1, 3] += y
-            gt_all[(id_num - 1) * end_sequence + frame - 1, 2] /= len(gt_temp)
-            gt_all[(id_num - 1) * end_sequence + frame - 1, 3] /= len(gt_temp)
-    scipy.io.savemat(save_root + 'gt_data_3D.mat', mdict={'gt_3D': gt_all})
+        gt = load_mat(save_root + 'gt_data.mat')
+        end_sequence = max(gt[:, 0])
+        gt_all = np.zeros((5 * end_sequence, 4))
+        for frame in range(1, end_sequence + 1):
+            for id_num in range(1, 6):
+                gt_all[(id_num - 1) * end_sequence + frame - 1, 0] = frame
+                gt_all[(id_num - 1) * end_sequence + frame - 1, 1] = id_num
+                gt_temp = np.array([gt[i, [1, 3, 4, 5, 6]] for i in range(len(gt)) if gt[i, 0] == frame and gt[i, 2] == id_num])
+                for icam, left, top, w, h in gt_temp:
+                    feet_x = int(left + (w/2))
+                    feet_y = int(top + h)
+                    x, y = project_3d(feet_x, feet_y, cmtx, dist, Rt[icam - 1])
+                    gt_all[(id_num - 1) * end_sequence + frame - 1, 2] += x
+                    gt_all[(id_num - 1) * end_sequence + frame - 1, 3] += y
+                gt_all[(id_num - 1) * end_sequence + frame - 1, 2] /= len(gt_temp)
+                gt_all[(id_num - 1) * end_sequence + frame - 1, 3] /= len(gt_temp)
+        scipy.io.savemat(save_root + 'gt_data_3D.mat', mdict={'gt_3D': gt_all})
 
 
 if __name__ == '__main__':
