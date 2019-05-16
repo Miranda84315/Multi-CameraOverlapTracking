@@ -1,19 +1,24 @@
 import cv2
 import os
-video_root = 'D:/Data/0317/'
+video_root = 'D:/Data/0318/'
 video_filename = [
-    'XVR_ch1_main_20190317160000_20190317162500.avi',
-    'XVR_ch2_main_20190317160000_20190317162500.avi',
-    'XVR_ch3_main_20190317160000_20190317162500.avi',
-    'XVR_ch4_main_20190317160000_20190317162500.avi']
-save_root = 'D:/Data/dataset/Player10/track'
+    'XVR_ch1_main_20190318110001_20190318114828.avi',
+    'XVR_ch2_main_20190318110001_20190318114828.avi',
+    'XVR_ch3_main_20190318110000_20190318114828.avi',
+    'XVR_ch4_main_20190318110000_20190318114828.avi']
+save_root = 'D:/Data/dataset/Player14/track'
+save_dir = 'D:/Data/dataset/Player14'
 fps = 15
-frame_start = [12791, 13925, 14940, 15868, 20078, 20401, 20764, 21228]
-frame_end = [13109, 14277, 15250, 16061, 20236, 20559, 20999, 21452]
+frame_start = [23483, 24994, 26200, 27654, 42736, 43405, 43930, 44705]
+frame_end = [23733, 25284, 26393, 27929, 43036, 43641, 44261, 44888]
+
+if not os.path.exists(save_dir):
+    os.mkdir(save_dir)
 
 for track in range(0, 8):
     path = save_root + str(track + 1)
-    os.mkdir(path)
+    if not os.path.exists(path):
+        os.mkdir(path)
 
 
 for icam in range(0, 4):
