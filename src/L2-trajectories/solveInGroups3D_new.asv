@@ -71,28 +71,18 @@ for i = 1 : length(allGroups)
     m=1;
     for j=1:length(correlationMatrix)-1
         temp_label = [correlationMatrix(j, j), correlationMatrix(j, length(correlationMatrix))];
-        flag = 0;
         for k=1:length(correlationLabel)
-            if ~isempty(intersect(correlationLabel{k}, temp_label))
+            if isempty(intersect(correlationLabel{k}, temp_label))
+                correlationLabel{m} = temp_label;
+                m = m+1;
+            else
                 correlationLabel{k} = union(correlationLabel{k}, temp_label);
-                flag = 1;
-                break
             end
         end
-        if flag ==0
-            correlationLabel{m} = temp_label;
-            m = m+1;
-        end
-    end
+            
     
-    labelResult = zeros(length(correlationMatrix)-1, 1);
-    for j=1:length(correlationLabel)
-        index = correlationLabel{j};
-        labelResult(index)=j;
-    end
     
-    result_appearance{i}.labels = labelResult;
-    %result_appearance{i}.labels = correlationMatrix(:, sizeCorrelation+1);
+    result_appearance{i}.labels = correlationMatrix(:, sizeCorrelation+1);
     
     % show appearance group tracklets
     %if opts.visualize, trajectoriesVisualizePart2; end

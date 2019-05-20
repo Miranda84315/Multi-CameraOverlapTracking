@@ -25,8 +25,26 @@ spacetimeAffinity  =1 ./ (1 + distanceMatrix/100 );
 params = opts.trajectories;
 sameLabels  = pdist2(labels, labels) == 0;
 
-Frame     = [tracklets_window.segmentStart]';
-frameDifference = pdist2(Frame, Frame, @(frame1, frame2) (frame1 - frame2)/15);
+% old method
+%Frame     = [tracklets_window.segmentStart]';
+%frameDifference = pdist2(Frame, Frame, @(frame1, frame2) (frame1 - frame2)/15);
+
+% add New frame Difference Method
+Frame_total = cell(length(tracklets_window),1);
+for i=1:length(tracklets_window)
+    Frame_total{i} = [tracklets_window(i).startFrame:tracklets_window(i).endFrame;];
+end
+frameDifference = zeros(length(tracklets_window));
+for i=1:length(tracklets_window)
+    for j = 1:length(tracklets_window)
+        doubleData=intersect(Frame_total{i}, Frame_total{j});
+        if isempty(doubleData)
+            frameDifference(i, j) = 1;
+        end
+    end
+end
+
+
 
 [~, impossibilityMatrix, ~] = getSpaceTimeAffinity_new(tracklets_window, params.beta, params.speed_limit, params.indifference_time);
     

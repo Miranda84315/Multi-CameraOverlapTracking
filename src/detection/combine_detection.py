@@ -24,7 +24,7 @@ track = args.track
 #'2/'
 
 detection_root = detection_dir + track
-matrix_save = 'D:/Code/MultiCamOverlap/dataset/calibration/Player05/information/'
+matrix_save = 'D:/Code/MultiCamOverlap/dataset/calibration/0317/information/'
 save_root = detection_dir + track
 save_img = detection_root + 'img/'
 

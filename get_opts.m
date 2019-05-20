@@ -2,15 +2,16 @@ function opts = get_opts()
 
 addpath(genpath('src'))
 
+endFrame   = 440; 
 opts = [];
 opts.dataset_path    = 'D:/Code/MultiCamOverlap/dataset/';
 opts.gurobi_path     = 'C:/gurobi800/win64/matlab';
 opts.experiment_root = 'D:/Code/MultiCamOverlap/experiments';
 opts.experiment_dir = 'experiments';
-opts.experiment_name = 'Player05/track2';
+opts.experiment_name = 'Player05/track3';
 opts.sequence = 1;
 
-opts.reader = DataVideoReader(opts.dataset_path);
+opts.reader = DataVideoReader(opts.dataset_path, opts.experiment_name);
 
 % General settings
 opts.eval_dir = 'L2-identities';
@@ -26,7 +27,7 @@ opts.use_groupping = 1;
 opts.num_cam = 4;
 opts.sequence = 1;
 opts.sequence_names = {'trainval'};
-opts.sequence_intervals = {1:206};
+opts.sequence_intervals = {1:endFrame };
 opts.start_frames = [1, 1, 1, 1];
 opts.render_threshold = 0.05;
 opts.load_tracklets = 1;
@@ -53,6 +54,7 @@ trajectories.overlap = 15;%50;%30
 trajectories.speed_limit = 80000;
 trajectories.indifference_time = 100;
 trajectories.threshold = 8;
+trajectories.finalnfirst=200;
 
 % Identities
 identities = [];
