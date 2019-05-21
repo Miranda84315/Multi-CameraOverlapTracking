@@ -13,11 +13,11 @@ start_time = [1, 1, 1, 1]
 start_sequence = 0
 end_sequence = 0
 
-calibration_dir = 'D:/Code/MultiCamOverlap/dataset/calibration/0315/information/'
-video_dir = 'D:/Code/MultiCamOverlap/dataset/videos/Player01/track'
-save_dir = 'D:/Code/MultiCamOverlap/dataset/detections/Player01/track'
+calibration_dir = 'D:/Code/MultiCamOverlap/dataset/calibration/0317/information/'
+#video_dir = 'D:/Code/MultiCamOverlap/dataset/videos/Player01/track'
+#save_dir = 'D:/Code/MultiCamOverlap/dataset/detections/Player01/track'
 #track_num = '4/'
-track_num = ['1/', '2/', '3/', '4/', '5/', '6/', '7/', '8/'] 
+track_num = ['1/', '2/', '3/', '4/', '5/', '6/', '7/', '8/']
 '''
 p1 = Path([(321, 685), (1605, 644), (1918, 731), (1914, 1075), (0, 1080), (0, 794)])
 p2 = Path([(2, 558), (795, 520), (1858, 677), (1691, 1077), (0, 1075)])
@@ -49,7 +49,7 @@ def cal_localtime(icam, frame_num):
 
 
 def inROI(icam, x, y):
-    return p[icam-1].contains_points([(x, y)])[0]
+    return p[icam - 1].contains_points([(x, y)])[0]
 
 
 def object_detection(detection_graph, cam_num, video_root, save_root,
@@ -120,7 +120,7 @@ def object_detection(detection_graph, cam_num, video_root, save_root,
                                 frame_img = cv2.rectangle(
                                     frame_img, (left, top), (right, bottom),
                                     (0, 255, 0), 2)
-                                feet_x = int(left + width/2)
+                                feet_x = int(left + width / 2)
                                 feet_y = top + height
                                 # print(icam, frame, left, top, width, height, scores_new[i], feet_x, feet_y)
                                 temp = [
@@ -135,19 +135,21 @@ def object_detection(detection_graph, cam_num, video_root, save_root,
                     cv2.imshow("video", frame_img)
                     cv2.waitKey(1)
 
-                    # print(frame)
+                    print(frame)
                 detections = np.array(detections)
-                detections = detections.reshape((len(detections), 9))  # 2d array of 3x3
+                detections = detections.reshape((len(detections),
+                                                 9))  # 2d array of 3x3
                 scipy.io.savemat(
                     save_root + 'cam' + str(icam) + '.mat',
                     mdict={'detections': detections})
     cv2.destroyAllWindows()
 
 
-def main(track):
+def main(player, track):
+    global video_dir, save_dir
     cam_num = 4
-    video_root = video_dir + track_num[track]
-    save_root = save_dir + track_num[track]
+    video_root = video_dir[player] + track_num[track]
+    save_root = save_dir[player] + track_num[track]
     createFolder(video_root)
     createFolder(save_root)
     # MODEL_NAME
@@ -179,9 +181,29 @@ def main(track):
 
 
 if __name__ == '__main__':
-    for track in range(0, 8):
-        print('track : ', track)
-        main(track)
-        system_cmd = 'C:/Users/Owner/Anaconda3/envs/tensorflow/python.exe combine_detection.py --track ' + track_num[track] + ' --endFrame ' + str(end_sequence) + ' --calibration ' + calibration_dir + ' --save ' + save_dir
-        print(system_cmd)
-        os.system(system_cmd)
+    global video_dir
+    global save_dir
+    video_dir = [
+        'D:/Code/MultiCamOverlap/dataset/videos/Player06/track',
+        'D:/Code/MultiCamOverlap/dataset/videos/Player07/track',
+        'D:/Code/MultiCamOverlap/dataset/videos/Player08/track',
+        'D:/Code/MultiCamOverlap/dataset/videos/Player09/track',
+        'D:/Code/MultiCamOverlap/dataset/videos/Player20/track'
+    ]
+    save_dir = [
+        'D:/Code/MultiCamOverlap/dataset/detections/Player06/track',
+        'D:/Code/MultiCamOverlap/dataset/detections/Player07/track',
+        'D:/Code/MultiCamOverlap/dataset/detections/Player08/track',
+        'D:/Code/MultiCamOverlap/dataset/detections/Player09/track',
+        'D:/Code/MultiCamOverlap/dataset/detections/Player10/track',
+    ]
+    for player in range(0, 5):
+        print('player: ', player)
+        for track in range(0, 8):
+            print('track : ', track)
+            main(player, track)
+            system_cmd = 'C:/Users/Owner/Anaconda3/envs/tensorflow/python.exe combine_detection.py --track ' + track_num[track] + ' --endFrame ' + str(
+                end_sequence
+            ) + ' --calibration ' + calibration_dir + ' --save ' + save_dir[player]
+            print(system_cmd)
+            os.system(system_cmd)
