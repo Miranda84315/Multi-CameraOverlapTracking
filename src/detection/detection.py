@@ -13,15 +13,18 @@ start_time = [1, 1, 1, 1]
 start_sequence = 0
 end_sequence = 0
 
-video_dir = 'D:/Code/MultiCamOverlap/dataset/videos/Player05/track'
-save_dir = 'D:/Code/MultiCamOverlap/dataset/detections/Player05/track'
+calibration_dir = 'D:/Code/MultiCamOverlap/dataset/calibration/0315/information/'
+roi_filename = 'D:/Code/MultiCamOverlap/dataset/calibration/0315/information/ROI.npy'
+video_dir = 'D:/Code/MultiCamOverlap/dataset/videos/Player01/track'
+save_dir = 'D:/Code/MultiCamOverlap/dataset/detections/Player01/track'
 track_num = '4/'
-
+'''
 p1 = Path([(321, 685), (1605, 644), (1918, 731), (1914, 1075), (0, 1080), (0, 794)])
 p2 = Path([(2, 558), (795, 520), (1858, 677), (1691, 1077), (0, 1075)])
 p3 = Path([(0, 455), (792, 388), (1905, 738), (1391, 1077), (0, 1072)])
 p4 = Path([(51, 478), (462, 1074), (811, 1075), (1732, 658), (921, 484)])
-p = [p1, p2, p3, p4]
+p = [p1, p2, p3, p4]'''
+p = np.load(roi_filename)
 
 
 def createFolder(directory):
@@ -178,6 +181,6 @@ def main():
 
 if __name__ == '__main__':
     main()
-    system_cmd = 'C:/Users/Owner/Anaconda3/envs/tensorflow/python.exe combine_detection.py --track ' + track_num + ' --endFrame ' + str(end_sequence)
+    system_cmd = 'C:/Users/Owner/Anaconda3/envs/tensorflow/python.exe combine_detection.py --track ' + track_num + ' --endFrame ' + str(end_sequence) + ' --calibration ' + calibration_dir + ' --save ' + save_dir
     print(system_cmd)
     os.system(system_cmd)

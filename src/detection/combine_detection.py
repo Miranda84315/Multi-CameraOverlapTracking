@@ -14,17 +14,21 @@ combine_detection.py --track 2/ --endFrame 390
 
 parser = ArgumentParser(description='combine detection')
 parser.add_argument('--track', type=str, required=True, help='Input cam number')
+parser.add_argument('--calibration', type=str, required=True, help='Input cam number')
+parser.add_argument('--save', type=str, required=True, help='Input cam number')
 parser.add_argument('--endFrame', type=int, required=True, help='Input cam number')
 
 args = parser.parse_args()
 
-detection_dir = 'D:/Code/MultiCamOverlap/dataset/detections/Player05/track'
-track = args.track
 
-#'2/'
+detection_dir = args.save
+track = args.track
+# matrix_save = 'D:/Code/MultiCamOverlap/dataset/calibration/0315/information/'
+# detection_dir = 'D:/Code/MultiCamOverlap/dataset/detections/Player01/track'
+# '2/'
 
 detection_root = detection_dir + track
-matrix_save = 'D:/Code/MultiCamOverlap/dataset/calibration/0317/information/'
+matrix_save = args.calibration
 save_root = detection_dir + track
 save_img = detection_root + 'img/'
 

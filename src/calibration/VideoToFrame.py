@@ -10,9 +10,9 @@ import cv2
 get_all = False
 get_one = True
 
-dataset_root = 'D:/Code/MultiCamOverlap/dataset/videos/Player05/track1/'
-save_oneframe = 'D:/Code/MultiCamOverlap/dataset/calibration/Player05/'
-save_allframe = 'D:/Code/MultiCamOverlap/dataset/calibration/Player05/cam'
+dataset_root = 'D:/Code/MultiCamOverlap/dataset/videos/Player01/track5/'
+save_oneframe = 'D:/Code/MultiCamOverlap/dataset/calibration/0315/'
+save_allframe = 'D:/Code/MultiCamOverlap/dataset/calibration/0315/cam'
 cam_num = 4
 
 '''
@@ -26,7 +26,7 @@ if get_one:
         frame_num = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
         print('frame num = ', frame_num)
 
-        file_name = save_oneframe + 'cam' + str(icam) + '2.jpg'
+        file_name = save_oneframe + 'cam' + str(icam) + '.jpg'
         print('save: ' + file_name)
         cap.set(1, 15)
         ret, frame = cap.read()

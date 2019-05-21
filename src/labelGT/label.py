@@ -9,9 +9,9 @@ from scipy.optimize import fsolve
 PlayerX(1~52) - trackY(1~8)
 要記得改 line 12 ~ 13 的 PlayerX 以及 line14 的 trackY
 '''
-video_dir = 'D:/Code/MultiCamOverlap/dataset/videos/Player05/track'
-save_dir = 'D:/Code/MultiCamOverlap/dataset/ground_truth/Player05/track'
-track_num = '2/'
+video_dir = 'D:/Code/MultiCamOverlap/dataset/videos/Player01/track'
+save_dir = 'D:/Code/MultiCamOverlap/dataset/ground_truth/Player01/track'
+track_num = '1/'
 
 video_root = video_dir + track_num
 save_root = save_dir + track_num
