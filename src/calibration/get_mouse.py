@@ -2,21 +2,21 @@ import cv2
 import numpy as np
 from matplotlib.path import Path
 
-image_root = 'D:/Code/MultiCamOverlap/dataset/calibration/0315/cam'
-matrix_save = 'D:/Code/MultiCamOverlap/dataset/calibration/0315/information/ROI.npy'
+image_root = 'D:/Code/MultiCamOverlap/dataset/calibration/0426/cam'
+matrix_save = 'D:/Code/MultiCamOverlap/dataset/calibration/0426/information/ROI.npy'
 global refPt
-get_Corner = False
+get_Corner = True
 get_ROI = True
 test_ROI = False
 
 '''
     if you have ROI already,
     you can fill p1 ~ p4 and test_ROI=True to test.
+    p1 = Path([(321, 685), (1605, 644), (1918, 731), (1914, 1075), (0, 1080), (0, 794)])
+    p2 = Path([(2, 558), (795, 520), (1858, 677), (1691, 1077), (0, 1075)])
+    p3 = Path([(0, 455), (792, 388), (1905, 738), (1391, 1077), (0, 1072)])
+    p4 = Path([(51, 478), (462, 1074), (811, 1075), (1732, 658), (921, 484)])
 '''
-p1 = Path([(321, 685), (1605, 644), (1918, 731), (1914, 1075), (0, 1080), (0, 794)])
-p2 = Path([(2, 558), (795, 520), (1858, 677), (1691, 1077), (0, 1075)])
-p3 = Path([(0, 455), (792, 388), (1905, 738), (1391, 1077), (0, 1072)])
-p4 = Path([(51, 478), (462, 1074), (811, 1075), (1732, 658), (921, 484)])
 
 
 def get_coordinate(event, x, y, flags, param):
@@ -40,7 +40,7 @@ if get_Corner:
         cv2.namedWindow('image', cv2.WINDOW_NORMAL)
         cv2.setMouseCallback('image', get_coordinate)
         refPt = []
-        print('p' + str(icam) + ' = ')
+        print('icam' + str(icam) + ' = ')
         while(len(refPt) < 16):
             cv2.imshow('image', img)
             cv2.resizeWindow('image', 1728, 972)
@@ -66,7 +66,7 @@ if get_ROI:
         new_refPt = Path(refPt)
         p.append(new_refPt)
         cv2.destroyAllWindows()
-    print(p)
+    #print(p)
     np.save(matrix_save, p)
 
 

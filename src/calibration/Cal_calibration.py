@@ -7,9 +7,9 @@ Use this to calucate intrinsics and extrinsics
 and save the reslut in npy file
 '''
 
-intrinsics_root = 'D:/Code/MultiCamOverlap/dataset/calibration/0315/cam'
-extrinsics_root = 'D:/Code/MultiCamOverlap/dataset/calibration/0315/cam'
-matrix_save = 'D:/Code/MultiCamOverlap/dataset/calibration/0315/information/'
+intrinsics_root = 'D:/Code/MultiCamOverlap/dataset/calibration/0426/cam'
+extrinsics_root = intrinsics_root
+matrix_save = 'D:/Code/MultiCamOverlap/dataset/calibration/0426/information/'
 cam_num = 4
 unit = 50
 
@@ -85,7 +85,7 @@ def get_extrinsics(icam, cameraMatrix, distCoeffs, objp, corners):
     for i in range(0, len(imagePoints)):
         x = int(imagePoints[i][0, 0])
         y = int(imagePoints[i][0, 1])
-        cv2.circle(img, (x, y), 2, (0, 0, 0), -1)
+        cv2.circle(img, (x, y), 5, (0, 255, 0), -1)
     cv2.imwrite(extrinsics_root + str(icam) + '_temp.jpg', img)
     return r, t, Rt
 

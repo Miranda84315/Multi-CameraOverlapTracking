@@ -167,7 +167,7 @@ def main():
     detections, num_each_camera = load_detection(cam_num)
     total_detections = []
     for current_frame in range(startFrame, endFrame):
-        print(current_frame)
+        # print(current_frame)
         detection = np.array([detections[i, [0, 7, 8]] for i in range(len(detections)) if detections[i, 1] == (current_frame + 1)])
         original_index = np.array([i for i in range(len(detections)) if detections[i, 1] == (current_frame + 1)])
         for i in range(0, len(detection)):
@@ -248,7 +248,7 @@ def main():
             plt.close()
 
     total_detections = np.array(total_detections).reshape((len(total_detections), 7))
-    print(total_detections)
+    # print(total_detections)
     scipy.io.savemat(save_root + 'camera_all.mat', mdict={'detections': total_detections})
 
 

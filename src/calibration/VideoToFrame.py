@@ -10,9 +10,9 @@ import cv2
 get_all = False
 get_one = True
 
-dataset_root = 'D:/Code/MultiCamOverlap/dataset/videos/Player01/track5/'
-save_oneframe = 'D:/Code/MultiCamOverlap/dataset/calibration/0315/'
-save_allframe = 'D:/Code/MultiCamOverlap/dataset/calibration/0315/cam'
+dataset_root = 'D:/Code/MultiCamOverlap/dataset/videos/Player50/track8/'
+save_oneframe = 'D:/Code/MultiCamOverlap/dataset/calibration/0426/'
+save_allframe = 'D:/Code/MultiCamOverlap/dataset/calibration/0426/cam'
 cam_num = 4
 
 '''
@@ -28,7 +28,7 @@ if get_one:
 
         file_name = save_oneframe + 'cam' + str(icam) + '.jpg'
         print('save: ' + file_name)
-        cap.set(1, 15)
+        cap.set(1, 100)
         ret, frame = cap.read()
         cv2.imwrite(file_name, frame)
 
