@@ -41,6 +41,10 @@ for iCam = 1:opts.num_cam
 end
 clear detections_temp features_temp iCam trajectoriesFromTracklets startFrame endFrame
 
+% -- delete short trajectories
+new_trajectories = removeShortTrajectories(trajectories, opts.minimum_trajectory_length);
+reconnect_trajectories = reconnectTrajectories(new_trajectories);
+
 % -- get all data from trajectories include id frame xy point
 trackerOutputRaw = trajectoriesToTop(trajectories);
 % Interpolate missing detections

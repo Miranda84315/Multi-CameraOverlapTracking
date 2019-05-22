@@ -1,0 +1,14 @@
+function [ reconnect_trajectories ] = reconnectTrajectories(new_trajectories)
+%This function removes short tracks that have not been associated with any
+%trajectory. Those are likely to be false positives.
+
+
+
+endFrame = [];
+startFrame = [];
+for i= 1:length(new_trajectories)
+    endFrame = [endFrame; new_trajectories(i).endFrame];
+    startFrame = [startFrame; new_trajectories(i).startFrame];
+end
+
+pdist2(endFrame, startFrame, @(frame1, frame2) (frame1 - frame2)/15);

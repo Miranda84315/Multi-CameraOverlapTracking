@@ -51,6 +51,9 @@ for i = 1 : length(allGroups)
     correlationMatrix(sameLabels) = 0;
     for j=1:length(correlationMatrix)
         [~, correlationMatrix(j, j)] = max(correlationMatrix(j,:));
+        %if correlationMatrix(j, correlationMatrix(j, j)) < 0.05
+         %   correlationMatrix(j, j) = j;
+        %end
     end
     
     sizeCorrelation = length(correlationMatrix);
@@ -70,21 +73,44 @@ for i = 1 : length(allGroups)
     correlationLabel = cell(1, 1);
     m=1;
     for j=1:length(correlationMatrix)-1
-        temp_label = [correlationMatrix(j, j), correlationMatrix(j, length(correlationMatrix))];
+        temp_label = [correlationMatrix(j, j), correlationMatrix(j, length(correlationMatrix)), j];
+        % flag : wheather j is already clustering 
+        % flag_lonely : wheather j is lonely one, not clustering with other.
         flag = 0;
+        flag_lonely = 0;
         for k=1:length(correlationLabel)
-            if ~isempty(intersect(correlationLabel{k}, temp_label))
-                correlationLabel{k} = union(correlationLabel{k}, temp_label);
+            if ~isempty(intersect(correlationLabel{k}, temp_label)) 
                 flag = 1;
+                % check if their have -inf in correlationMatrix
+                % if have -inf ,
+                % it means they should not correlation together.
+                for r= 1:length(correlationLabel{k})
+                    if correlationMatrix(correlationLabel{k}(r), j) == -inf
+                        flag=0;
+                        flag_lonely = 1;
+                    end
+                end
+                % correlationLabel{k} and j have intersect, so we
+                % clustering they by union set
+                if flag == 1
+                    correlationLabel{k} = union(correlationLabel{k}, temp_label);
+                end
                 break
             end
         end
-        if flag ==0
+        % clustering by j and j's 
+        if flag ==0 && flag_lonely == 0
             correlationLabel{m} = temp_label;
+            m = m+1;
+        end
+        % if j are flag_lonely, clustering by j-self length(correlationMatrix)
+        if flag ==0 && flag_lonely == 1
+            correlationLabel{m} = [j];
             m = m+1;
         end
     end
     
+    % assign label result to each tracklet
     labelResult = zeros(length(correlationMatrix)-1, 1);
     for j=1:length(correlationLabel)
         index = correlationLabel{j};

@@ -13,7 +13,7 @@ start_time = [1, 1, 1, 1]
 start_sequence = 0
 end_sequence = 0
 
-calibration_dir = 'D:/Code/MultiCamOverlap/dataset/calibration/0317/information/'
+calibration_dir = 'D:/Code/MultiCamOverlap/dataset/calibration/0322/information/'
 #video_dir = 'D:/Code/MultiCamOverlap/dataset/videos/Player01/track'
 #save_dir = 'D:/Code/MultiCamOverlap/dataset/detections/Player01/track'
 #track_num = '4/'
@@ -184,18 +184,18 @@ if __name__ == '__main__':
     global video_dir
     global save_dir
     video_dir = [
-        'D:/Code/MultiCamOverlap/dataset/videos/Player06/track',
-        'D:/Code/MultiCamOverlap/dataset/videos/Player07/track',
-        'D:/Code/MultiCamOverlap/dataset/videos/Player08/track',
-        'D:/Code/MultiCamOverlap/dataset/videos/Player09/track',
-        'D:/Code/MultiCamOverlap/dataset/videos/Player20/track'
+        'D:/Code/MultiCamOverlap/dataset/videos/Player14/track',
+        'D:/Code/MultiCamOverlap/dataset/videos/Player15/track',
+        'D:/Code/MultiCamOverlap/dataset/videos/Player16/track',
+        'D:/Code/MultiCamOverlap/dataset/videos/Player17/track',
+        'D:/Code/MultiCamOverlap/dataset/videos/Player18/track'
     ]
     save_dir = [
-        'D:/Code/MultiCamOverlap/dataset/detections/Player06/track',
-        'D:/Code/MultiCamOverlap/dataset/detections/Player07/track',
-        'D:/Code/MultiCamOverlap/dataset/detections/Player08/track',
-        'D:/Code/MultiCamOverlap/dataset/detections/Player09/track',
-        'D:/Code/MultiCamOverlap/dataset/detections/Player10/track',
+        'D:/Code/MultiCamOverlap/dataset/detections/Player14/track',
+        'D:/Code/MultiCamOverlap/dataset/detections/Player15/track',
+        'D:/Code/MultiCamOverlap/dataset/detections/Player16/track',
+        'D:/Code/MultiCamOverlap/dataset/detections/Player17/track',
+        'D:/Code/MultiCamOverlap/dataset/detections/Player18/track'
     ]
     for player in range(0, 5):
         print('player: ', player)
