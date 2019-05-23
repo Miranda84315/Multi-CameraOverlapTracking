@@ -46,13 +46,13 @@ new_trajectories = removeShortTrajectories(trajectories, opts.minimum_trajectory
 reconnect_trajectories = reconnectTrajectories(new_trajectories);
 
 % -- get all data from trajectories include id frame xy point
-trackerOutputRaw = trajectoriesToTop(trajectories);
+trackerOutputRaw = trajectoriesToTop(reconnect_trajectories);
 % Interpolate missing detections
 trackerOutputFilled = fillTrajectories(trackerOutputRaw);
 % Remove spurius tracks
 % -- I think the opt.minimum_trajectory_length should be more large
-trackerOutputRemoved = removeShortTracks(trackerOutputFilled, opts.minimum_trajectory_length);
-trackerOutputRemoved = fillandSmoothTrajectories(trackerOutputRemoved, opts.num_cam);
+%trackerOutputRemoved = removeShortTracks(trackerOutputFilled, opts.minimum_trajectory_length);
+trackerOutputRemoved = fillandSmoothTrajectories(trackerOutputFilled, opts.num_cam);
 % Make identities 1-indexed
 % --rename the id, because we remove the short tracklet
 [~, ~, ic] = unique(trackerOutputRemoved(:,2));

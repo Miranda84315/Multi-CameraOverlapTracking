@@ -13,7 +13,7 @@ video/camera2_result.avi
 video/camera8_result.avi
 '''
 
-track_num = '4/'
+track_num = '2/'
 video_dir = 'D:/Code/MultiCamOverlap/dataset/videos/Player05/track'
 experiment_dir = 'D:/Code/MultiCamOverlap/experiments/Player05/track'
 
@@ -76,12 +76,13 @@ def draw_traj(img, frame, data):
 
 def main():
     startFrame = 0
-    endFrame = 158
+    #endFrame = 390
 
     global fileOutput
     global color
     fileOutput = load_mat()
     color = random_color(len(set(fileOutput[:, 1])))
+    endFrame = int(max(fileOutput[:, 0]))
 
     fourcc = cv2.VideoWriter_fourcc(*'XVID')
     out_filename = experiment_root + 'camera_result.avi'

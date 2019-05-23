@@ -8,8 +8,8 @@ classdef DataVideoReader < handle
 
     properties
         NumCameras = 4;
-        NumFrames =  [10000, 10000, 10000, 10000];
-        PartFrames = [10000, 10000, 10000, 10000];
+        NumFrames =  [449, 449, 449, 449];
+        PartFrames = [449, 449, 449, 449];
         MaxPart = [0, 0, 0, 0];
         DatasetPath = '';
         VideoName = '';
@@ -24,6 +24,7 @@ classdef DataVideoReader < handle
     methods
         function obj = DataVideoReader(datasetPath, experimentname)
             obj.DatasetPath = datasetPath;
+            %obj.Video = cv.VideoCapture(sprintf('%svideos/Player05/track3/cam%d.avi',obj.DatasetPath,obj.CurrentCamera), 'API','FFMPEG');
             obj.VideoName = experimentname;
             obj.Video = cv.VideoCapture(sprintf('%svideos/%s/cam%d.avi',obj.DatasetPath, obj.VideoName, obj.CurrentCamera), 'API','FFMPEG');
         end
@@ -47,6 +48,7 @@ classdef DataVideoReader < handle
                 obj.CurrentCamera = iCam;
                 obj.CurrentPart = iPart;
                 obj.PrevFrame = -1;
+                %obj.Video = cv.VideoCapture(sprintf('%svideos/Player05/track3/cam%d.avi',obj.DatasetPath,obj.CurrentCamera), 'API','FFMPEG');
                 obj.Video = cv.VideoCapture(sprintf('%svideos/%s/cam%d.avi',obj.DatasetPath, obj.VideoName, obj.CurrentCamera), 'API','FFMPEG');
             end
             

@@ -30,7 +30,7 @@ class DukeVideoReader:
         self.PrevCamera = 1
         self.PrevFrame = -1
         self.PrevPart = 0
-        self.Video = cv2.VideoCapture('{:s}/videos/No3/cam{:d}.avi'.format(self.DatasetPath, self.CurrentCamera), cv2.CAP_FFMPEG)
+        self.Video = cv2.VideoCapture('{:s}/videos/Player05/track3/cam{:d}.avi'.format(self.DatasetPath, self.CurrentCamera), cv2.CAP_FFMPEG)
 
     def getFrame(self, iCam, iFrame):
         #print('icam='+str(iCam))
@@ -53,7 +53,7 @@ class DukeVideoReader:
             self.CurrentCamera = iCam
             self.CurrentPart = iPart
             self.PrevFrame = -1
-            self.Video = cv2.VideoCapture('{:s}/videos/No3/cam{:d}.avi'.format(self.DatasetPath, self.CurrentCamera), cv2.CAP_FFMPEG)
+            self.Video = cv2.VideoCapture('{:s}/videos/Player05/track3/cam{:d}.avi'.format(self.DatasetPath, self.CurrentCamera), cv2.CAP_FFMPEG)
         # Update time only if reading non-consecutive frames
         if not currentFrame == self.PrevFrame + 1:
             
@@ -77,6 +77,7 @@ class DukeVideoReader:
         #print('current position: {0}'.format(self.Video.get(cv2.CAP_PROP_POS_FRAMES)))
         assert self.Video.get(cv2.CAP_PROP_POS_FRAMES) == currentFrame, 'Frame position error'
         result, img = self.Video.read()
+        print('result = ', result)
         if result is False:
             print('-Could not read frame, trying again')
             back_frame = max(currentFrame - 61, 0)
@@ -89,7 +90,6 @@ class DukeVideoReader:
                 self.Video.read()
                 back_frame += 1
             result, img = self.Video.read()
-
 
         img = img[:, :, ::-1]  # bgr to rgb
         # Update

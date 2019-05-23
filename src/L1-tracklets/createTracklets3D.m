@@ -66,7 +66,7 @@ for spatialGroupID = 1 : max(spatialGroupIDs)
     correlationMatrix(impMatrix==1) = -inf;
     
     % Show spatial grouping and correlations
-    % if opts.visualize, trackletsVisualizePart2; end
+    %if opts.visualize, trackletsVisualizePart2; end
     
     % Solve the graph partitioning problem
     fprintf('%d ',spatialGroupID);
