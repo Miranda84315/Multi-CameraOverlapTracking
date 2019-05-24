@@ -23,19 +23,24 @@ args = parser.parse_args()
 
 detection_dir = args.save
 track = args.track
-# matrix_save = 'D:/Code/MultiCamOverlap/dataset/calibration/0315/information/'
-# detection_dir = 'D:/Code/MultiCamOverlap/dataset/detections/Player01/track'
-# '2/'
+endFrame = args.endFrame
+matrix_save = args.calibration
+
+'''
+matrix_save = 'D:/Code/MultiCamOverlap/dataset/calibration/0317/information/'
+detection_dir = 'D:/Code/MultiCamOverlap/dataset/detections/Player05/track'
+endFrame = 449
+track = '3/'
+'''
 
 detection_root = detection_dir + track
-matrix_save = args.calibration
 save_root = detection_dir + track
 save_img = detection_root + 'img/'
 
 cam_num = 4
 width = 1920
 height = 1080
-color = ['bo', 'go', 'ro', 'co', 'mo', 'ko']
+color = ['bo', 'go', 'ro', 'co', 'mo', 'ko', 'yo', 'yo']
 
 
 def createFolder(directory):
@@ -81,7 +86,7 @@ def project_3d(u, v, cameraMatrix, distCoeffs, Rt):
         return [x_two - (x_one * (1 + k1 * r2 + k2 * r4 + k3 * r6) + 2 * p1 * x_one * y_one + p2 * (r2 + 2 * x_one * x_one)),
                 y_two - (y_one * (1 + k1 * r2 + k2 * r4 + k3 * r6) + p1 * (r2 + 2 * y_one * y_one) + 2 * p2 * x_one * y_one)]
     [x_one, y_one] = fsolve(f1, [0, 0])
-
+    
     def f2(x):
         X = float(x[0])
         Y = float(x[1])
@@ -143,7 +148,7 @@ def recomputeIndex(index, n, each_n):
 
 def main():
     startFrame = 0
-    endFrame = args.endFrame
+    # endFrame = args.endFrame
     plot_img = True
 
     cmtx = np.loadtxt(matrix_save + 'intrinsics.txt')
@@ -167,7 +172,7 @@ def main():
     detections, num_each_camera = load_detection(cam_num)
     total_detections = []
     for current_frame in range(startFrame, endFrame):
-        # print(current_frame)
+        #print(current_frame)
         detection = np.array([detections[i, [0, 7, 8]] for i in range(len(detections)) if detections[i, 1] == (current_frame + 1)])
         original_index = np.array([i for i in range(len(detections)) if detections[i, 1] == (current_frame + 1)])
         for i in range(0, len(detection)):
@@ -178,7 +183,6 @@ def main():
 
         # 1. get similarity matrix  2. count max camera's detection 3. spectral clustering and get labels 
         _, counts = np.unique(detection[:, 0], return_counts=True)
-
         thresh = 160
         clusters = hcluster.fclusterdata(detection[:, 1:3], thresh, criterion="distance")
         #if plot_img is True:
@@ -201,24 +205,37 @@ def main():
         # similarity_Matrix = getSimilarityMatrix(detection)
         # sc = SpectralClustering(n_clusters=5, affinity='precomputed', n_init=10)
         # sc.fit(similarity_Matrix)
-
         # -- (2) use Hierarchical Clustering, directly using detection's xy point
         sc = AgglomerativeClustering(n_clusters=true_counts)
         sc.fit(detection[:, 1:3])
         label = np.array(sc.labels_).reshape((len(detection), 1))
-        _, counts = np.unique(label, return_counts=True)
+        count_num, counts = np.unique(label, return_counts=True)
         #print(counts)
+
+        # old: directly true_count++
         if max(counts) >= 5:
             true_counts += 1
             sc = AgglomerativeClustering(n_clusters=true_counts)
             sc.fit(detection[:, 1:3])
             label = np.array(sc.labels_).reshape((len(detection), 1))
+        
+        # new: only split the >5's result
+        #for label_id in range(0, len(counts)):
+        #    if counts[label_id] >= 5:
+        #        prev_index = np.where(label == label_id)[0]
+        #        sc = AgglomerativeClustering(n_clusters=2)
+        #        sc.fit(detection[prev_index, 1:3])
+        #        label_temp = np.array(sc.labels_).reshape((len(detection[prev_index, 1:3]), 1))
+        #        label_change = np.where(label_temp == 1)[0]
+        #        label[prev_index[label_change]] = 7
+
         # combined detection and label
         detection = np.append(detection, label, axis=1)
-
         # calucate new detection using mean x, y-point.
         new_detection = []
-        for i in range(0, true_counts):
+        label_num = np.unique(label)
+        # print(label_num)
+        for i in np.unique(label): #range(0, true_counts):
             info_detection = [current_frame + 1]
             coordinate = np.array([detection[k, 1:3] for k in range(0, len(detection)) if detection[k, 3] == i])
             index = [original_index[k] for k in range(0, len(original_index)) if label[k] == i]

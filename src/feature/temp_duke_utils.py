@@ -14,7 +14,7 @@ class DukeVideoReader:
 # frame = 360720
 # img = reader.getFrame(camera, frame)
 
-    def __init__(self, dataset_path, track_name):
+    def __init__(self, dataset_path):
         self.NumCameras = 4
         self.NumFrames = [810, 810, 810, 810]
         self.PartMaxFrame = 810
@@ -30,8 +30,7 @@ class DukeVideoReader:
         self.PrevCamera = 1
         self.PrevFrame = -1
         self.PrevPart = 0
-        self.track_name = track_name
-        self.Video = cv2.VideoCapture('{:s}/videos/{:s}/cam{:d}.avi'.format(self.DatasetPath, self.track_name, self.CurrentCamera), cv2.CAP_FFMPEG)
+        self.Video = cv2.VideoCapture('{:s}/videos/Player05/track3/cam{:d}.avi'.format(self.DatasetPath, self.CurrentCamera), cv2.CAP_FFMPEG)
 
     def getFrame(self, iCam, iFrame):
         #print('icam='+str(iCam))
@@ -54,7 +53,7 @@ class DukeVideoReader:
             self.CurrentCamera = iCam
             self.CurrentPart = iPart
             self.PrevFrame = -1
-            self.Video = cv2.VideoCapture('{:s}/videos/{:s}/cam{:d}.avi'.format(self.DatasetPath, self.track_name, self.CurrentCamera), cv2.CAP_FFMPEG)
+            self.Video = cv2.VideoCapture('{:s}/videos/Player05/track3/cam{:d}.avi'.format(self.DatasetPath, self.CurrentCamera), cv2.CAP_FFMPEG)
         # Update time only if reading non-consecutive frames
         if not currentFrame == self.PrevFrame + 1:
             
@@ -78,6 +77,7 @@ class DukeVideoReader:
         #print('current position: {0}'.format(self.Video.get(cv2.CAP_PROP_POS_FRAMES)))
         assert self.Video.get(cv2.CAP_PROP_POS_FRAMES) == currentFrame, 'Frame position error'
         result, img = self.Video.read()
+        print('result = ', result)
         if result is False:
             print('-Could not read frame, trying again')
             back_frame = max(currentFrame - 61, 0)
@@ -229,9 +229,9 @@ def convert_img(img):
     img = img - 0.5
     return img
 
-def detections_generator(base_path, track_name, detections, height, width):
-    frame_num = max(detections[:][1])
-    reader = DukeVideoReader(base_path, track_name)
+def detections_generator(base_path, detections, height, width):
+
+    reader = DukeVideoReader(base_path)
 
     for ind in range(detections.shape[0]):
         print('reading detection {0}/{1}'.format(ind+1,detections.shape[0]))

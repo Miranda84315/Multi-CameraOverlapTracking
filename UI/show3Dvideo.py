@@ -13,7 +13,7 @@ video/camera2_result.avi
 video/camera8_result.avi
 '''
 
-track_num = '2/'
+track_num = '4/'
 video_dir = 'D:/Code/MultiCamOverlap/dataset/videos/Player05/track'
 experiment_dir = 'D:/Code/MultiCamOverlap/experiments/Player05/track'
 

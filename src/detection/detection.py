@@ -13,7 +13,7 @@ start_time = [1, 1, 1, 1]
 start_sequence = 0
 end_sequence = 0
 
-calibration_dir = 'D:/Code/MultiCamOverlap/dataset/calibration/0421/information/'
+calibration_dir = 'D:/Code/MultiCamOverlap/dataset/calibration/0315/information/'
 #video_dir = 'D:/Code/MultiCamOverlap/dataset/videos/Player01/track'
 #save_dir = 'D:/Code/MultiCamOverlap/dataset/detections/Player01/track'
 #track_num = '4/'
@@ -184,26 +184,16 @@ if __name__ == '__main__':
     global video_dir
     global save_dir
     video_dir = [
-        'D:/Code/MultiCamOverlap/dataset/videos/Player36/track',
-        'D:/Code/MultiCamOverlap/dataset/videos/Player37/track',
-        'D:/Code/MultiCamOverlap/dataset/videos/Player38/track',
-        'D:/Code/MultiCamOverlap/dataset/videos/Player39/track',
-        'D:/Code/MultiCamOverlap/dataset/videos/Player40/track',
-        'D:/Code/MultiCamOverlap/dataset/videos/Player41/track',
-        'D:/Code/MultiCamOverlap/dataset/videos/Player42/track',
-        'D:/Code/MultiCamOverlap/dataset/videos/Player43/track'
+        'D:/Code/MultiCamOverlap/dataset/videos/Player02/track',
+        'D:/Code/MultiCamOverlap/dataset/videos/Player03/track',
+        'D:/Code/MultiCamOverlap/dataset/videos/Player04/track'
     ]
     save_dir = [
-        'D:/Code/MultiCamOverlap/dataset/detections/Player36/track',
-        'D:/Code/MultiCamOverlap/dataset/detections/Player37/track',
-        'D:/Code/MultiCamOverlap/dataset/detections/Player38/track',
-        'D:/Code/MultiCamOverlap/dataset/detections/Player39/track',
-        'D:/Code/MultiCamOverlap/dataset/detections/Player40/track',
-        'D:/Code/MultiCamOverlap/dataset/detections/Player41/track',
-        'D:/Code/MultiCamOverlap/dataset/detections/Player42/track',
-        'D:/Code/MultiCamOverlap/dataset/detections/Player43/track'
+        'D:/Code/MultiCamOverlap/dataset/detections/Player02/track',
+        'D:/Code/MultiCamOverlap/dataset/detections/Player03/track',
+        'D:/Code/MultiCamOverlap/dataset/detections/Player04/track'
     ]
-    for player in range(0, 5):
+    for player in range(0, 3):
         print('player: ', player)
         for track in range(0, 8):
             print('track : ', track)

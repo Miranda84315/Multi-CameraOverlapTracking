@@ -24,10 +24,6 @@ parser.add_argument(
     help='Location used to store checkpoints and dumped data.')
 
 parser.add_argument(
-    '--track_name', required=True,
-    help='Location used to store video.')
-
-parser.add_argument(
     '--dataset_path', default='F:/DukeMTMC/', 
     help='Dataset root.')
 
@@ -164,7 +160,7 @@ def main():
 
     # Setup a tf Dataset generator
     # -- generator will load the detection img from duke dataset and resize the detection img  to be the net_input size.
-    generator = functools.partial(detections_generator, args.dataset_path, args.track_name, detections, net_input_size[0], net_input_size[1])
+    generator = functools.partial(detections_generator, args.dataset_path, detections, net_input_size[0], net_input_size[1])
     dataset = tf.data.Dataset.from_generator(generator, tf.float32, tf.TensorShape([net_input_size[0], net_input_size[1], 3]))
     
     modifiers = ['original']

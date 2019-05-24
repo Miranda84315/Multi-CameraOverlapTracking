@@ -1,14 +1,22 @@
-function opts = get_opts()
+function opts = get_opts(player, track)
 
 addpath(genpath('src'))
-
-endFrame   = 449; 
 opts = [];
+opts.player =player;
+opts.track = track;
+
+endFrame   = frame_info(opts.player, opts.track);
+
 opts.dataset_path    = 'D:/Code/MultiCamOverlap/dataset/';
 opts.gurobi_path     = 'C:/gurobi800/win64/matlab';
 opts.experiment_root = 'D:/Code/MultiCamOverlap/experiments';
 opts.experiment_dir = 'experiments';
-opts.experiment_name = 'Player05/track3';
+if opts.player <10
+    opts.experiment_name = ['Player0', num2str(opts.player), '/track', num2str(opts.track)];
+else
+    opts.experiment_name = ['Player', num2str(opts.player), '/track', num2str(opts.track)];
+end
+%opts.experiment_name = 'Player05/track4';
 opts.sequence = 1;
 
 opts.reader = DataVideoReader(opts.dataset_path, opts.experiment_name);
@@ -43,7 +51,7 @@ tracklets.beta = 0.02;
 tracklets.cluster_coeff = 0.75;
 tracklets.nearest_neighbors = 8;
 tracklets.speed_limit = 80000;%20;
-tracklets.threshold = 8;
+tracklets.threshold = 14;%8;
 
 % Trajectories
 trajectories = [];
@@ -54,7 +62,7 @@ trajectories.window_width = 30;%100;%60
 trajectories.overlap = 15;%50;%30
 trajectories.speed_limit = 80000;
 trajectories.indifference_time = 100;
-trajectories.threshold = 8;
+trajectories.threshold = 14;%8;
 trajectories.finalnfirst=200;
 
 % Identities
