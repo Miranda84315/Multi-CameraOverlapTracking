@@ -1,6 +1,6 @@
 function output = fillandSmoothTrajectories( detections, num_cam )
     %{
-    detections = trackerOutputRemoved;
+    detections = trackerOutputFilled;
     num_cam = opts.num_cam;
     %}
     % 1. fill -1 data
@@ -20,6 +20,7 @@ function output = fillandSmoothTrajectories( detections, num_cam )
             index = cam*4 + 1;
             % filter camera's result and delete -1's data
             relevantDetections = detections(detections(:, 2) == personID, [1:2, index:index+3]);
+            index_empty = relevantDetections(:, 3)~=-1;
             relevantDetections = relevantDetections(relevantDetections(:, 3)~=-1, :);
 
             % find missFrame
@@ -28,7 +29,8 @@ function output = fillandSmoothTrajectories( detections, num_cam )
             missingFrames = setdiff([startFrame:endFrame]', relevantDetections(:, 1));
 
             if isempty(missingFrames)
-                cam_detection(:, index:index+3) = relevantDetections(:, 3:6);
+                %cam_detection(:, index:index+3) = relevantDetections(:, 3:6);
+                cam_detection(index_empty, index:index+3) = relevantDetections(:, 3:6);
                 continue;
             end
 

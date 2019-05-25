@@ -4,6 +4,7 @@ import scipy.io
 import os.path
 from heatmappy import Heatmapper
 from PIL import Image
+from argparse import ArgumentParser
 '''
 This is use for save tracking result video
 And save in 
@@ -13,9 +14,23 @@ video/camera2_result.avi
 video/camera8_result.avi
 '''
 
-track_num = '4/'
-video_dir = 'D:/Code/MultiCamOverlap/dataset/videos/Player05/track'
-experiment_dir = 'D:/Code/MultiCamOverlap/experiments/Player05/track'
+parser = ArgumentParser(description='show ui')
+parser.add_argument('--track', type=int, required=True, help='Input cam number')
+parser.add_argument('--player', type=int, required=True, help='Input cam number')
+
+args = parser.parse_args()
+
+track_num = str(args.track) + '/'
+if args.player < 10:
+    player = 'Player0' + str(args.player) + '/track'
+else:
+    player = 'Player' + str(args.player) + '/track'
+video_dir = 'D:/Code/MultiCamOverlap/dataset/videos/' + player
+experiment_dir = 'D:/Code/MultiCamOverlap/experiments/' + player
+
+#track_num = '6/'
+#video_dir = 'D:/Code/MultiCamOverlap/dataset/videos/Player05/track'
+#experiment_dir = 'D:/Code/MultiCamOverlap/experiments/Player05/track'
 
 experiment_root = experiment_dir + track_num
 visual_root = 'D:/Code/MultiCamOverlap/UI/data/'
@@ -115,7 +130,7 @@ def main():
 
         cv2.putText(img, str(current_frame), (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
         cv2.imshow("video2", img)
-        trajectory = cv2.imread('data/BasketballCourt.png')
+        trajectory = cv2.imread('D:/Code/MultiCamOverlap/UI/data/BasketballCourt.png')
         trajectory_img = cv2.resize(draw_traj(trajectory, current_frame, ind), (800, 700))
         cv2.imshow("video", trajectory_img)
         cv2.waitKey(1)
