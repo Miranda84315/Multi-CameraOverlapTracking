@@ -20,6 +20,25 @@ clear detections_temp features_temp iCam
 % -- detections = [frame, x, y, cam1, cam2, cam3, cam4]
 load(fullfile(opts.dataset_path, 'detections', opts.experiment_name, sprintf('camera_all.mat')));
 
+% -- new method to filter bad lonely detection
+detections_filter = detections;
+% -1 number
+detections_filter(:, 8) = sum(detections_filter(:, [4:7]) == -1, 2);
+filter_num = [];
+for i = 1:length(detections_filter)
+    detections_filter(i, 9) = sum(detections_filter(:, 1) == detections_filter(i, 1));
+    if detections_filter(i, 9) >5 && detections_filter(i, 8) ==3
+        filter_num = [filter_num; i];
+    end
+end
+detections_filter(filter_num, :) = [];
+detections_filter(:, [8 9]) = [];
+detections = detections_filter;
+
+filename_save = fullfile(opts.dataset_path, 'detections', opts.experiment_name, sprintf('camera_all2.mat'));
+save(filename_save,'detections');
+
+
 all_dets   = detections;
 frames     = cell(size(all_dets,1),1);
 

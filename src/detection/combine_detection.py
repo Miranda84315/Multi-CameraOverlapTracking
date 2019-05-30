@@ -16,21 +16,20 @@ parser = ArgumentParser(description='combine detection')
 parser.add_argument('--track', type=str, required=True, help='Input cam number')
 parser.add_argument('--calibration', type=str, required=True, help='Input cam number')
 parser.add_argument('--save', type=str, required=True, help='Input cam number')
-parser.add_argument('--endFrame', type=int, required=True, help='Input cam number')
+# parser.add_argument('--endFrame', type=int, required=True, help='Input cam number')
 
 args = parser.parse_args()
 
-
 detection_dir = args.save
 track = args.track
-endFrame = args.endFrame
+# endFrame = args.endFrame
 matrix_save = args.calibration
 
 '''
 matrix_save = 'D:/Code/MultiCamOverlap/dataset/calibration/0317/information/'
-detection_dir = 'D:/Code/MultiCamOverlap/dataset/detections/Player05/track'
-endFrame = 449
-track = '3/'
+detection_dir = 'D:/Code/MultiCamOverlap/dataset/detections/Player08/track'
+endFrame = 198
+track = '2/'
 '''
 
 detection_root = detection_dir + track
@@ -41,6 +40,7 @@ cam_num = 4
 width = 1920
 height = 1080
 color = ['bo', 'go', 'ro', 'co', 'mo', 'ko', 'yo', 'yo']
+version = 1
 
 
 def createFolder(directory):
@@ -76,7 +76,6 @@ def project_3d(u, v, cameraMatrix, distCoeffs, Rt):
     p2 = distCoeffs[3]
     x_two = (u - cx) / fx
     y_two = (v - cy) / fy
-
     def f1(x):
         x_one = float(x[0])
         y_one = float(x[1])
@@ -86,7 +85,6 @@ def project_3d(u, v, cameraMatrix, distCoeffs, Rt):
         return [x_two - (x_one * (1 + k1 * r2 + k2 * r4 + k3 * r6) + 2 * p1 * x_one * y_one + p2 * (r2 + 2 * x_one * x_one)),
                 y_two - (y_one * (1 + k1 * r2 + k2 * r4 + k3 * r6) + p1 * (r2 + 2 * y_one * y_one) + 2 * p2 * x_one * y_one)]
     [x_one, y_one] = fsolve(f1, [0, 0])
-    
     def f2(x):
         X = float(x[0])
         Y = float(x[1])
@@ -127,7 +125,6 @@ def getSimilarityMatrix(x):
             if i == j:
                 similarityMatrix[i, j] = 1
             similarityMatrix[j, i] = similarityMatrix[i, j]
-
     return similarityMatrix
 
 
@@ -148,7 +145,6 @@ def recomputeIndex(index, n, each_n):
 
 def main():
     startFrame = 0
-    # endFrame = args.endFrame
     plot_img = True
 
     cmtx = np.loadtxt(matrix_save + 'intrinsics.txt')
@@ -170,9 +166,10 @@ def main():
     # new_detection: for plt, record this frame's clustering result
 
     detections, num_each_camera = load_detection(cam_num)
+    endFrame = int(max(detections[:, 1]))
     total_detections = []
     for current_frame in range(startFrame, endFrame):
-        #print(current_frame)
+        # print(current_frame)
         detection = np.array([detections[i, [0, 7, 8]] for i in range(len(detections)) if detections[i, 1] == (current_frame + 1)])
         original_index = np.array([i for i in range(len(detections)) if detections[i, 1] == (current_frame + 1)])
         for i in range(0, len(detection)):
@@ -182,60 +179,82 @@ def main():
             detection[i, 2] = y
 
         # 1. get similarity matrix  2. count max camera's detection 3. spectral clustering and get labels 
-        _, counts = np.unique(detection[:, 0], return_counts=True)
-        thresh = 160
-        clusters = hcluster.fclusterdata(detection[:, 1:3], thresh, criterion="distance")
-        #if plot_img is True:
+        # if plot_img is True:
         #    plt.scatter(*np.transpose(detection[:, 1:3]), c=clusters)
         #    plt.axis("equal")
         #    title = "threshold: %f, number of clusters: %d" % (thresh, len(set(clusters)))
         #    plt.title(title)
         #    plt.show()
 
-        fcluster_count = len(set(clusters))
-        _, counts2 = np.unique(clusters, return_counts=True)
-        for i in counts2:
-            if i > 4:
-                fcluster_count += 1
-
-        true_counts = 5 if max(counts) == 5 else fcluster_count
-        if true_counts > 5:
-            true_counts = 5
         # -- (1) use spectral clustering
         # similarity_Matrix = getSimilarityMatrix(detection)
         # sc = SpectralClustering(n_clusters=5, affinity='precomputed', n_init=10)
         # sc.fit(similarity_Matrix)
         # -- (2) use Hierarchical Clustering, directly using detection's xy point
-        sc = AgglomerativeClustering(n_clusters=true_counts)
-        sc.fit(detection[:, 1:3])
-        label = np.array(sc.labels_).reshape((len(detection), 1))
-        count_num, counts = np.unique(label, return_counts=True)
-        #print(counts)
+        # sc = AgglomerativeClustering(n_clusters=true_counts)
+        # sc.fit(detection[:, 1:3])
+        # label = np.array(sc.labels_).reshape((len(detection), 1))
+        # count_num, counts = np.unique(label, return_counts=True)
+        # -- (3) still use fclusterdata, but divide the error clustering.
 
-        # old: directly true_count++
-        if max(counts) >= 5:
-            true_counts += 1
+        # -------------- version 1
+        if version == 1:
+            _, counts = np.unique(detection[:, 0], return_counts=True)
+            thresh = 160
+            clusters = hcluster.fclusterdata(detection[:, 1:3], thresh, criterion="distance")
+
+            fcluster_count = len(set(clusters))
+            _, counts2 = np.unique(clusters, return_counts=True)
+            for i in counts2:
+                if i > 4:
+                    fcluster_count += 1
+
+            true_counts = 5 if max(counts) == 5 else fcluster_count
+            if true_counts > 5:
+                true_counts = 5
+
             sc = AgglomerativeClustering(n_clusters=true_counts)
             sc.fit(detection[:, 1:3])
             label = np.array(sc.labels_).reshape((len(detection), 1))
-        
-        # new: only split the >5's result
-        #for label_id in range(0, len(counts)):
-        #    if counts[label_id] >= 5:
-        #        prev_index = np.where(label == label_id)[0]
-        #        sc = AgglomerativeClustering(n_clusters=2)
-        #        sc.fit(detection[prev_index, 1:3])
-        #        label_temp = np.array(sc.labels_).reshape((len(detection[prev_index, 1:3]), 1))
-        #        label_change = np.where(label_temp == 1)[0]
-        #        label[prev_index[label_change]] = 7
+            count_num, counts = np.unique(label, return_counts=True)
+
+            if max(counts) >= 5:
+                true_counts += 1
+                sc = AgglomerativeClustering(n_clusters=true_counts)
+                sc.fit(detection[:, 1:3])
+                label = np.array(sc.labels_).reshape((len(detection), 1))
+        # -------------- version 1 end
+
+        # -------------- version 2
+        if version == 2:
+            _, counts = np.unique(detection[:, 0], return_counts=True)
+            thresh = 210
+            clusters = hcluster.fclusterdata(detection[:, 1:3], thresh, criterion="distance")
+
+            _, counts2 = np.unique(clusters, return_counts=True)
+            current_cluster_num = len(counts2)
+            while(any(counts2 >= 5)):
+                ind_divide = np.where(counts2 >= 5)[0]
+                for ind in ind_divide:
+                    prev_index = np.where(clusters == (ind+1))[0]
+                    sc = AgglomerativeClustering(n_clusters=2)
+                    sc.fit(detection[prev_index, 1:3])
+                    label_temp = np.array(sc.labels_).reshape((len(detection[prev_index, 1:3]), 1))
+                    label_change = np.where(label_temp == 1)[0]
+                    clusters[prev_index[label_change]] = current_cluster_num + 1
+                    current_cluster_num += 1
+                _, counts2 = np.unique(clusters, return_counts=True)
+                current_cluster_num = len(counts2)
+            label = clusters - 1
+            label = np.array(label).reshape((len(detection), 1))
+        # -------------- version 2 end
 
         # combined detection and label
         detection = np.append(detection, label, axis=1)
         # calucate new detection using mean x, y-point.
         new_detection = []
-        label_num = np.unique(label)
         # print(label_num)
-        for i in np.unique(label): #range(0, true_counts):
+        for i in np.unique(label):
             info_detection = [current_frame + 1]
             coordinate = np.array([detection[k, 1:3] for k in range(0, len(detection)) if detection[k, 3] == i])
             index = [original_index[k] for k in range(0, len(original_index)) if label[k] == i]
@@ -252,16 +271,16 @@ def main():
             for i in range(0, len(detection)):
                 plt.plot(detection[i, 1], detection[i, 2], color[int(detection[i, 3])])
             # -- << plot new detection with circle point >>
-            #for i in range(0, len(new_detection)):
+            # for i in range(0, len(new_detection)):
             #    plt.plot(new_detection[i, 1], new_detection[i, 2], color[int(detection[i, 3])])
             # -- << plot new detection with triangle point >>
             plt.plot(new_detection[:, 1], new_detection[:, 2], 'y^')
             plt.xlabel('x')
             plt.ylabel('y')
-            #plt.legend(['bo', 'go', 'ro', 'co'], ['cam1', 'cam2', 'cam3', 'cam4'], loc='upper left')
+            # plt.legend(['bo', 'go', 'ro', 'co'], ['cam1', 'cam2', 'cam3', 'cam4'], loc='upper left')
             plt.title('clustering')
             plt.savefig(save_img + str(current_frame) + '.png')
-            #plt.show()
+            # plt.show()
             plt.close()
 
     total_detections = np.array(total_detections).reshape((len(total_detections), 7))

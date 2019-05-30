@@ -20,7 +20,7 @@ xDiff           = endX - startX';
 yDiff           = endY - startY';
 
 distanceMatrix  = sqrt(xDiff.^2 + yDiff.^2);
-spacetimeAffinity  =1 ./ (1 + distanceMatrix/100 );
+spacetimeAffinity  =1 ./ (1 + distanceMatrix/120 );
 
 params = opts.trajectories;
 sameLabels  = pdist2(labels, labels) == 0;

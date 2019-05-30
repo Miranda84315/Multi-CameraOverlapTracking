@@ -115,11 +115,12 @@ def main():
                 print('id = ', id_num, ', / cam = ', icam, ', / frame = ', frame_num)
                 cap[icam-1].set(1, frame_num)
                 ret, img = cap[icam-1].read()
-                cv2.namedWindow('image')
+                cv2.namedWindow('image', cv2.WINDOW_NORMAL)
                 cv2.setMouseCallback('image', get_coordinate)
                 refPt = []
                 while(1):
                     cv2.imshow('image', img)
+                    cv2.resizeWindow('image', 1728, 972)
                     k = cv2.waitKey(33)
                     if k == 32:     # space to stop
                         break
