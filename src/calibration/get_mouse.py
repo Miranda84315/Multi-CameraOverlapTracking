@@ -2,8 +2,8 @@ import cv2
 import numpy as np
 from matplotlib.path import Path
 
-image_root = 'D:/Code/MultiCamOverlap/dataset/calibration/0426/cam'
-matrix_save = 'D:/Code/MultiCamOverlap/dataset/calibration/0426/information/ROI.npy'
+image_root = 'D:/Code/MultiCamOverlap/dataset/calibration/0317_08/cam'
+matrix_save = 'D:/Code/MultiCamOverlap/dataset/calibration/0317_08/information/ROI.npy'
 global refPt
 get_Corner = True
 get_ROI = True

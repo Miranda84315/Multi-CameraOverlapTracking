@@ -10,9 +10,9 @@ import cv2
 get_all = False
 get_one = True
 
-dataset_root = 'D:/Code/MultiCamOverlap/dataset/videos/Player50/track8/'
-save_oneframe = 'D:/Code/MultiCamOverlap/dataset/calibration/0426/'
-save_allframe = 'D:/Code/MultiCamOverlap/dataset/calibration/0426/cam'
+dataset_root = 'D:/Code/MultiCamOverlap/dataset/videos/Player08/track1/'
+save_oneframe = 'D:/Code/MultiCamOverlap/dataset/calibration/0317_08/'
+save_allframe = 'D:/Code/MultiCamOverlap/dataset/calibration/0317_08/cam'
 cam_num = 4
 
 '''

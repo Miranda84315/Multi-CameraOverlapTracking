@@ -13,7 +13,7 @@ start_time = [1, 1, 1, 1]
 start_sequence = 0
 end_sequence = 0
 
-calibration_dir = 'D:/Code/MultiCamOverlap/dataset/calibration/0317/information/'
+calibration_dir = 'D:/Code/MultiCamOverlap/dataset/calibration/0317_08/information/'
 #video_dir = 'D:/Code/MultiCamOverlap/dataset/videos/Player01/track'
 #save_dir = 'D:/Code/MultiCamOverlap/dataset/detections/Player01/track'
 #track_num = '4/'
@@ -117,9 +117,6 @@ def object_detection(detection_graph, cam_num, video_root, save_root,
                                 (left, top, width,
                                  height) = (left, top, right - left,
                                             bottom - top)
-                                frame_img = cv2.rectangle(
-                                    frame_img, (left, top), (right, bottom),
-                                    (0, 255, 0), 2)
                                 feet_x = int(left + width / 2)
                                 feet_y = top + height
                                 # print(icam, frame, left, top, width, height, scores_new[i], feet_x, feet_y)
@@ -130,6 +127,7 @@ def object_detection(detection_graph, cam_num, video_root, save_root,
                                 roi = inROI(icam, feet_x, feet_y)
                                 if roi:
                                     detections.append(temp)
+                                    frame_img = cv2.rectangle(frame_img, (left, top), (right, bottom), (0, 255, 0), 2)
                                 else:
                                     print('out')
                     cv2.imshow("video", frame_img)
@@ -195,9 +193,9 @@ if __name__ == '__main__':
     ]
     for player in range(0, 1):
         print('player: ', player)
-        for track in range(0, 8):
+        for track in range(2, 8):
             print('track : ', track)
-            # main(player, track)
+            main(player, track)
             system_cmd = 'C:/Users/Owner/Anaconda3/envs/tensorflow/python.exe combine_detection.py --track ' + track_num[track] + ' --calibration ' + calibration_dir + ' --save ' + save_dir[player]
             print(system_cmd)
             os.system(system_cmd)

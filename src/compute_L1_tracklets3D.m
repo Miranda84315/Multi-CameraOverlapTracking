@@ -33,7 +33,7 @@ for i = 1:length(detections_filter)
 end
 detections_filter(filter_num, :) = [];
 detections_filter(:, [8 9]) = [];
-detections = detections_filter;
+%detections = detections_filter;
 
 filename_save = fullfile(opts.dataset_path, 'detections', opts.experiment_name, sprintf('camera_all2.mat'));
 save(filename_save,'detections');

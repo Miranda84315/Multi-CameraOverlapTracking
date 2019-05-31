@@ -39,8 +39,8 @@ save_img = detection_root + 'img/'
 cam_num = 4
 width = 1920
 height = 1080
-color = ['bo', 'go', 'ro', 'co', 'mo', 'ko', 'yo', 'yo']
-version = 1
+color = ['bo', 'go', 'ro', 'co', 'mo', 'ko', 'yo', 'bo', 'go', 'ro', 'co', 'mo', 'ko']
+version = 2
 
 
 def createFolder(directory):
@@ -228,7 +228,7 @@ def main():
         # -------------- version 2
         if version == 2:
             _, counts = np.unique(detection[:, 0], return_counts=True)
-            thresh = 210
+            thresh = 200
             clusters = hcluster.fclusterdata(detection[:, 1:3], thresh, criterion="distance")
 
             _, counts2 = np.unique(clusters, return_counts=True)
@@ -248,6 +248,46 @@ def main():
             label = clusters - 1
             label = np.array(label).reshape((len(detection), 1))
         # -------------- version 2 end
+
+        # -------------- version 3
+        if version == 3:
+            _, counts = np.unique(detection[:, 0], return_counts=True)
+            thresh = 190
+            clusters = hcluster.fclusterdata(detection[:, 1:3], thresh, criterion="distance")
+
+            fcluster_count = len(set(clusters))
+            _, counts2 = np.unique(clusters, return_counts=True)
+            for i in counts2:
+                if i > 4:
+                    fcluster_count += 1
+
+            true_counts = 5 if max(counts) == 5 else fcluster_count
+            if true_counts > 5:
+                true_counts = 5
+
+            sc = AgglomerativeClustering(n_clusters=true_counts)
+            sc.fit(detection[:, 1:3])
+            label = np.array(sc.labels_).reshape((len(detection), 1))
+            count_num, counts = np.unique(label, return_counts=True)
+            clusters = label
+
+            _, counts2 = np.unique(clusters, return_counts=True)
+            current_cluster_num = len(counts2)
+            while(any(counts2 >= 5)):
+                ind_divide = np.where(counts2 >= 5)[0]
+                for ind in ind_divide:
+                    prev_index = np.where(clusters == (ind))[0]
+                    sc = AgglomerativeClustering(n_clusters=2)
+                    sc.fit(detection[prev_index, 1:3])
+                    label_temp = np.array(sc.labels_).reshape((len(detection[prev_index, 1:3]), 1))
+                    label_change = np.where(label_temp == 1)[0]
+                    clusters[prev_index[label_change]] = current_cluster_num + 1
+                    current_cluster_num += 1
+                _, counts2 = np.unique(clusters, return_counts=True)
+                current_cluster_num = len(counts2)
+            label = clusters
+            label = np.array(label).reshape((len(detection), 1))
+        # -------------- version 3 end
 
         # combined detection and label
         detection = np.append(detection, label, axis=1)
