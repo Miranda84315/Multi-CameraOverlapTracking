@@ -3,8 +3,8 @@ opts = get_opts();
 create_experiment_dir(opts);
 
 %% Run Tracker
-player = 5;
-track=5;
+player = 3;
+track=8;
 opts = get_opts(player, track);
 % opts.visualize = true;
 

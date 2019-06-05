@@ -2,8 +2,9 @@ import cv2
 import numpy as np
 from matplotlib.path import Path
 
-image_root = 'D:/Code/MultiCamOverlap/dataset/calibration/0317_08/cam'
-matrix_save = 'D:/Code/MultiCamOverlap/dataset/calibration/0317_08/information/ROI.npy'
+root = 'D:/Code/MultiCamOverlap/dataset/calibration/0419_35/'
+image_root = root + 'cam'
+matrix_save = root + 'information/ROI.npy'
 global refPt
 get_Corner = True
 get_ROI = True
@@ -21,7 +22,7 @@ test_ROI = False
 
 def get_coordinate(event, x, y, flags, param):
     if event == cv2.EVENT_LBUTTONDOWN:
-        print('[[%d, %d]], ' % (x, y))
+        print('[[%d, %d]], ' % (x, y), end='')
         refPt.append([x, y])
         cv2.circle(img, (x, y), 7, (0, 255, 0), -1)
 
@@ -40,7 +41,7 @@ if get_Corner:
         cv2.namedWindow('image', cv2.WINDOW_NORMAL)
         cv2.setMouseCallback('image', get_coordinate)
         refPt = []
-        print('icam' + str(icam) + ' = ')
+        print('\nicam' + str(icam) + ' = ')
         while(len(refPt) < 16):
             cv2.imshow('image', img)
             cv2.resizeWindow('image', 1728, 972)

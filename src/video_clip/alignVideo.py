@@ -3,14 +3,14 @@ import os
 
 video_root = 'D:/Code/MultiCamOverlap/dataset/videos_old/Player'
 save_root = 'D:/Code/MultiCamOverlap/dataset/videos/Player'
-align_frame = [0, 43, 42, 42]
+align_frame = [33, 37, 7, 0]
 height = 1080
 width = 1920
 fps = 15
 fourcc = cv2.VideoWriter_fourcc(*'XVID')
 
-for player in range(16, 17):
-    for track in range(1, 5):
+for player in range(32, 33):
+    for track in range(5, 9):
         if player < 10:
             video_filename = video_root + '0' + str(player) + '/track' + str(track)
             save_filename = save_root + '0' + str(player) + '/track' + str(track) 
