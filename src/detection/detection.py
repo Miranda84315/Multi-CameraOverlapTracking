@@ -14,8 +14,8 @@ start_sequence = 0
 end_sequence = 0
 
 calibration_dir = [
-    'D:/Code/MultiCamOverlap/dataset/calibration/0412_22/information/',
-    'D:/Code/MultiCamOverlap/dataset/calibration/0415_31/information/',
+    'D:/Code/MultiCamOverlap/dataset/calibration/0322_14/information/',
+    'D:/Code/MultiCamOverlap/dataset/calibration/0322_15/information/',
     'D:/Code/MultiCamOverlap/dataset/calibration/0419_32/information/',
     'D:/Code/MultiCamOverlap/dataset/calibration/0419_34/information/',
     'D:/Code/MultiCamOverlap/dataset/calibration/0419_35/information/',
@@ -191,22 +191,22 @@ if __name__ == '__main__':
     global save_dir
     global p
     video_dir = [
-        'D:/Code/MultiCamOverlap/dataset/videos/Player22/track',
-        'D:/Code/MultiCamOverlap/dataset/videos/Player31/track',
+        'D:/Code/MultiCamOverlap/dataset/videos/Player14/track',
+        'D:/Code/MultiCamOverlap/dataset/videos/Player15/track',
         'D:/Code/MultiCamOverlap/dataset/videos/Player32/track',
         'D:/Code/MultiCamOverlap/dataset/videos/Player34/track',
         'D:/Code/MultiCamOverlap/dataset/videos/Player35/track',
         'D:/Code/MultiCamOverlap/dataset/videos/Player22/track'
     ]
     save_dir = [
-        'D:/Code/MultiCamOverlap/dataset/detections/Player22/track',
-        'D:/Code/MultiCamOverlap/dataset/detections/Player31/track',
+        'D:/Code/MultiCamOverlap/dataset/detections/Player14/track',
+        'D:/Code/MultiCamOverlap/dataset/detections/Player15/track',
         'D:/Code/MultiCamOverlap/dataset/detections/Player32/track',
         'D:/Code/MultiCamOverlap/dataset/detections/Player34/track',
         'D:/Code/MultiCamOverlap/dataset/detections/Player35/track',
         'D:/Code/MultiCamOverlap/dataset/detections/Player22/track'
     ]
-    for player in range(0, 5):
+    for player in range(0, 2):
         print('player: ', video_dir[player])
         roi_filename = calibration_dir[player] + 'ROI.npy'
         p = np.load(roi_filename)

@@ -6,8 +6,8 @@ labels = labels(indices);
 
 FirstFinalData = zeros(length(tracklets_window), 4);
 for i=1:size(tracklets_window, 1)
-    FirstFinalData(i, 1:2) = tracklets_window(i).realdata(1, 2:3);
-    FirstFinalData(i, 3:4) = tracklets_window(i).realdata(end, 2:3);
+    FirstFinalData(i, 1:2) = tracklets_window(i).data(1, 2:3);
+    FirstFinalData(i, 3:4) = tracklets_window(i).data(end, 2:3);
 end
 
 startX          = repmat(FirstFinalData(:, 1), 1, length(tracklets_window));

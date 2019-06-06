@@ -1,9 +1,9 @@
 % Use for run feature extraction
 
-player_num = [22, 29, 31, 32, 34, 35];
-for player=1:6
+
+for player=14:15
     for track=1:8
-        opts = get_opts(player_num(player), track);
+        opts = get_opts(player, track);
         create_experiment_dir(opts);
         compute_L0_features(opts);
         compute_L1_tracklets3D(opts);

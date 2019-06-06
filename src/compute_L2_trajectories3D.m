@@ -44,6 +44,7 @@ clear detections_temp features_temp iCam trajectoriesFromTracklets startFrame en
 % -- delete short trajectories
 reconnect_trajectories = reconnectTrajectories(trajectories);
 new_trajectories = removeShortTrajectories(reconnect_trajectories, opts.minimum_trajectory_length);
+new_trajectories = reconnectTrajectories_segment(new_trajectories);
 
 % -- get all data from trajectories include id frame xy point
 trackerOutputRaw = trajectoriesToTop(new_trajectories);
