@@ -1,7 +1,7 @@
 % Use for run feature extraction
 
 
-for player=14:15
+for player=9:10
     for track=1:8
         opts = get_opts(player, track);
         create_experiment_dir(opts);

@@ -30,8 +30,6 @@ while startFrame <= global2local(opts.start_frames(opts.current_camera), sequenc
 end
 
 % Convert trajectories 
-
-
 for iCam = 1:opts.num_cam
     filename = sprintf('%s/%s/L0-features/features%d.mat',opts.experiment_root,opts.experiment_name,iCam)
     features_temp   = load(filename);

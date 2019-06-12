@@ -6,3 +6,11 @@ run.py: use openpose
 combine_detection.py: use detection.py's result to combine detection
 	so camera 1~4's detection will become just one detection(after camera calibration)
 	
+	
+use AphlaPose:
+	cd D:\Code\AlphaPose-pytorch
+	python video_demo.py --video cam1.avi --outdir examples\res --save_video --sp
+
+use OpenPose:
+	cd D:\Code\tf-pose-estimation-master
+	python run_video.py --model=cmu --resolution=432x368 --video=D:/Code/MultiCamOverlap/dataset/videos/Player01/track8/cam1.avi
