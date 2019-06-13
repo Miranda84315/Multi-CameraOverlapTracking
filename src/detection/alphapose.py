@@ -14,24 +14,9 @@ start_sequence = 0
 end_sequence = 0
 
 calibration_dir = [
-    'D:/Code/MultiCamOverlap/dataset/calibration/0412/information/',
-    'D:/Code/MultiCamOverlap/dataset/calibration/0317/information/',
-    'D:/Code/MultiCamOverlap/dataset/calibration/0317/information/',
-    'D:/Code/MultiCamOverlap/dataset/calibration/0419_34/information/',
-    'D:/Code/MultiCamOverlap/dataset/calibration/0419_35/information/',
-    'D:/Code/MultiCamOverlap/dataset/calibration/0412_22/information/'
+    'D:/Code/MultiCamOverlap/dataset/calibration/0315/information/'
 ]
-
-#video_dir = 'D:/Code/MultiCamOverlap/dataset/videos/Player01/track'
-#save_dir = 'D:/Code/MultiCamOverlap/dataset/detections/Player01/track'
-#track_num = '4/'
 track_num = ['1/', '2/', '3/', '4/', '5/', '6/', '7/', '8/']
-'''
-p1 = Path([(321, 685), (1605, 644), (1918, 731), (1914, 1075), (0, 1080), (0, 794)])
-p2 = Path([(2, 558), (795, 520), (1858, 677), (1691, 1077), (0, 1075)])
-p3 = Path([(0, 455), (792, 388), (1905, 738), (1391, 1077), (0, 1072)])
-p4 = Path([(51, 478), (462, 1074), (811, 1075), (1732, 658), (921, 484)])
-p = [p1, p2, p3, p4]'''
 
 
 def createFolder(directory):
@@ -63,7 +48,7 @@ def object_detection(detection_graph, cam_num, video_root, save_root,
     with detection_graph.as_default():
         with tf.Session(graph=detection_graph) as sess:
 
-            for icam in range(4, cam_num + 1):
+            for icam in range(1, cam_num + 1):
                 detections = []
                 for frame in range(start_sequence, end_sequence):
                     frame_local = cal_localtime(icam, frame)
@@ -145,45 +130,16 @@ def object_detection(detection_graph, cam_num, video_root, save_root,
                 detections = np.array(detections)
                 detections = detections.reshape((len(detections),
                                                  9))  # 2d array of 3x3
-                #scipy.io.savemat(
-                #    save_root + 'cam' + str(icam) + '.mat',
-                #    mdict={'detections': detections})
+                scipy.io.savemat(
+                    save_root + 'cam' + str(icam) + '.mat',
+                    mdict={'detections': detections})
     cv2.destroyAllWindows()
 
 
 def main(player, track):
     global video_dir, save_dir
-    cam_num = 4
     video_root = video_dir[player] + track_num[track]
     save_root = save_dir[player] + track_num[track]
-    createFolder(video_root)
-    createFolder(save_root)
-    # MODEL_NAME
-    MODEL_NAME = 'faster_rcnn_inception_v2_coco_2018_01_28'
-    # Path to frozen detection graph. This is the actual model
-    # - that is used for the object detection.
-    PATH_TO_CKPT = MODEL_NAME + '/frozen_inference_graph.pb'
-    # List of the strings that is used to add correct label for each box.
-    PATH_TO_LABELS = os.path.join('data_object', 'mscoco_label_map.pbtxt')
-    NUM_CLASSES = 90
-
-    detection_graph = tf.Graph()
-    with detection_graph.as_default():
-        od_graph_def = tf.GraphDef()
-        with tf.gfile.GFile(PATH_TO_CKPT, 'rb') as fid:
-            serialized_graph = fid.read()
-            od_graph_def.ParseFromString(serialized_graph)
-            tf.import_graph_def(od_graph_def, name='')
-
-    label_map = label_map_util.load_labelmap(PATH_TO_LABELS)
-    categories = label_map_util.convert_label_map_to_categories(
-        label_map, max_num_classes=NUM_CLASSES, use_display_name=True)
-    category_index = label_map_util.create_category_index(categories)
-
-    global end_sequence
-    end_sequence = get_frame_number(cam_num, video_root)
-    object_detection(detection_graph, cam_num, video_root, save_root,
-                     category_index)
 
 
 if __name__ == '__main__':
@@ -191,20 +147,10 @@ if __name__ == '__main__':
     global save_dir
     global p
     video_dir = [
-        'D:/Code/MultiCamOverlap/dataset/videos/Player25/track',
-        'D:/Code/MultiCamOverlap/dataset/videos/Player06/track',
-        'D:/Code/MultiCamOverlap/dataset/videos/Player07/track',
-        'D:/Code/MultiCamOverlap/dataset/videos/Player34/track',
-        'D:/Code/MultiCamOverlap/dataset/videos/Player35/track',
-        'D:/Code/MultiCamOverlap/dataset/videos/Player22/track'
+        'D:/Code/MultiCamOverlap/dataset/videos/Player01/track'
     ]
     save_dir = [
-        'D:/Code/MultiCamOverlap/dataset/detections/Player25/track',
-        'D:/Code/MultiCamOverlap/dataset/detections/Player06/track',
-        'D:/Code/MultiCamOverlap/dataset/detections/Player07/track',
-        'D:/Code/MultiCamOverlap/dataset/detections/Player34/track',
-        'D:/Code/MultiCamOverlap/dataset/detections/Player35/track',
-        'D:/Code/MultiCamOverlap/dataset/detections/Player22/track'
+        'D:/Code/MultiCamOverlap/dataset/detections/Player01/track'
     ]
     for player in range(0, 1):
         print('player: ', video_dir[player])
@@ -212,7 +158,7 @@ if __name__ == '__main__':
         p = np.load(roi_filename)
         for track in range(0, 1):
             print('track : ', track + 1)
-            main(player, track)
-            system_cmd = 'C:/Users/Owner/Anaconda3/envs/tensorflow/python.exe combine_detection.py --track ' + track_num[track] + ' --calibration ' + calibration_dir[player] + ' --save ' + save_dir[player]
-            print(system_cmd)
+            #main(player, track)
+            #system_cmd = 'C:/Users/Owner/Anaconda3/envs/tensorflow/python.exe combine_detection.py --track ' + track_num[track] + ' --calibration ' + calibration_dir[player] + ' --save ' + save_dir[player]
+            #print(system_cmd)
             #os.system(system_cmd)
