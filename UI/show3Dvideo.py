@@ -26,7 +26,7 @@ if args.player < 10:
 else:
     player = 'Player' + str(args.player) + '/track'
 video_dir = 'D:/Code/MultiCamOverlap/dataset/videos/' + player
-experiment_dir = 'D:/Code/MultiCamOverlap/experiments/' + player
+experiment_dir = 'D:/Code/MultiCamOverlap/experiments_alpha/' + player
 
 #track_num = '6/'
 #video_dir = 'D:/Code/MultiCamOverlap/dataset/videos/Player05/track'

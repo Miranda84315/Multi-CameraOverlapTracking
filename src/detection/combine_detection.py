@@ -317,9 +317,11 @@ def main():
             plt.plot(new_detection[:, 1], new_detection[:, 2], 'y^')
             plt.xlabel('x')
             plt.ylabel('y')
+            plt.xlim((0, 1500))
+            plt.ylim((1400, 0))
             # plt.legend(['bo', 'go', 'ro', 'co'], ['cam1', 'cam2', 'cam3', 'cam4'], loc='upper left')
             plt.title('clustering')
-            plt.savefig(save_img + str(current_frame) + '.png')
+            plt.savefig(save_img + str(current_frame+1) + '.png')
             # plt.show()
             plt.close()
 

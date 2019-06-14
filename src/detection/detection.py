@@ -63,7 +63,7 @@ def object_detection(detection_graph, cam_num, video_root, save_root,
     with detection_graph.as_default():
         with tf.Session(graph=detection_graph) as sess:
 
-            for icam in range(4, cam_num + 1):
+            for icam in range(1, cam_num + 1):
                 detections = []
                 for frame in range(start_sequence, end_sequence):
                     frame_local = cal_localtime(icam, frame)
@@ -145,9 +145,9 @@ def object_detection(detection_graph, cam_num, video_root, save_root,
                 detections = np.array(detections)
                 detections = detections.reshape((len(detections),
                                                  9))  # 2d array of 3x3
-                #scipy.io.savemat(
-                #    save_root + 'cam' + str(icam) + '.mat',
-                #    mdict={'detections': detections})
+                scipy.io.savemat(
+                    save_root + 'cam' + str(icam) + '.mat',
+                    mdict={'detections': detections})
     cv2.destroyAllWindows()
 
 

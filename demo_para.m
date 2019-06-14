@@ -1,8 +1,8 @@
 % Use for run feature extraction
 
 
-for player=9:10
-    for track=1:8
+for player=1:1
+    for track=1:1
         opts = get_opts(player, track);
         create_experiment_dir(opts);
         compute_L0_features(opts);

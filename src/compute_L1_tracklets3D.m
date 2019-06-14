@@ -11,14 +11,14 @@ end_frame = sequence_window(end);
 for iCam = 1:opts.num_cam
     filename = sprintf('%s/%s/L0-features/features%d.mat',opts.experiment_root,opts.experiment_name,iCam)
     features_temp   = load(filename);
-    detections_temp = load(fullfile(opts.dataset_path, 'detections', opts.experiment_name, sprintf('cam%d.mat',iCam)));
+    detections_temp = load(fullfile(opts.dataset_path, 'alpha_pose', opts.experiment_name, sprintf('cam%d.mat',iCam)));
     data{iCam,1} = double(features_temp.features');
     data{iCam,2} = detections_temp.detections;
 end
 clear detections_temp features_temp iCam
 
 % -- detections = [frame, x, y, cam1, cam2, cam3, cam4]
-load(fullfile(opts.dataset_path, 'detections', opts.experiment_name, sprintf('camera_all.mat')));
+load(fullfile(opts.dataset_path, 'alpha_pose', opts.experiment_name, sprintf('camera_all.mat')));
 
 % -- new method to filter bad lonely detection
 detections_filter = detections;
@@ -35,7 +35,7 @@ detections_filter(filter_num, :) = [];
 detections_filter(:, [8 9]) = [];
 detections = detections_filter;
 
-filename_save = fullfile(opts.dataset_path, 'detections', opts.experiment_name, sprintf('camera_all2.mat'));
+filename_save = fullfile(opts.dataset_path, 'alpha_pose', opts.experiment_name, sprintf('camera_all2.mat'));
 save(filename_save,'detections');
 
 

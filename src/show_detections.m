@@ -1,9 +1,8 @@
 % Demo visualizing OpenPose detections
-opts = get_opts();
+opts = get_opts(1, 1);
 
-cam = 4;
-
-load(fullfile(opts.dataset_path,'detections', sprintf('cam%d.mat',cam)));
+cam = 2;
+load(fullfile(opts.dataset_path, 'alpha_pose', opts.experiment_name, sprintf('cam%d.mat',cam)));
 
 
 %% 

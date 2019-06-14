@@ -13,7 +13,7 @@ end
 % find each endFrame - startFrame
 % if their frame difference == 1, then combined two trajectory together.
 frame_diff = pdist2(endFrame, startFrame, @(frame1, frame2) (frame1 - frame2));
-[traj1, traj2] = find(frame_diff==1);
+[traj1, traj2] = find((frame_diff==1) | (frame_diff ==0));
 
 % combined each two trajectory.
 if ~isempty(traj1 | traj2) %|| (new_trajectories(traj1).segmentStart ~= new_trajectories(traj2).segmentStart)
