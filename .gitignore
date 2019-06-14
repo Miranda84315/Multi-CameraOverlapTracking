@@ -5,6 +5,7 @@ src/detection/faster_rcnn_inception_v2_coco_2018_01_28/
 src/feature/heads/
 src/feature/nets/
 experiments/
+experiments_alpha/
 *.avi
 *.mat
 UI/data/
