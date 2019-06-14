@@ -4,7 +4,15 @@ from matplotlib.path import Path
 import scipy.io
 
 calibration_dir = [
-    'D:/Code/MultiCamOverlap/dataset/calibration/0315/information/'
+    'D:/Code/MultiCamOverlap/dataset/calibration/0315/information/',
+    'D:/Code/MultiCamOverlap/dataset/calibration/0315_02/information/',
+    'D:/Code/MultiCamOverlap/dataset/calibration/0315_03/information/',
+    'D:/Code/MultiCamOverlap/dataset/calibration/0315_04/information/',
+    'D:/Code/MultiCamOverlap/dataset/calibration/0317/information/',
+    'D:/Code/MultiCamOverlap/dataset/calibration/0317/information/',
+    'D:/Code/MultiCamOverlap/dataset/calibration/0317/information/',
+    'D:/Code/MultiCamOverlap/dataset/calibration/0317_08/information/',
+    'D:/Code/MultiCamOverlap/dataset/calibration/0317_09/information/'
 ]
 track_num = ['1/', '2/', '3/', '4/', '5/', '6/', '7/', '8/']
 
@@ -24,7 +32,7 @@ def main(player, track):
     cam_num = 4
     path_video = video_dir[player] + track_num[track]
     path_save = save_dir[player] + track_num[track]
-    for icam in range(2, 3):#cam_num + 1):
+    for icam in range(1, cam_num + 1):
         video_file = path_video + 'cam' + str(icam) + '.avi'
         out_dir = path_save
         cmd = 'C:/Users/Owner/Anaconda3/envs/tensorflow/python.exe video_demo.py --video ' + video_file + ' --outdir ' + out_dir + ' --icam ' + str(icam) + ' --save_video --sp'
@@ -51,18 +59,34 @@ if __name__ == '__main__':
     video_root = 'D:/Code/MultiCamOverlap/dataset/videos/Player0'
     save_root = 'D:/Code/MultiCamOverlap/dataset/alpha_pose/Player0'
     video_dir = [
-        video_root + str(1) + '/track'
+        video_root + str(1) + '/track',
+        video_root + str(2) + '/track',
+        video_root + str(3) + '/track',
+        video_root + str(4) + '/track',
+        video_root + str(5) + '/track',
+        video_root + str(6) + '/track',
+        video_root + str(7) + '/track',
+        video_root + str(8) + '/track',
+        video_root + str(9) + '/track'
     ]
     save_dir = [
-        save_root + str(1) + '/track'
+        save_root + str(1) + '/track',
+        save_root + str(2) + '/track',
+        save_root + str(3) + '/track',
+        save_root + str(4) + '/track',
+        save_root + str(5) + '/track',
+        save_root + str(6) + '/track',
+        save_root + str(7) + '/track',
+        save_root + str(8) + '/track',
+        save_root + str(9) + '/track',
     ]
-    for player in range(0, 1):
+    for player in range(0, 9):
         print('player: ', video_dir[player])
         roi_filename = calibration_dir[player] + 'ROI.npy'
         p = np.load(roi_filename)
-        for track in range(0, 1):
+        for track in range(0, 8):
             print('track : ', track + 1)
             main(player, track)
             system_cmd = 'C:/Users/Owner/Anaconda3/envs/tensorflow/python.exe D:/Code/MultiCamOverlap/src/detection/combine_detection.py --track ' + track_num[track] + ' --calibration ' + calibration_dir[player] + ' --save ' + save_dir[player]
             print(system_cmd)
-            #os.system(system_cmd)
+            os.system(system_cmd)

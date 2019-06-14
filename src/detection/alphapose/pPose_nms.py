@@ -326,18 +326,18 @@ def write_json(all_results, outputpath, icam, for_eval=False):
                     ymin = int(keypoints[ind] - 20)
             max_con = 0
             for ind in range(2, len(keypoints), 3):
-                if keypoints[ind] > max_con:
-                    max_con = keypoints[ind]
+                max_con += keypoints[ind]
+            max_con = max_con/18
             left = xmin
             top = ymin
             width = xmax-xmin
             height = ymax-ymin
             feet_x = int(left + width / 2)
             feet_y = top + height
-            temp = [icam, frame + 1, left, top, width, height, 0.95, feet_x, feet_y]
-
-            detections.append(temp)
-            print(temp, max_con)
+            temp = [icam, frame + 1, left, top, width, height, max_con, feet_x, feet_y]
+            if max_con >= 0.3:
+                detections.append(temp)
+                print(temp)
 
             if form == 'cmu': # the form of CMU-Pose
                 if result['image_id'] not in json_results_cmu.keys():

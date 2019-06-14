@@ -1,9 +1,14 @@
 % Demo visualizing OpenPose detections
 opts = get_opts(1, 1);
 
-cam = 2;
+cam = 1;
 load(fullfile(opts.dataset_path, 'alpha_pose', opts.experiment_name, sprintf('cam%d.mat',cam)));
-
+img = opts.reader.getFrame(cam, frame);
+poses = detections(detections(:,1) == cam & detections(:,2) == frame,3:end);
+bboxes = poses(:,1:4);
+bboxes()
+img = insertObjectAnnotation(img,'rectangle',bboxes, ones(size(bboxes,1),1));
+figure, imshow(img);
 
 %% 
 for frame = 122900:123030
