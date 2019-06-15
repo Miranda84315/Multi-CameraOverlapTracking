@@ -27,6 +27,12 @@ def load_detection(filename):
     return np.array(data)
 
 
+def load_pose(filename):
+    data = scipy.io.loadmat(filename)
+    data = data['poses']
+    return np.array(data)
+
+
 def main(player, track):
     global video_dir, save_dir
     cam_num = 4
@@ -35,11 +41,13 @@ def main(player, track):
     for icam in range(1, cam_num + 1):
         video_file = path_video + 'cam' + str(icam) + '.avi'
         out_dir = path_save
-        cmd = 'C:/Users/Owner/Anaconda3/envs/tensorflow/python.exe video_demo.py --video ' + video_file + ' --outdir ' + out_dir + ' --icam ' + str(icam) + ' --save_video --sp'
+        cmd = 'C:/Users/Owner/Anaconda3/envs/tensorflow/python.exe video_demo.py --video ' + video_file + ' --outdir ' + out_dir + ' --icam ' + str(icam) + ' --sp'
         print(cmd)
         os.system(cmd)
         mat_save = path_save + 'cam' + str(icam) + '.mat'
+        pose_save = path_save + 'cam' + str(icam) + '_pose.mat'
         detections = load_detection(mat_save)
+        poses = load_pose(pose_save)
         roi_ind = []
         for i in range(0, len(detections)):
             feet_x = detections[i, 7]
@@ -49,7 +57,9 @@ def main(player, track):
                 roi_ind.append(i)
         #print(roi_ind)
         new_detections = detections[roi_ind, :]
+        new_poses = poses[roi_ind, :]
         scipy.io.savemat(path_save + 'cam' + str(icam) + '.mat', mdict={'detections': new_detections})
+        scipy.io.savemat(path_save + 'cam' + str(icam) + '_pose.mat', mdict={'poses': new_poses})
 
 
 if __name__ == '__main__':

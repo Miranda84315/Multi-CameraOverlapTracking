@@ -289,6 +289,7 @@ def write_json(all_results, outputpath, icam, for_eval=False):
     json_results = []
     json_results_cmu = {}
     detections = []
+    poses = []
     for im_res in all_results:
         im_name = im_res['imgname']
         for human in im_res['result']:
@@ -327,7 +328,7 @@ def write_json(all_results, outputpath, icam, for_eval=False):
             max_con = 0
             for ind in range(2, len(keypoints), 3):
                 max_con += keypoints[ind]
-            max_con = max_con/18
+            max_con = max_con/17
             left = xmin
             top = ymin
             width = xmax-xmin
@@ -335,9 +336,12 @@ def write_json(all_results, outputpath, icam, for_eval=False):
             feet_x = int(left + width / 2)
             feet_y = top + height
             temp = [icam, frame + 1, left, top, width, height, max_con, feet_x, feet_y]
+            temp_pose = [icam, frame + 1]
+            temp_pose.extend(keypoints)
             if max_con >= 0.3:
                 detections.append(temp)
-                print(temp)
+                poses.append(temp_pose)
+                #print(temp)
 
             if form == 'cmu': # the form of CMU-Pose
                 if result['image_id'] not in json_results_cmu.keys():
@@ -373,8 +377,11 @@ def write_json(all_results, outputpath, icam, for_eval=False):
                 json_results.append(result)
 
     detections = np.array(detections)
-    detections = detections.reshape((len(detections), 9)) 
+    detections = detections.reshape((len(detections), 9))
     scipy.io.savemat(outputpath + 'cam' + str(icam) + '.mat', mdict={'detections': detections})
+    poses = np.array(poses)
+    poses = poses.reshape((len(poses), 53))
+    scipy.io.savemat(outputpath + 'cam' + str(icam) + '_pose.mat', mdict={'poses': poses})
 
 '''
     if form == 'cmu': # the form of CMU-Pose

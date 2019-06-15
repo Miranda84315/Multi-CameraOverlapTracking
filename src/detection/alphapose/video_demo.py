@@ -117,5 +117,4 @@ if __name__ == "__main__":
         pass
     writer.stop()
     final_result = writer.results()
-    print(args.icam)
     write_json(final_result, args.outputpath, args.icam)
