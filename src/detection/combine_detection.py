@@ -26,9 +26,9 @@ track = args.track
 matrix_save = args.calibration
 
 '''
-matrix_save = 'D:/Code/MultiCamOverlap/dataset/calibration/0315/information/'
-detection_dir = 'D:/Code/MultiCamOverlap/dataset/alpha_pose/Player01/track'
-track = '1/'
+matrix_save = 'D:/Code/MultiCamOverlap/dataset/calibration/0317/information/'
+detection_dir = 'D:/Code/MultiCamOverlap/dataset/alpha_pose/Player05/track'
+track = '5/'
 '''
 
 detection_root = detection_dir + track
@@ -50,6 +50,7 @@ def createFolder(directory):
 def load_detection(cam_num):
     detections = []
     num_each_camera = [0]
+    min_frame = np.inf
     temp = 0
     for icam in range(1, cam_num + 1):
         load_file = detection_root + 'cam' + str(icam) + '.mat'
@@ -57,8 +58,11 @@ def load_detection(cam_num):
         data = data['detections']
         num_each_camera.append(temp + len(data))
         temp = temp + len(data)
+        temp_frame = max(data[:, 1])
+        if temp_frame < min_frame:
+            min_frame = temp_frame
         detections.extend(data)
-    return np.array(detections), num_each_camera
+    return np.array(detections), num_each_camera, int(min_frame)
 
 
 #   by ugly
@@ -178,11 +182,10 @@ def main():
     # cam1~cam4: if is -1, then it is no detection from this camera
     # new_detection: for plt, record this frame's clustering result
 
-    detections, num_each_camera = load_detection(cam_num)
-    endFrame = int(max(detections[:, 1]))
+    detections, num_each_camera, endFrame = load_detection(cam_num)
+    #endFrame = int(max(detections[:, 1]))
     total_detections = []
     for current_frame in range(startFrame, endFrame):
-        # print(current_frame)
         detection = np.array([detections[i, [0, 7, 8]] for i in range(len(detections)) if detections[i, 1] == (current_frame + 1)])
         for i in range(0, len(detection)):
             # plot feet_x, feet_y into 3D location
