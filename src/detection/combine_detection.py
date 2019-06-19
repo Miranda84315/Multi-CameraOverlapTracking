@@ -26,10 +26,9 @@ track = args.track
 matrix_save = args.calibration
 
 '''
-matrix_save = 'D:/Code/MultiCamOverlap/dataset/calibration/0317/information/'
-detection_dir = 'D:/Code/MultiCamOverlap/dataset/detections/Player08/track'
-endFrame = 198
-track = '2/'
+matrix_save = 'D:/Code/MultiCamOverlap/dataset/calibration/0315/information/'
+detection_dir = 'D:/Code/MultiCamOverlap/dataset/alpha_pose/Player01/track'
+track = '1/'
 '''
 
 detection_root = detection_dir + track
@@ -40,7 +39,7 @@ cam_num = 4
 width = 1920
 height = 1080
 color = ['bo', 'go', 'ro', 'co', 'mo', 'ko', 'yo', 'bo', 'go', 'ro', 'co', 'mo', 'ko']
-version = 2
+version = 4
 
 
 def createFolder(directory):
@@ -107,7 +106,8 @@ def point3Dto2D(world_x, world_y, cameraMatrix, distCoeffs, Rt):
 
 def calucate_distance(x1, y1, x2, y2):
     distance = np.sqrt(np.square(x1 - x2) + np.square(y1 - y2))
-    return 1 / (1 + distance)
+    return distance
+    #1 / (1 + distance)
 
 
 def getSimilarityMatrix(x):
@@ -119,7 +119,7 @@ def getSimilarityMatrix(x):
             x2 = x[j, 1]
             y1 = x[i, 2]
             y2 = x[j, 2]
-            similarityMatrix[i, j] = calucate_distance(x1, y1, x2, y2)
+            similarityMatrix[i, j] = 1/(1+calucate_distance(x1, y1, x2, y2))
             if (x[i, 0] == x[j, 0]) and (i != j):
                 similarityMatrix[i, j] = 0
             if i == j:
@@ -141,6 +141,19 @@ def recomputeIndex(index, n, each_n):
                 new_index[j-1] = i - each_n[j - 1] + 1
                 break
     return new_index
+
+
+def nearestPoint(x, y):
+    nearest = []
+    for i in range(0, len(x)):
+        min_dis = np.inf
+        for j in range(0, len(x)):
+            if i != j:
+                if calucate_distance(x[i], y[i], x[j], y[j]) < min_dis:
+                    min_dis = calucate_distance(x[i], y[i], x[j], y[j])
+        nearest.append(int(min_dis))
+    nearest = np.array(nearest)
+    return nearest
 
 
 def main():
@@ -171,12 +184,17 @@ def main():
     for current_frame in range(startFrame, endFrame):
         # print(current_frame)
         detection = np.array([detections[i, [0, 7, 8]] for i in range(len(detections)) if detections[i, 1] == (current_frame + 1)])
-        original_index = np.array([i for i in range(len(detections)) if detections[i, 1] == (current_frame + 1)])
         for i in range(0, len(detection)):
             # plot feet_x, feet_y into 3D location
             x, y = project_3d(detection[i, 1], detection[i, 2], cmtx, dist, Rt[int(detection[i, 0]) - 1])
             detection[i, 1] = x
             detection[i, 2] = y
+
+        original_index = np.array([i for i in range(len(detections)) if detections[i, 1] == (current_frame + 1)])
+        # delete lonely point
+        nearest = nearestPoint(detection[:, 1], detection[:, 2])
+        detection = detection[nearest <= 150, :]
+        original_index = original_index[nearest <= 150]
 
         # 1. get similarity matrix  2. count max camera's detection 3. spectral clustering and get labels 
         # if plot_img is True:
@@ -288,6 +306,27 @@ def main():
             label = clusters
             label = np.array(label).reshape((len(detection), 1))
         # -------------- version 3 end
+
+        # -------------- version 4
+        if version == 4:
+            _, counts = np.unique(detection[:, 0], return_counts=True)
+            thresh = 200
+            clusters = hcluster.fclusterdata(detection[:, 1:3], thresh, criterion="distance")
+
+            _, counts2 = np.unique(clusters, return_counts=True)
+            current_cluster_num = len(counts2)
+
+            for ind in counts2:
+                if ind > 4:
+                    current_cluster_num += int(np.ceil(ind/4)) - 1
+
+            similarity_Matrix = getSimilarityMatrix(detection)
+            sc = SpectralClustering(n_clusters=current_cluster_num, affinity='precomputed', n_init=10)
+            sc.fit(similarity_Matrix)
+            _, counts2 = np.unique(sc.labels_, return_counts=True)
+            label = np.array(sc.labels_).reshape((len(detection), 1))
+
+        # -------------- version 4 end
 
         # combined detection and label
         detection = np.append(detection, label, axis=1)

@@ -4,7 +4,7 @@ function newTrajectories = recomputeTrajectories( newTrajectories, num_cam )
 % num_cam = opts.num_cam;
 % newTrajectories = newTrajectories;
 
-segmentLength = 15;
+segmentLength = 5;%15;
 
 for i = 1:length(newTrajectories)
 

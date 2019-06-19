@@ -18,12 +18,9 @@ trajectories = trajectoriesFromTracklets;
 
 while startFrame <= global2local(opts.start_frames(opts.current_camera), sequence_interval(end))
     % Display loop state
-
     clc; fprintf('Window %d...%d\n', startFrame, endFrame);
-
     % Compute trajectories in current time window
     trajectories = createTrajectories3D_new( opts, trajectories, startFrame, endFrame);
-
     % Update loop range
     startFrame = endFrame   - opts.trajectories.overlap;
     endFrame   = startFrame + opts.trajectories.window_width;

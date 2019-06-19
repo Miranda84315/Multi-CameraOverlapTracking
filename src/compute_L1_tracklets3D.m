@@ -27,7 +27,7 @@ detections_filter(:, 8) = sum(detections_filter(:, [4:7]) == -1, 2);
 filter_num = [];
 for i = 1:length(detections_filter)
     detections_filter(i, 9) = sum(detections_filter(:, 1) == detections_filter(i, 1));
-    if detections_filter(i, 9) >5 && detections_filter(i, 8) ==3
+    if detections_filter(i, 8) ==3
         filter_num = [filter_num; i];
     end
 end

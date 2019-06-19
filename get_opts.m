@@ -44,7 +44,7 @@ opts.load_trajectories = 1;
 
 % Tracklets
 tracklets = [];
-tracklets.window_width = 15;
+tracklets.window_width = 5;%15;
 tracklets.min_length = 1;
 tracklets.alpha = 1;
 tracklets.beta = 0.02;
@@ -58,8 +58,8 @@ trajectories = [];
 trajectories.appearance_groups = 1; % determined automatically when zero
 trajectories.alpha = 1;
 trajectories.beta = 0.01;
-trajectories.window_width = 30;
-trajectories.overlap = 15;
+trajectories.window_width = 10;%30;
+trajectories.overlap = 5;%15;
 trajectories.speed_limit = 80000;
 trajectories.indifference_time = 100;
 trajectories.threshold = 14;%8;

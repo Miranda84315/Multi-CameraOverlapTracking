@@ -6,8 +6,8 @@ labels = labels(indices);
 
 FirstFinalData = zeros(length(tracklets_window), 4);
 for i=1:size(tracklets_window, 1)
-    FirstFinalData(i, 1:2) = tracklets_window(i).data(1, 2:3);
-    FirstFinalData(i, 3:4) = tracklets_window(i).data(end, 2:3);
+    FirstFinalData(i, 1:2) = tracklets_window(i).realdata(1, 2:3);
+    FirstFinalData(i, 3:4) = tracklets_window(i).realdata(end, 2:3);
 end
 
 startX          = repmat(FirstFinalData(:, 1), 1, length(tracklets_window));
@@ -20,7 +20,7 @@ xDiff           = endX - startX';
 yDiff           = endY - startY';
 
 distanceMatrix  = sqrt(xDiff.^2 + yDiff.^2);
-spacetimeAffinity  =1 ./ (1 + distanceMatrix/120 );
+spacetimeAffinity  =1 ./ (1 + distanceMatrix/200 );
 
 params = opts.trajectories;
 sameLabels  = pdist2(labels, labels) == 0;
@@ -32,7 +32,8 @@ sameLabels  = pdist2(labels, labels) == 0;
 % add New frame Difference Method
 Frame_total = cell(length(tracklets_window),1);
 for i=1:length(tracklets_window)
-    Frame_total{i} = [tracklets_window(i).startFrame:tracklets_window(i).endFrame;];
+    %Frame_total{i} = [tracklets_window(i).startFrame:tracklets_window(i).endFrame;];
+    Frame_total{i} = [tracklets_window(i).realdata(:, 1)];
 end
 frameDifference = zeros(length(tracklets_window));
 for i=1:length(tracklets_window)
@@ -43,8 +44,6 @@ for i=1:length(tracklets_window)
         end
     end
 end
-
-
 
 [~, impossibilityMatrix, ~] = getSpaceTimeAffinity_new(tracklets_window, params.beta, params.speed_limit, params.indifference_time);
     

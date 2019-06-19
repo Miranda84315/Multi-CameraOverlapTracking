@@ -44,7 +44,7 @@ for i = 1 : length(allGroups)
     % new idea
     %correlationMatrix =distanceMatrix + (1- appearanceAffinity);
     
-    correlationMatrix(impossibilityMatrix == 1) = -inf;
+    %correlationMatrix(impossibilityMatrix == 1) = -inf;
     correlationMatrix(sameLabels) = 1;
     
     % my design clustering
@@ -55,62 +55,28 @@ for i = 1 : length(allGroups)
          %   correlationMatrix(j, j) = j;
         %end
     end
-     %{
-    sizeCorrelation = length(correlationMatrix);
-    for j=1:sizeCorrelation
-        index_1 = j;    % self
-        index_2 = correlationMatrix(j, j);  %max index
-        index_3 = correlationMatrix(correlationMatrix(j, j), correlationMatrix(j, j)); %max index id
-        if index_1 == index_3
-            correlationMatrix(j, sizeCorrelation+1) = min(index_1, index_2);
-        elseif  correlationMatrix(index_1, index_2) > 0.2
-            correlationMatrix(j, sizeCorrelation+1) = min(index_1, index_2);
-        else
-            correlationMatrix(j, sizeCorrelation+1) = index_1;
+    
+    % find which one is small
+    for j=1:length(correlationMatrix)
+        for k=1:length(correlationMatrix)
+            if (correlationMatrix(j, j) == correlationMatrix(k,k)) && (j~=k)
+                ind = correlationMatrix(j, j);
+                max_value = max(correlationMatrix(j, ind), correlationMatrix(k, ind));
+                if max_value == correlationMatrix(j, ind)
+                    ind_temp = [k; ind];
+                    matrix_temp = correlationMatrix(k, :);
+                    matrix_temp(ind_temp) = -inf;
+                    [~, correlationMatrix(k, k)] = max(matrix_temp);
+                else
+                    ind_temp = [j; ind];
+                    matrix_temp = correlationMatrix(j, :);
+                    matrix_temp(ind_temp) = -inf;
+                    [~, correlationMatrix(j, j)] = max(matrix_temp);
+                end
+            end
         end
     end
     
-    correlationLabel = cell(1, 1);
-    m=1;
-    for j=1:length(correlationMatrix)-1
-        temp_label = [correlationMatrix(j, j), correlationMatrix(j, length(correlationMatrix)), j];
-        % flag : wheather j is already clustering 
-        % flag_lonely : wheather j is lonely one, not clustering with other.
-        flag = 0;
-        flag_lonely = 0;
-        for k=1:length(correlationLabel)
-            if ~isempty(intersect(correlationLabel{k}, temp_label)) 
-                flag = 1;
-                % check if their have -inf in correlationMatrix
-                % if have -inf ,
-                % it means they should not correlation together.
-                for r= 1:length(correlationLabel{k})
-                    if correlationMatrix(correlationLabel{k}(r), j) == -inf
-                        flag=0;
-                        flag_lonely = 1;
-                    end
-                end
-                % correlationLabel{k} and j have intersect, so we
-                % clustering they by union set
-                if flag == 1
-                    correlationLabel{k} = union(correlationLabel{k}, temp_label);
-                end
-                break
-            end
-        end
-        % clustering by j and j's 
-        if flag ==0 && flag_lonely == 0
-            correlationLabel{m} = temp_label;
-            m = m+1;
-        end
-        % if j are flag_lonely, clustering by j-self length(correlationMatrix)
-        if flag ==0 && flag_lonely == 1
-            correlationLabel{m} = [j];
-            m = m+1;
-        end
-    end
-    %}
-    % --------------- new
     correlationLabel = cell(1, 1);
     m=1;
     for j=1:length(correlationMatrix)
@@ -148,12 +114,20 @@ for i = 1 : length(allGroups)
         else
             flag_lonely = 1;
         end
+        % check is real real not in correlationLabel
+        for k=1:length(correlationLabel)
+            if ~isempty(intersect(correlationLabel{k}, j)) 
+                flag_lonely = 0;
+            end
+        end
         % if j are flag_lonely, clustering by j-self length(correlationMatrix)
         if flag ==0 && flag_lonely == 1
             correlationLabel{m} = [j];
             m = m+1;
         end
     end
+    
+    
     
     
     
