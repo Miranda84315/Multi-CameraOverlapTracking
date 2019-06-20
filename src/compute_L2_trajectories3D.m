@@ -37,17 +37,19 @@ end
 clear detections_temp features_temp iCam trajectoriesFromTracklets startFrame endFrame
 
 % -- delete short trajectories
-reconnect_trajectories = reconnectTrajectories(trajectories);
-new_trajectories = removeShortTrajectories(reconnect_trajectories, opts.minimum_trajectory_length);
-new_trajectories = reconnectTrajectories_segment(new_trajectories);
+remove_trajectories = removeShortTrajectories(trajectories, opts.minimum_trajectory_length);
+reconnect_trajectories = reconnectTrajectories_new(opts, remove_trajectories);
+
+% old
+%reconnect_trajectories = reconnectTrajectories(trajectories);
+%new_trajectories = removeShortTrajectories(reconnect_trajectories, opts.minimum_trajectory_length);
+%new_trajectories = reconnectTrajectories_segment(new_trajectories);
 
 % -- get all data from trajectories include id frame xy point
-trackerOutputRaw = trajectoriesToTop(new_trajectories);
+trackerOutputRaw = trajectoriesToTop(reconnect_trajectories);
 % Interpolate missing detections
 trackerOutputFilled = fillTrajectories(trackerOutputRaw);
 % Remove spurius tracks
-% -- I think the opt.minimum_trajectory_length should be more large
-%trackerOutputRemoved = removeShortTracks(trackerOutputFilled, opts.minimum_trajectory_length);
 trackerOutputRemoved = trackerOutputFilled; %fillandSmoothTrajectories(trackerOutputFilled, opts.num_cam);
 % Make identities 1-indexed
 % --rename the id, because we remove the short tracklet
