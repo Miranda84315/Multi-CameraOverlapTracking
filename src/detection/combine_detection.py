@@ -6,6 +6,7 @@ from sklearn.cluster import SpectralClustering, AgglomerativeClustering
 import scipy.cluster.hierarchy as hcluster
 import cv2
 import os
+from copkmeans.cop_kmeans import cop_kmeans
 from argparse import ArgumentParser
 '''
 use Spectral Clustering to combined detections
@@ -26,9 +27,9 @@ track = args.track
 matrix_save = args.calibration
 
 '''
-matrix_save = 'D:/Code/MultiCamOverlap/dataset/calibration/0317/information/'
-detection_dir = 'D:/Code/MultiCamOverlap/dataset/alpha_pose/Player05/track'
-track = '5/'
+matrix_save = 'D:/Code/MultiCamOverlap/dataset/calibration/0322_15/information/'
+detection_dir = 'D:/Code/MultiCamOverlap/dataset/alpha_pose/Player15/track'
+track = '1/'
 '''
 
 detection_root = detection_dir + track
@@ -123,7 +124,7 @@ def getSimilarityMatrix(x):
             x2 = x[j, 1]
             y1 = x[i, 2]
             y2 = x[j, 2]
-            similarityMatrix[i, j] = 1/(1+calucate_distance(x1, y1, x2, y2))
+            similarityMatrix[i, j] = 1/(1+calucate_distance(x1, y1, x2, y2)/200)
             if (x[i, 0] == x[j, 0]) and (i != j):
                 similarityMatrix[i, j] = 0
             if i == j:
@@ -324,10 +325,22 @@ def main():
                     current_cluster_num += int(np.ceil(ind/4)) - 1
 
             similarity_Matrix = getSimilarityMatrix(detection)
-            sc = SpectralClustering(n_clusters=current_cluster_num, affinity='precomputed', n_init=10)
+            sc = SpectralClustering(n_clusters=current_cluster_num, affinity='precomputed', n_init=20, assign_labels="discretize")
             sc.fit(similarity_Matrix)
             _, counts2 = np.unique(sc.labels_, return_counts=True)
             label = np.array(sc.labels_).reshape((len(detection), 1))
+
+            if any(counts2 >= 5):
+                print(current_frame)
+                must_x, must_y = np.where(similarity_Matrix == 1)
+                not_x, not_y = np.where(similarity_Matrix == 0)
+
+                must_zipped = list(zip(must_x, must_y))
+                not_zipped = list(zip(not_x, not_y))
+
+                clusters, centers = cop_kmeans(dataset=similarity_Matrix, k=5, ml=must_zipped, cl=not_zipped)
+                if clusters is not None:
+                    label = np.array(clusters).reshape((len(detection), 1))
 
         # -------------- version 4 end
 
