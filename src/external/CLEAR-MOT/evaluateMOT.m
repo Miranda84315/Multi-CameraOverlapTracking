@@ -201,7 +201,6 @@ if dispON
    disp(['FN = ', num2str(falseneg)]);
    disp(['FP = ', num2str(falsepos)]);
    disp(['ID switch (MisMatch) = ', num2str(idswitch)]);
-   disp('***NOTE***: ID switch should be carefully counted by visual ispection ');
    disp(['Sum of GrountTruth Obj = ', num2str(gt)]);
    disp(['Sum of FN+TP+IDSW = ', num2str(falseneg+truepos+idswitch)]);  
    disp('----------------------------');
@@ -220,9 +219,10 @@ if(strcmp('VOCscore',typeComp))
    %woA = bboxesDetect(1,4)-bboxesDetect(1,2);
    %hoA = bboxesDetect(1,5)-bboxesDetect(1,3);
    
-   
+
    xtlT =  target.bbox(1);
    ytlT =  target.bbox(2);
+
    %woT =  target.bbox(3);
    %hoT =  target.bbox(4);
 

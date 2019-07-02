@@ -4,10 +4,6 @@
 % Iacopo Masi and Giuseppe Lisanti  <masi,lisanti> @dsi.unifi.it
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 clear
-% groundtruth and results are examples. Ricreate these two structures if
-% you wanto to use it in your own multi-target tracker.
-
-generateData
 
 gt = load(fullfile(opts.dataset_path,'ground_truth', opts.experiment_name, 'gt_data_3D.mat'));
 gt_3D=gt.gt_3D;
@@ -25,6 +21,9 @@ for frame= 1:max_frame
     temp = resdata(resdata(:, 1)== frame, [2, 3, 4]);
     for id=1:max_id
         res(frame).trackerData.target(id).bbox = temp(temp(:, 1) == id,[2, 3]);
+        if isempty(temp(temp(:, 1) == id,[2, 3]))
+            res(frame).trackerData.target(id).bbox = [-1, -1];
+        end
     end
 end
 
@@ -34,6 +33,6 @@ for frame= 1:max_frame
 end
 
 
-VOCscore = 0.01;
+VOCscore = 0.5;
 dispON  = true;
-ClearMOT = evaluateMOT(gt,res,VOCscore,dispON);
+ClearMOT = evaluateMOT(gt, res, VOCscore, dispON);

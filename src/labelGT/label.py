@@ -13,7 +13,7 @@ PlayerX(1~52) - trackY(1~8)
 video_dir = 'D:/Code/MultiCamOverlap/dataset/videos/Player05/track'
 save_dir = 'D:/Code/MultiCamOverlap/dataset/ground_truth/Player05/track'
 matrix_save = 'D:/Code/MultiCamOverlap/dataset/calibration/0317/information/'
-track_num = '1/'
+track_num = '2/'
 
 video_root = video_dir + track_num
 save_root = save_dir + track_num
@@ -96,7 +96,7 @@ def main():
     createFolder(video_root)
     createFolder(save_root)
 
-    label = False
+    label = True
     if label is True:
         filename = [video_root + 'cam1.avi', video_root + 'cam2.avi', video_root + 'cam3.avi', video_root + 'cam4.avi']
         cap1 = cv2.VideoCapture(filename[0])
@@ -149,7 +149,7 @@ def main():
         print('\n\ntime: ', elapsed)
         cv2.destroyAllWindows()
 
-    have3D = True
+    have3D = False
     if have3D:
         cmtx = np.loadtxt(matrix_save + 'intrinsics.txt')
         dist = np.loadtxt(matrix_save + 'distCoeffs.txt')

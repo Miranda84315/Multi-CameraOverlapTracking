@@ -4,6 +4,7 @@ function compute_L2_trajectories3D(opts)
 % -- load tracklets from L1-tracklet.mat
 % -- trajectoriesFromTracklets include detection start/endFrame and
 % -- segmentStart/End
+pose = 'alpha_pose';
 load(fullfile(opts.experiment_root, opts.experiment_name, 'L1-tracklets', sprintf('tracklets_%s.mat',opts.sequence_names{opts.sequence})));
 trajectoriesFromTracklets = trackletsToTrajectories(tracklets,1:length(tracklets));
 
@@ -30,7 +31,7 @@ end
 for iCam = 1:opts.num_cam
     filename = sprintf('%s/%s/L0-features/features%d.mat',opts.experiment_root,opts.experiment_name,iCam)
     features_temp   = load(filename);
-    detections_temp = load(fullfile(opts.dataset_path, 'alpha_pose', opts.experiment_name, sprintf('cam%d.mat',iCam)));
+    detections_temp = load(fullfile(opts.dataset_path, pose, opts.experiment_name, sprintf('cam%d.mat',iCam)));
     data{iCam,1} = double(features_temp.features');
     data{iCam,2} = detections_temp.detections;
 end

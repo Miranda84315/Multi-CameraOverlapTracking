@@ -14,12 +14,16 @@ start_sequence = 0
 end_sequence = 0
 
 calibration_dir = [
-    'D:/Code/MultiCamOverlap/dataset/calibration/0412/information/',
-    'D:/Code/MultiCamOverlap/dataset/calibration/0317/information/',
-    'D:/Code/MultiCamOverlap/dataset/calibration/0317/information/',
-    'D:/Code/MultiCamOverlap/dataset/calibration/0419_34/information/',
-    'D:/Code/MultiCamOverlap/dataset/calibration/0419_35/information/',
-    'D:/Code/MultiCamOverlap/dataset/calibration/0412_22/information/'
+    'D:/Code/MultiCamOverlap/dataset/calibration/0318/information/',
+    'D:/Code/MultiCamOverlap/dataset/calibration/0318/information/',
+    'D:/Code/MultiCamOverlap/dataset/calibration/0318/information/',
+    'D:/Code/MultiCamOverlap/dataset/calibration/0322_14/information/',
+    'D:/Code/MultiCamOverlap/dataset/calibration/0322_15/information/',
+    'D:/Code/MultiCamOverlap/dataset/calibration/0322/information/',
+    'D:/Code/MultiCamOverlap/dataset/calibration/0322/information/',
+    'D:/Code/MultiCamOverlap/dataset/calibration/0322_18/information/',
+    'D:/Code/MultiCamOverlap/dataset/calibration/0408/information/',
+    'D:/Code/MultiCamOverlap/dataset/calibration/0408/information/'
 ]
 
 #video_dir = 'D:/Code/MultiCamOverlap/dataset/videos/Player01/track'
@@ -191,28 +195,36 @@ if __name__ == '__main__':
     global save_dir
     global p
     video_dir = [
-        'D:/Code/MultiCamOverlap/dataset/videos/Player25/track',
-        'D:/Code/MultiCamOverlap/dataset/videos/Player06/track',
-        'D:/Code/MultiCamOverlap/dataset/videos/Player07/track',
-        'D:/Code/MultiCamOverlap/dataset/videos/Player34/track',
-        'D:/Code/MultiCamOverlap/dataset/videos/Player35/track',
-        'D:/Code/MultiCamOverlap/dataset/videos/Player22/track'
+        'D:/Code/MultiCamOverlap/dataset/videos/Player11/track',
+        'D:/Code/MultiCamOverlap/dataset/videos/Player12/track',
+        'D:/Code/MultiCamOverlap/dataset/videos/Player13/track',
+        'D:/Code/MultiCamOverlap/dataset/videos/Player14/track',
+        'D:/Code/MultiCamOverlap/dataset/videos/Player15/track',
+        'D:/Code/MultiCamOverlap/dataset/videos/Player16/track',
+        'D:/Code/MultiCamOverlap/dataset/videos/Player17/track',
+        'D:/Code/MultiCamOverlap/dataset/videos/Player18/track',
+        'D:/Code/MultiCamOverlap/dataset/videos/Player19/track',
+        'D:/Code/MultiCamOverlap/dataset/videos/Player20/track'
     ]
     save_dir = [
-        'D:/Code/MultiCamOverlap/dataset/detections/Player25/track',
-        'D:/Code/MultiCamOverlap/dataset/detections/Player06/track',
-        'D:/Code/MultiCamOverlap/dataset/detections/Player07/track',
-        'D:/Code/MultiCamOverlap/dataset/detections/Player34/track',
-        'D:/Code/MultiCamOverlap/dataset/detections/Player35/track',
-        'D:/Code/MultiCamOverlap/dataset/detections/Player22/track'
+        'D:/Code/MultiCamOverlap/dataset/detections/Player11/track',
+        'D:/Code/MultiCamOverlap/dataset/detections/Player12/track',
+        'D:/Code/MultiCamOverlap/dataset/detections/Player13/track',
+        'D:/Code/MultiCamOverlap/dataset/detections/Player14/track',
+        'D:/Code/MultiCamOverlap/dataset/detections/Player15/track',
+        'D:/Code/MultiCamOverlap/dataset/detections/Player16/track',
+        'D:/Code/MultiCamOverlap/dataset/detections/Player17/track',
+        'D:/Code/MultiCamOverlap/dataset/detections/Player18/track',
+        'D:/Code/MultiCamOverlap/dataset/detections/Player19/track',
+        'D:/Code/MultiCamOverlap/dataset/detections/Player20/track'
     ]
-    for player in range(0, 1):
+    for player in range(0, 10):
         print('player: ', video_dir[player])
         roi_filename = calibration_dir[player] + 'ROI.npy'
         p = np.load(roi_filename)
-        for track in range(0, 1):
+        for track in range(0, 8):
             print('track : ', track + 1)
-            main(player, track)
+            #main(player, track)
             system_cmd = 'C:/Users/Owner/Anaconda3/envs/tensorflow/python.exe combine_detection.py --track ' + track_num[track] + ' --calibration ' + calibration_dir[player] + ' --save ' + save_dir[player]
             print(system_cmd)
-            #os.system(system_cmd)
+            os.system(system_cmd)
