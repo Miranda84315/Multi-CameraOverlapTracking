@@ -23,7 +23,9 @@ frame_diff = pdist2(endFrame, startFrame, @(frame1, frame2) (frame1 - frame2));
 [traj1, traj2] = find(abs(frame_diff) < 20);
 traj1 = ind_reconnect(traj1);
 traj2 = ind_reconnect(traj2);
-
+ind_repeat = (traj1 ~= traj2);
+traj1 = traj1(ind_repeat);
+traj2 = traj2(ind_repeat);
 
 % calculate their appearance and motion 
 if ~isempty(traj1 | traj2)
@@ -57,6 +59,14 @@ if ~isempty(traj1 | traj2)
                     for r= 1:length(correlationLabel)
                         if ~isempty(intersect(correlationLabel{r}, temp_label)) 
                             count = count + 1;
+                            compare = setxor(correlationLabel{r}, temp_label);
+                            if length(compare) == 2
+                                real_1 = find(ind_reconnect == compare(1));
+                                real_2 = find(ind_reconnect == compare(2));
+                                if length(intersect(startFrame(real_1):endFrame(real_1), startFrame(real_2):endFrame(real_2)))>20
+                                    double = 1;
+                                end
+                            end
                         end
                     end
                     if count > 1

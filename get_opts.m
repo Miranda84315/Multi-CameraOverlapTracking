@@ -23,7 +23,7 @@ opts.reader = DataVideoReader(opts.dataset_path, opts.experiment_name);
 %opts.reader = DataVideoReader(opts.dataset_path);
 
 % General settings
-opts.eval_dir = 'L2-identities';
+opts.eval_dir = 'L2-trajectories';
 opts.visualize = false;
 opts.image_width = 1920;
 opts.image_height = 1080;

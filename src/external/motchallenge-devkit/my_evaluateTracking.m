@@ -1,4 +1,4 @@
-function [allMets, metsBenchmark, metsMultiCam] = evaluateTracking(opts, seqmap, resDir, gtDataDir, benchmark, dataset_path)
+function [allMets, metsBenchmark, metsMultiCam] = my_evaluateTracking(opts, seqmap, resDir, gtDataDir, benchmark, dataset_path)
 %{
 seqmap = seqMap;
 resDir = eval_folder;
@@ -55,8 +55,8 @@ metsMultiCam = [];
 
 for ind = 1:4
     % load gt 
-    load(fullfile(dataset_path,'ground_truth', opts.experiment_name, 'gt_data.mat'));
-    gtdata = gt;
+    gt = load(fullfile(dataset_path,'ground_truth', opts.experiment_name, 'gt_data.mat'));
+    gtdata = gt.gt;
     testInterval = [1: max(gtdata(:, 1))];
 
     cam = ind;

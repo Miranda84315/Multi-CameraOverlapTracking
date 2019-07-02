@@ -50,7 +50,9 @@ trackerOutputRaw = trajectoriesToTop(reconnect_trajectories);
 % Interpolate missing detections
 trackerOutputFilled = fillTrajectories(trackerOutputRaw);
 % Remove spurius tracks
-trackerOutputRemoved = trackerOutputFilled; %fillandSmoothTrajectories(trackerOutputFilled, opts.num_cam);
+%trackerOutputRemoved = fillandSmoothTrajectories(trackerOutputFilled, opts.num_cam);
+trackerOutputRemoved = trackerOutputFilled;
+
 % Make identities 1-indexed
 % --rename the id, because we remove the short tracklet
 [~, ~, ic] = unique(trackerOutputRemoved(:,2));
