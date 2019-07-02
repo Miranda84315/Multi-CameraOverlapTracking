@@ -55,7 +55,7 @@ metsMultiCam = [];
 
 for ind = 1:4
     % load gt 
-    gt = load(fullfile(dataset_path,'ground_truth', opts.experiment_name, 'gt_data.mat'));
+    gt = load(fullfile(dataset_path,'ground_truth', opts.experiment_name, 'gt_data_fix.mat'));
     gtdata = gt.gt;
     testInterval = [1: max(gtdata(:, 1))];
 

@@ -204,7 +204,7 @@ if dispON
    disp(['Sum of GrountTruth Obj = ', num2str(gt)]);
    disp(['Sum of FN+TP+IDSW = ', num2str(falseneg+truepos+idswitch)]);  
    disp('----------------------------');
-   disp(['MOTP = ', num2str(ClearMOT.MOTP)]);
+   %disp(['MOTP = ', num2str(ClearMOT.MOTP)]);
    disp(['MOTA = ', num2str(ClearMOT.MOTA) '  (',num2str(ClearMOT.MOTA*100), '%)']);
    disp('----------------------------');
 end
