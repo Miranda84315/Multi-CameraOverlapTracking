@@ -3,7 +3,6 @@
 % University of Florence. 
 % Iacopo Masi and Giuseppe Lisanti  <masi,lisanti> @dsi.unifi.it
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-clear
 
 gt = load(fullfile(opts.dataset_path,'ground_truth', opts.experiment_name, 'gt_data_3D.mat'));
 gt_3D=gt.gt_3D;

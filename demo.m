@@ -4,7 +4,7 @@ create_experiment_dir(opts);
 
 %% Run Tracker
 player = 29;
-track= 2;
+track= 4;
 opts = get_opts(player, track);
 % opts.visualize = true;
 
@@ -19,7 +19,10 @@ compute_L1_tracklets3D(opts);
 %compute_L2_trajectories(opts);
 compute_L2_trajectories3D(opts);
 opts.eval_dir = 'L2-trajectories';
+
+fix_gt;
 my_evaluate(opts);
+gt_demo;
 
 
 command = strcat('C:/Users/Owner/Anaconda3/envs/tensorflow/python.exe UI/show_3D.py' , ...

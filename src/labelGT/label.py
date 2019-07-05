@@ -175,7 +175,7 @@ def main():
                     gt_all[(id_num - 1) * end_sequence + frame - 1, 3] += y
                 gt_all[(id_num - 1) * end_sequence + frame - 1, 2] /= len(gt_temp)
                 gt_all[(id_num - 1) * end_sequence + frame - 1, 3] /= len(gt_temp)
-        scipy.io.savemat(save_root + 'gt_data_3D.mat', mdict={'gt_3D': gt_all})
+        #scipy.io.savemat(save_root + 'gt_data_3D.mat', mdict={'gt_3D': gt_all})
 
 
 if __name__ == '__main__':

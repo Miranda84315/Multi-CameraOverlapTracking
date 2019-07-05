@@ -80,6 +80,7 @@ def project_3d(u, v, cameraMatrix, distCoeffs, Rt):
     p2 = distCoeffs[3]
     x_two = (u - cx) / fx
     y_two = (v - cy) / fy
+
     def f1(x):
         x_one = float(x[0])
         y_one = float(x[1])
@@ -89,6 +90,7 @@ def project_3d(u, v, cameraMatrix, distCoeffs, Rt):
         return [x_two - (x_one * (1 + k1 * r2 + k2 * r4 + k3 * r6) + 2 * p1 * x_one * y_one + p2 * (r2 + 2 * x_one * x_one)),
                 y_two - (y_one * (1 + k1 * r2 + k2 * r4 + k3 * r6) + p1 * (r2 + 2 * y_one * y_one) + 2 * p2 * x_one * y_one)]
     [x_one, y_one] = fsolve(f1, [0, 0])
+
     def f2(x):
         X = float(x[0])
         Y = float(x[1])
@@ -112,7 +114,7 @@ def point3Dto2D(world_x, world_y, cameraMatrix, distCoeffs, Rt):
 def calucate_distance(x1, y1, x2, y2):
     distance = np.sqrt(np.square(x1 - x2) + np.square(y1 - y2))
     return distance
-    #1 / (1 + distance)
+    # 1 / (1 + distance)
 
 
 def getSimilarityMatrix(x):
@@ -184,7 +186,7 @@ def main():
     # new_detection: for plt, record this frame's clustering result
 
     detections, num_each_camera, endFrame = load_detection(cam_num)
-    #endFrame = int(max(detections[:, 1]))
+    # endFrame = int(max(detections[:, 1]))
     total_detections = []
     for current_frame in range(startFrame, endFrame):
         detection = np.array([detections[i, [0, 7, 8]] for i in range(len(detections)) if detections[i, 1] == (current_frame + 1)])
@@ -343,6 +345,28 @@ def main():
                     label = np.array(clusters).reshape((len(detection), 1))
 
         # -------------- version 4 end
+        if version == 5:
+            _, counts = np.unique(detection[:, 0], return_counts=True)
+            thresh = 200
+            clusters = hcluster.fclusterdata(detection[:, 1:3], thresh, criterion="distance")
+
+            _, counts2 = np.unique(clusters, return_counts=True)
+            current_cluster_num = len(counts2)
+
+            for ind in counts2:
+                if ind > 4:
+                    current_cluster_num += int(np.ceil(ind/4)) - 1
+
+            similarity_Matrix = getSimilarityMatrix(detection)
+            must_x, must_y = np.where(similarity_Matrix == 1)
+            not_x, not_y = np.where(similarity_Matrix == 0)
+
+            must_zipped = list(zip(must_x, must_y))
+            not_zipped = list(zip(not_x, not_y))
+
+            clusters, centers = cop_kmeans(dataset=similarity_Matrix, k=5, ml=must_zipped, cl=not_zipped)
+            if clusters is not None:
+                label = np.array(clusters).reshape((len(detection), 1))
 
         # combined detection and label
         detection = np.append(detection, label, axis=1)
@@ -380,9 +404,9 @@ def main():
             # plt.show()
             plt.close()
 
-    total_detections = np.array(total_detections).reshape((len(total_detections), 7))
+    #total_detections = np.array(total_detections).reshape((len(total_detections), 7))
     # print(total_detections)
-    scipy.io.savemat(save_root + 'camera_all.mat', mdict={'detections': total_detections})
+    #scipy.io.savemat(save_root + 'camera_all.mat', mdict={'detections': total_detections})
 
 
 if __name__ == '__main__':

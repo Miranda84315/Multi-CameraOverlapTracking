@@ -9,8 +9,8 @@ endFrame   = frame_info(opts.player, opts.track);
 
 opts.dataset_path    = 'D:/Code/MultiCamOverlap/dataset/';
 opts.gurobi_path     = 'C:/gurobi800/win64/matlab';
-opts.experiment_root = 'D:/Code/MultiCamOverlap/experiments';
-%opts.experiment_root = 'D:/Code/MultiCamOverlap/experiments_alpha';
+%opts.experiment_root = 'D:/Code/MultiCamOverlap/experiments';
+opts.experiment_root = 'D:/Code/MultiCamOverlap/experiments_alpha';
 
 %opts.experiment_dir = 'experiments';
 if opts.player <10
