@@ -27,11 +27,11 @@ track = args.track
 matrix_save = args.calibration
 
 '''
-matrix_save = 'D:/Code/MultiCamOverlap/dataset/calibration/0322_15/information/'
-detection_dir = 'D:/Code/MultiCamOverlap/dataset/alpha_pose/Player15/track'
+matrix_save = 'D:/Code/MultiCamOverlap/dataset/calibration/0315/information/'
+detection_dir = 'D:/Code/MultiCamOverlap/dataset/alpha_pose/Player01/track'
 track = '1/'
 '''
-version = 4
+version = 0
 '''
     version 0: experiments_alpla - Outlier + spectral & constraint + constrained K-Means (Best)
     version 1: experiments_cluster1 - Spectral
@@ -42,9 +42,10 @@ version = 4
 
 detection_root = detection_dir + track
 save_root = detection_dir + track
-save_img = detection_root + 'img' + str(version) + '/'
+save_img = detection_root + 'imgcam2/'
 
 cam_num = 4
+cam_total = 2
 width = 1920
 height = 1080
 color = ['bo', 'go', 'ro', 'co', 'mo', 'ko', 'yo', 'bo', 'go', 'ro', 'co', 'mo', 'ko']
@@ -87,7 +88,6 @@ def project_3d(u, v, cameraMatrix, distCoeffs, Rt):
     p2 = distCoeffs[3]
     x_two = (u - cx) / fx
     y_two = (v - cy) / fy
-
     def f1(x):
         x_one = float(x[0])
         y_one = float(x[1])
@@ -97,7 +97,6 @@ def project_3d(u, v, cameraMatrix, distCoeffs, Rt):
         return [x_two - (x_one * (1 + k1 * r2 + k2 * r4 + k3 * r6) + 2 * p1 * x_one * y_one + p2 * (r2 + 2 * x_one * x_one)),
                 y_two - (y_one * (1 + k1 * r2 + k2 * r4 + k3 * r6) + p1 * (r2 + 2 * y_one * y_one) + 2 * p2 * x_one * y_one)]
     [x_one, y_one] = fsolve(f1, [0, 0])
-
     def f2(x):
         X = float(x[0])
         Y = float(x[1])
@@ -210,14 +209,14 @@ def main():
     # endFrame = int(max(detections[:, 1]))
     total_detections = []
     for current_frame in range(startFrame, endFrame):
-        detection = np.array([detections[i, [0, 7, 8]] for i in range(len(detections)) if detections[i, 1] == (current_frame + 1)])
+        detection = np.array([detections[i, [0, 7, 8]] for i in range(len(detections)) if (detections[i, 1] == (current_frame + 1)) and (int(detections[i, 0]) == 1 or int(detections[i, 0]) == 4) ])
         for i in range(0, len(detection)):
             # plot feet_x, feet_y into 3D location
             x, y = project_3d(detection[i, 1], detection[i, 2], cmtx, dist, Rt[int(detection[i, 0]) - 1])
             detection[i, 1] = x
             detection[i, 2] = y
 
-        original_index = np.array([i for i in range(len(detections)) if detections[i, 1] == (current_frame + 1)])
+        original_index = np.array([i for i in range(len(detections)) if (detections[i, 1] == (current_frame + 1)) and (int(detections[i, 0]) == 1 or int(detections[i, 0]) == 4) ])
         # delete lonely point
         nearest = nearestPoint(detection[:, 1], detection[:, 2])
         detection = detection[nearest <= 150, :]
@@ -252,8 +251,8 @@ def main():
             current_cluster_num = len(counts2)
 
             for ind in counts2:
-                if ind > 4:
-                    current_cluster_num += int(np.ceil(ind/4)) - 1
+                if ind > cam_total:
+                    current_cluster_num += int(np.ceil(ind/cam_total)) - 1
 
             similarity_Matrix = getSimilarityMatrix(detection)
             sc = SpectralClustering(n_clusters=current_cluster_num, affinity='precomputed', n_init=20, assign_labels="discretize")
@@ -261,17 +260,16 @@ def main():
             _, counts2 = np.unique(sc.labels_, return_counts=True)
             label = np.array(sc.labels_).reshape((len(detection), 1))
 
-            if any(counts2 >= 5):
+            if any(counts2 >= cam_total + 1):
                 print(current_frame)
                 must_x, must_y = np.where(similarity_Matrix == 1)
                 not_x, not_y = np.where(similarity_Matrix == 0)
-
                 must_zipped = list(zip(must_x, must_y))
                 not_zipped = list(zip(not_x, not_y))
-
                 clusters, centers = cop_kmeans(dataset=similarity_Matrix, k=current_cluster_num, ml=must_zipped, cl=not_zipped)
                 if clusters is not None:
                     label = np.array(clusters).reshape((len(detection), 1))
+
         # -------------- version 1 end
 
         # -------------- version 2
@@ -367,7 +365,6 @@ def main():
                 label = np.array(clusters).reshape((len(detection), 1))
 
         # combined detection and label
-        print(label)
         detection = np.append(detection, label, axis=1)
         # calucate new detection using mean x, y-point.
         new_detection = []
@@ -406,9 +403,9 @@ def main():
     total_detections = np.array(total_detections).reshape((len(total_detections), 7))
     # print(total_detections)
     # scipy.io.savemat(save_root + 'camera_all.mat', mdict={'detections': total_detections})
-    scipy.io.savemat(save_root + 'camera_cluater' + str(version) + '.mat', mdict={'detections': total_detections})
     scipy.io.savemat(save_root + 'camera_cam2.mat', mdict={'detections': total_detections})
-
+    # scipy.io.savemat(save_root + 'camera_cam124.mat', mdict={'detections': total_detections})
+    # scipy.io.savemat(save_root + 'camera_cam134.mat', mdict={'detections': total_detections})
 
 if __name__ == '__main__':
     main()

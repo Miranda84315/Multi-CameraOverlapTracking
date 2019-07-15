@@ -3,8 +3,8 @@ opts = get_opts();
 create_experiment_dir(opts);
 
 %% Run Tracker
-player = 25;
-track= 6;
+player = 1;
+track= 1;
 opts = get_opts(player, track);
 % opts.visualize = true;
 
@@ -14,6 +14,7 @@ compute_L0_features(opts);
 % Tracklets
 %compute_L1_tracklets(opts);
 compute_L1_tracklets3D(opts);
+compute_L1_tracklets3D_cam(opts);
 
 % Single-camera trajectories
 %compute_L2_trajectories(opts);
