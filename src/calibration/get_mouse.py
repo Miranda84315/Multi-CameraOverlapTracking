@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 from matplotlib.path import Path
 
-root = 'D:/Code/MultiCamOverlap/dataset/calibration/0317_09/'
+root = 'D:/Code/MultiCamOverlap/dataset/calibration/0421_37/'
 image_root = root + 'cam'
 matrix_save = root + 'information/ROI.npy'
 global refPt

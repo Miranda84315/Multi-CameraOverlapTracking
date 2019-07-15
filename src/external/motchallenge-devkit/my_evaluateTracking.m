@@ -94,7 +94,8 @@ for ind = 1:4
     frameIdPairs = resMat{ind}(:,1:2);
     [u,I,~] = unique(frameIdPairs, 'rows', 'first');
     hasDuplicates = size(u,1) < size(frameIdPairs,1);
-    if hasDuplicates
+    %{
+if hasDuplicates
         ixDupRows = setdiff(1:size(frameIdPairs,1), I);
         dupFrameIdExample = frameIdPairs(ixDupRows(1),:);
         rows = find(ismember(frameIdPairs, dupFrameIdExample, 'rows'));
@@ -104,6 +105,7 @@ for ind = 1:4
         errorMessage = [errorMessage, sprintf('%10.2f', resMat{ind}(rows(2),:)), sprintf('\n')];
         assert(~hasDuplicates, errorMessage);
     end
+    %}
     
     % Evaluate sequence
     [metsCLEAR, mInf, additionalInfo] = CLEAR_MOT_HUN(gtMat{ind}, resMat{ind}, threshold, world);

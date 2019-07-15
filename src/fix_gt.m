@@ -1,13 +1,16 @@
 % fix gt by frame different
 opts = get_opts(player, track);
+calibration_dir = calibration_info(player);
+
 
 command = strcat('C:/Users/Owner/Anaconda3/envs/tensorflow/python.exe src/labelGT/reconstruct_label.py' , ...
     sprintf(' --track %s', num2str(opts.track)), ...
     sprintf(' --player %s', num2str(opts.player)), ...
-    sprintf(' --day %s', '0415_29'));
+    sprintf(' --day %s', calibration_dir));
 system(command);
 
-frame_diff = [[6, 6, 2, 0]];
+%frame_diff = [[6, 6, 2, 0]];
+frame_diff  = [[align_info(player, track)]];
 gt = load(fullfile(opts.dataset_path,'ground_truth', opts.experiment_name, 'gt_data_rec.mat'));
 gt = gt.gt;
 % align frame
@@ -28,5 +31,5 @@ save(filename_save,'gt');
 command = strcat('C:/Users/Owner/Anaconda3/envs/tensorflow/python.exe src/labelGT/label_3D.py' , ...
     sprintf(' --track %s', num2str(opts.track)), ...
     sprintf(' --player %s', num2str(opts.player)), ...
-    sprintf(' --day %s', '0415_29'));
+    sprintf(' --day %s', calibration_dir));
 system(command);

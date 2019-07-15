@@ -6,6 +6,7 @@ src/feature/heads/
 src/feature/nets/
 experiments/
 experiments_alpha/
+experiments_*/
 *.avi
 *.mat
 UI/data/

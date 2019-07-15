@@ -109,7 +109,7 @@ if ~isempty(smoothedTracklets)
 end
 
 % Show generated tracklets in window
-if opts.visualize, trackletsVisualizePart4; end
+%if opts.visualize, trackletsVisualizePart4; end
 
 if ~isempty(tracklets)
     tracklets = nestedSortStruct(tracklets,{'startFrame','endFrame'});

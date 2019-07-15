@@ -26,7 +26,7 @@ if args.player < 10:
 else:
     player = 'Player' + str(args.player) + '/track'
 video_dir = 'D:/Code/MultiCamOverlap/dataset/videos/' + player
-experiment_dir = 'D:/Code/MultiCamOverlap/experiments/' + player
+experiment_dir = 'D:/Code/MultiCamOverlap/experiments_cluster3/' + player
 
 #track_num = '6/'
 #video_dir = 'D:/Code/MultiCamOverlap/dataset/videos/Player05/track'
@@ -143,6 +143,7 @@ def main():
         print('frame = ' + str(current_frame) + ' / ' + str(endFrame))
         out.write(img)
         traj.write(trajectory_img)
+    print(traj_filename)
 
     out.release()
     traj.release()

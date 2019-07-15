@@ -32,7 +32,8 @@ end
 
 % Convert trajectories 
 for iCam = 1:opts.num_cam
-    filename = sprintf('%s/%s/L0-features/features%d.mat',opts.experiment_root,opts.experiment_name,iCam)
+    %filename = sprintf('%s/%s/L0-features/features%d.mat',opts.experiment_root,opts.experiment_name,iCam)
+    filename = sprintf('D:/Code/MultiCamOverlap/experiments_alpha/%s/L0-features/features%d.mat',opts.experiment_name,iCam)
     features_temp   = load(filename);
     detections_temp = load(fullfile(opts.dataset_path, pose, opts.experiment_name, sprintf('cam%d.mat',iCam)));
     data{iCam,1} = double(features_temp.features');
@@ -50,6 +51,7 @@ reconnect_trajectories = reconnectTrajectories_new(opts, remove_trajectories);
 %new_trajectories = reconnectTrajectories_segment(new_trajectories);
 
 % -- get all data from trajectories include id frame xy point
+%trackerOutputRaw = trajectoriesToTop(remove_trajectories);
 trackerOutputRaw = trajectoriesToTop(reconnect_trajectories);
 % Interpolate missing detections
 trackerOutputFilled = fillTrajectories(trackerOutputRaw);
@@ -76,7 +78,7 @@ dlmwrite(sprintf('%s/%s/L2-trajectories/cam_%s.txt', ...
     fileOutput, 'delimiter', ' ', 'precision', 6);
 
 %% run result
-
+% -- 記得要改show 3d裡的path
 command = strcat('C:/Users/Owner/Anaconda3/envs/tensorflow/python.exe UI/show3Dvideo.py' , ...
     sprintf(' --track %s', num2str(opts.track)), ...
     sprintf(' --player %s', num2str(opts.player)));

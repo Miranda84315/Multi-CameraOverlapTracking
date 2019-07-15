@@ -31,16 +31,23 @@ matrix_save = 'D:/Code/MultiCamOverlap/dataset/calibration/0322_15/information/'
 detection_dir = 'D:/Code/MultiCamOverlap/dataset/alpha_pose/Player15/track'
 track = '1/'
 '''
+version = 4
+'''
+    version 0: experiments_alpla - Outlier + spectral & constraint + constrained K-Means (Best)
+    version 1: experiments_cluster1 - Spectral
+    version 2: experiments_cluster2 - Outlier + spectral
+    version 3: experiments_cluster3 - Outlier + spectral & constraint
+    version 4: experiments_cluster4 - Outlier + constrained K-Means
+'''
 
 detection_root = detection_dir + track
 save_root = detection_dir + track
-save_img = detection_root + 'img/'
+save_img = detection_root + 'img' + str(version) + '/'
 
 cam_num = 4
 width = 1920
 height = 1080
 color = ['bo', 'go', 'ro', 'co', 'mo', 'ko', 'yo', 'bo', 'go', 'ro', 'co', 'mo', 'ko']
-version = 4
 
 
 def createFolder(directory):
@@ -135,6 +142,20 @@ def getSimilarityMatrix(x):
     return similarityMatrix
 
 
+def getSimilarityMatrix_noconstraint(x):
+    num_x = len(x)
+    similarityMatrix = np.zeros((num_x, num_x))
+    for i in range(0, num_x):
+        for j in range(i, num_x):
+            x1 = x[i, 1]
+            x2 = x[j, 1]
+            y1 = x[i, 2]
+            y2 = x[j, 2]
+            similarityMatrix[i, j] = 1/(1+calucate_distance(x1, y1, x2, y2)/200)
+            similarityMatrix[j, i] = similarityMatrix[i, j]
+    return similarityMatrix
+
+
 def getMeanPoint(point):
     return np.mean(point, axis=0)
 
@@ -222,99 +243,7 @@ def main():
         # -- (3) still use fclusterdata, but divide the error clustering.
 
         # -------------- version 1
-        if version == 1:
-            _, counts = np.unique(detection[:, 0], return_counts=True)
-            thresh = 160
-            clusters = hcluster.fclusterdata(detection[:, 1:3], thresh, criterion="distance")
-
-            fcluster_count = len(set(clusters))
-            _, counts2 = np.unique(clusters, return_counts=True)
-            for i in counts2:
-                if i > 4:
-                    fcluster_count += 1
-
-            true_counts = 5 if max(counts) == 5 else fcluster_count
-            if true_counts > 5:
-                true_counts = 5
-
-            sc = AgglomerativeClustering(n_clusters=true_counts)
-            sc.fit(detection[:, 1:3])
-            label = np.array(sc.labels_).reshape((len(detection), 1))
-            count_num, counts = np.unique(label, return_counts=True)
-
-            if max(counts) >= 5:
-                true_counts += 1
-                sc = AgglomerativeClustering(n_clusters=true_counts)
-                sc.fit(detection[:, 1:3])
-                label = np.array(sc.labels_).reshape((len(detection), 1))
-        # -------------- version 1 end
-
-        # -------------- version 2
-        if version == 2:
-            _, counts = np.unique(detection[:, 0], return_counts=True)
-            thresh = 200
-            clusters = hcluster.fclusterdata(detection[:, 1:3], thresh, criterion="distance")
-
-            _, counts2 = np.unique(clusters, return_counts=True)
-            current_cluster_num = len(counts2)
-            while(any(counts2 >= 5)):
-                ind_divide = np.where(counts2 >= 5)[0]
-                for ind in ind_divide:
-                    prev_index = np.where(clusters == (ind+1))[0]
-                    sc = AgglomerativeClustering(n_clusters=2)
-                    sc.fit(detection[prev_index, 1:3])
-                    label_temp = np.array(sc.labels_).reshape((len(detection[prev_index, 1:3]), 1))
-                    label_change = np.where(label_temp == 1)[0]
-                    clusters[prev_index[label_change]] = current_cluster_num + 1
-                    current_cluster_num += 1
-                _, counts2 = np.unique(clusters, return_counts=True)
-                current_cluster_num = len(counts2)
-            label = clusters - 1
-            label = np.array(label).reshape((len(detection), 1))
-        # -------------- version 2 end
-
-        # -------------- version 3
-        if version == 3:
-            _, counts = np.unique(detection[:, 0], return_counts=True)
-            thresh = 190
-            clusters = hcluster.fclusterdata(detection[:, 1:3], thresh, criterion="distance")
-
-            fcluster_count = len(set(clusters))
-            _, counts2 = np.unique(clusters, return_counts=True)
-            for i in counts2:
-                if i > 4:
-                    fcluster_count += 1
-
-            true_counts = 5 if max(counts) == 5 else fcluster_count
-            if true_counts > 5:
-                true_counts = 5
-
-            sc = AgglomerativeClustering(n_clusters=true_counts)
-            sc.fit(detection[:, 1:3])
-            label = np.array(sc.labels_).reshape((len(detection), 1))
-            count_num, counts = np.unique(label, return_counts=True)
-            clusters = label
-
-            _, counts2 = np.unique(clusters, return_counts=True)
-            current_cluster_num = len(counts2)
-            while(any(counts2 >= 5)):
-                ind_divide = np.where(counts2 >= 5)[0]
-                for ind in ind_divide:
-                    prev_index = np.where(clusters == (ind))[0]
-                    sc = AgglomerativeClustering(n_clusters=2)
-                    sc.fit(detection[prev_index, 1:3])
-                    label_temp = np.array(sc.labels_).reshape((len(detection[prev_index, 1:3]), 1))
-                    label_change = np.where(label_temp == 1)[0]
-                    clusters[prev_index[label_change]] = current_cluster_num + 1
-                    current_cluster_num += 1
-                _, counts2 = np.unique(clusters, return_counts=True)
-                current_cluster_num = len(counts2)
-            label = clusters
-            label = np.array(label).reshape((len(detection), 1))
-        # -------------- version 3 end
-
-        # -------------- version 4
-        if version == 4:
+        if version == 0:
             _, counts = np.unique(detection[:, 0], return_counts=True)
             thresh = 200
             clusters = hcluster.fclusterdata(detection[:, 1:3], thresh, criterion="distance")
@@ -340,12 +269,81 @@ def main():
                 must_zipped = list(zip(must_x, must_y))
                 not_zipped = list(zip(not_x, not_y))
 
-                clusters, centers = cop_kmeans(dataset=similarity_Matrix, k=5, ml=must_zipped, cl=not_zipped)
+                clusters, centers = cop_kmeans(dataset=similarity_Matrix, k=current_cluster_num, ml=must_zipped, cl=not_zipped)
                 if clusters is not None:
                     label = np.array(clusters).reshape((len(detection), 1))
+        # -------------- version 1 end
+
+        # -------------- version 2
+        if version == 1:
+            detection = np.array([detections[i, [0, 7, 8]] for i in range(len(detections)) if detections[i, 1] == (current_frame + 1)])
+            for i in range(0, len(detection)):
+                # plot feet_x, feet_y into 3D location
+                x, y = project_3d(detection[i, 1], detection[i, 2], cmtx, dist, Rt[int(detection[i, 0]) - 1])
+                detection[i, 1] = x
+                detection[i, 2] = y
+
+            original_index = np.array([i for i in range(len(detections)) if detections[i, 1] == (current_frame + 1)])
+
+            _, counts = np.unique(detection[:, 0], return_counts=True)
+            thresh = 200
+            clusters = hcluster.fclusterdata(detection[:, 1:3], thresh, criterion="distance")
+
+            _, counts2 = np.unique(clusters, return_counts=True)
+            current_cluster_num = len(counts2)
+
+            for ind in counts2:
+                if ind > 4:
+                    current_cluster_num += int(np.ceil(ind/4)) - 1
+
+            similarity_Matrix = getSimilarityMatrix_noconstraint(detection)
+            sc = SpectralClustering(n_clusters=current_cluster_num, affinity='precomputed', n_init=20, assign_labels="discretize")
+            sc.fit(similarity_Matrix)
+            _, counts2 = np.unique(sc.labels_, return_counts=True)
+            label = np.array(sc.labels_).reshape((len(detection), 1))
+        # -------------- version 2 end
+
+        # -------------- version 3
+        if version == 2:
+            _, counts = np.unique(detection[:, 0], return_counts=True)
+            thresh = 200
+            clusters = hcluster.fclusterdata(detection[:, 1:3], thresh, criterion="distance")
+
+            _, counts2 = np.unique(clusters, return_counts=True)
+            current_cluster_num = len(counts2)
+
+            for ind in counts2:
+                if ind > 4:
+                    current_cluster_num += int(np.ceil(ind/4)) - 1
+
+            similarity_Matrix = getSimilarityMatrix_noconstraint(detection)
+            sc = SpectralClustering(n_clusters=current_cluster_num, affinity='precomputed', n_init=20, assign_labels="discretize")
+            sc.fit(similarity_Matrix)
+            _, counts2 = np.unique(sc.labels_, return_counts=True)
+            label = np.array(sc.labels_).reshape((len(detection), 1))
+        # -------------- version 3 end
+
+        # -------------- version 4
+        if version == 3:
+            _, counts = np.unique(detection[:, 0], return_counts=True)
+            thresh = 200
+            clusters = hcluster.fclusterdata(detection[:, 1:3], thresh, criterion="distance")
+
+            _, counts2 = np.unique(clusters, return_counts=True)
+            current_cluster_num = len(counts2)
+
+            for ind in counts2:
+                if ind > 4:
+                    current_cluster_num += int(np.ceil(ind/4)) - 1
+
+            similarity_Matrix = getSimilarityMatrix(detection)
+            sc = SpectralClustering(n_clusters=current_cluster_num, affinity='precomputed', n_init=20, assign_labels="discretize")
+            sc.fit(similarity_Matrix)
+            _, counts2 = np.unique(sc.labels_, return_counts=True)
+            label = np.array(sc.labels_).reshape((len(detection), 1))
 
         # -------------- version 4 end
-        if version == 5:
+        if version == 4:
             _, counts = np.unique(detection[:, 0], return_counts=True)
             thresh = 200
             clusters = hcluster.fclusterdata(detection[:, 1:3], thresh, criterion="distance")
@@ -364,7 +362,7 @@ def main():
             must_zipped = list(zip(must_x, must_y))
             not_zipped = list(zip(not_x, not_y))
 
-            clusters, centers = cop_kmeans(dataset=similarity_Matrix, k=5, ml=must_zipped, cl=not_zipped)
+            clusters, centers = cop_kmeans(dataset=similarity_Matrix, k=current_cluster_num, ml=must_zipped, cl=not_zipped, max_iter=400)
             if clusters is not None:
                 label = np.array(clusters).reshape((len(detection), 1))
 
@@ -404,9 +402,10 @@ def main():
             # plt.show()
             plt.close()
 
-    #total_detections = np.array(total_detections).reshape((len(total_detections), 7))
+    total_detections = np.array(total_detections).reshape((len(total_detections), 7))
     # print(total_detections)
-    #scipy.io.savemat(save_root + 'camera_all.mat', mdict={'detections': total_detections})
+    # scipy.io.savemat(save_root + 'camera_all.mat', mdict={'detections': total_detections})
+    scipy.io.savemat(save_root + 'camera_cluater' + str(version) + '.mat', mdict={'detections': total_detections})
 
 
 if __name__ == '__main__':

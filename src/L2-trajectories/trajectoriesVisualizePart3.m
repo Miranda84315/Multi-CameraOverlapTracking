@@ -12,6 +12,7 @@ currentTrajectories = smoothTrajectories;
 numTrajectories = length(currentTrajectories);
 
 colors = distinguishable_colors(numTrajectories);
+colors(5, :) = [1, 1, 0];
 for k = 1:numTrajectories
     
     

@@ -234,6 +234,7 @@ if(strcmp('VOCscore',typeComp))
    %else
    %   dist = intersection/union;
    %end
-   dist = abs(xtlA - xtlT) + abs(ytlA-ytlT);%sqrt((xtlA - xtlT)*(xtlA - xtlT) - (ytlA-ytlT)*(ytlA-ytlT));
+   %dist_1 = abs(xtlA - xtlT) + abs(ytlA-ytlT);
+   dist = sqrt((xtlA - xtlT)*(xtlA - xtlT) + (ytlA-ytlT)*(ytlA-ytlT));
 end
 return 
