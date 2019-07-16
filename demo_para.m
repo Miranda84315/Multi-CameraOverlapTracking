@@ -10,7 +10,7 @@ player_spec = [4,22, 18];
 
 for player=1:40
     for track=1:8
-        if ~(player==4 & ismember(track, [5:8]) | player==18)
+        if ~((player==4 & ismember(track, [5:8])) | player==18 )
             opts = get_opts(player, track);
             create_experiment_dir(opts);
             %compute_L0_features(opts);

@@ -42,10 +42,10 @@ version = 0
 
 detection_root = detection_dir + track
 save_root = detection_dir + track
-save_img = detection_root + 'imgcam2/'
+save_img = detection_root + 'imgcam124/'
 
 cam_num = 4
-cam_total = 2
+cam_total = 3
 width = 1920
 height = 1080
 color = ['bo', 'go', 'ro', 'co', 'mo', 'ko', 'yo', 'bo', 'go', 'ro', 'co', 'mo', 'ko']
@@ -209,14 +209,14 @@ def main():
     # endFrame = int(max(detections[:, 1]))
     total_detections = []
     for current_frame in range(startFrame, endFrame):
-        detection = np.array([detections[i, [0, 7, 8]] for i in range(len(detections)) if (detections[i, 1] == (current_frame + 1)) and (int(detections[i, 0]) == 1 or int(detections[i, 0]) == 4) ])
+        detection = np.array([detections[i, [0, 7, 8]] for i in range(len(detections)) if (detections[i, 1] == (current_frame + 1)) and (int(detections[i, 0]) == 1 or int(detections[i, 0]) == 4 or int(detections[i, 0]) == 2) ])
         for i in range(0, len(detection)):
             # plot feet_x, feet_y into 3D location
             x, y = project_3d(detection[i, 1], detection[i, 2], cmtx, dist, Rt[int(detection[i, 0]) - 1])
             detection[i, 1] = x
             detection[i, 2] = y
 
-        original_index = np.array([i for i in range(len(detections)) if (detections[i, 1] == (current_frame + 1)) and (int(detections[i, 0]) == 1 or int(detections[i, 0]) == 4) ])
+        original_index = np.array([i for i in range(len(detections)) if (detections[i, 1] == (current_frame + 1)) and (int(detections[i, 0]) == 1 or int(detections[i, 0]) == 4 or int(detections[i, 0]) == 2)])
         # delete lonely point
         nearest = nearestPoint(detection[:, 1], detection[:, 2])
         detection = detection[nearest <= 150, :]
@@ -243,170 +243,76 @@ def main():
 
         # -------------- version 1
         if version == 0:
-            if len(detection) >= 1:
-                _, counts = np.unique(detection[:, 0], return_counts=True)
-                thresh = 200
-                clusters = hcluster.fclusterdata(detection[:, 1:3], thresh, criterion="distance")
+            _, counts = np.unique(detection[:, 0], return_counts=True)
+            thresh = 200
+            clusters = hcluster.fclusterdata(detection[:, 1:3], thresh, criterion="distance")
 
-                _, counts2 = np.unique(clusters, return_counts=True)
-                current_cluster_num = len(counts2)
+            _, counts2 = np.unique(clusters, return_counts=True)
+            current_cluster_num = len(counts2)
 
-                for ind in counts2:
-                    if ind > cam_total:
-                        current_cluster_num += int(np.ceil(ind/cam_total)) - 1
+            for ind in counts2:
+                if ind > cam_total:
+                    current_cluster_num += int(np.ceil(ind/cam_total)) - 1
 
-                similarity_Matrix = getSimilarityMatrix(detection)
-                sc = SpectralClustering(n_clusters=current_cluster_num, affinity='precomputed', n_init=20, assign_labels="discretize")
-                sc.fit(similarity_Matrix)
-                _, counts2 = np.unique(sc.labels_, return_counts=True)
-                label = np.array(sc.labels_).reshape((len(detection), 1))
+            similarity_Matrix = getSimilarityMatrix(detection)
+            sc = SpectralClustering(n_clusters=current_cluster_num, affinity='precomputed', n_init=20, assign_labels="discretize")
+            sc.fit(similarity_Matrix)
+            _, counts2 = np.unique(sc.labels_, return_counts=True)
+            label = np.array(sc.labels_).reshape((len(detection), 1))
 
-                if any(counts2 >= cam_total + 1):
-                    print(current_frame)
-                    must_x, must_y = np.where(similarity_Matrix == 1)
-                    not_x, not_y = np.where(similarity_Matrix == 0)
-                    must_zipped = list(zip(must_x, must_y))
-                    not_zipped = list(zip(not_x, not_y))
-                    clusters, centers = cop_kmeans(dataset=similarity_Matrix, k=current_cluster_num, ml=must_zipped, cl=not_zipped)
-                    if clusters is not None:
-                        label = np.array(clusters).reshape((len(detection), 1))
+            if any(counts2 >= cam_total + 1):
+                print(current_frame)
+                must_x, must_y = np.where(similarity_Matrix == 1)
+                not_x, not_y = np.where(similarity_Matrix == 0)
+                must_zipped = list(zip(must_x, must_y))
+                not_zipped = list(zip(not_x, not_y))
+                clusters, centers = cop_kmeans(dataset=similarity_Matrix, k=current_cluster_num, ml=must_zipped, cl=not_zipped)
+                if clusters is not None:
+                    label = np.array(clusters).reshape((len(detection), 1))
 
         # -------------- version 1 end
 
-        # -------------- version 2
-        if version == 1:
-            detection = np.array([detections[i, [0, 7, 8]] for i in range(len(detections)) if detections[i, 1] == (current_frame + 1)])
-            for i in range(0, len(detection)):
-                # plot feet_x, feet_y into 3D location
-                x, y = project_3d(detection[i, 1], detection[i, 2], cmtx, dist, Rt[int(detection[i, 0]) - 1])
-                detection[i, 1] = x
-                detection[i, 2] = y
-
-            original_index = np.array([i for i in range(len(detections)) if detections[i, 1] == (current_frame + 1)])
-
-            _, counts = np.unique(detection[:, 0], return_counts=True)
-            thresh = 200
-            clusters = hcluster.fclusterdata(detection[:, 1:3], thresh, criterion="distance")
-
-            _, counts2 = np.unique(clusters, return_counts=True)
-            current_cluster_num = len(counts2)
-
-            for ind in counts2:
-                if ind > 4:
-                    current_cluster_num += int(np.ceil(ind/4)) - 1
-
-            similarity_Matrix = getSimilarityMatrix_noconstraint(detection)
-            sc = SpectralClustering(n_clusters=current_cluster_num, affinity='precomputed', n_init=20, assign_labels="discretize")
-            sc.fit(similarity_Matrix)
-            _, counts2 = np.unique(sc.labels_, return_counts=True)
-            label = np.array(sc.labels_).reshape((len(detection), 1))
-        # -------------- version 2 end
-
-        # -------------- version 3
-        if version == 2:
-            _, counts = np.unique(detection[:, 0], return_counts=True)
-            thresh = 200
-            clusters = hcluster.fclusterdata(detection[:, 1:3], thresh, criterion="distance")
-
-            _, counts2 = np.unique(clusters, return_counts=True)
-            current_cluster_num = len(counts2)
-
-            for ind in counts2:
-                if ind > 4:
-                    current_cluster_num += int(np.ceil(ind/4)) - 1
-
-            similarity_Matrix = getSimilarityMatrix_noconstraint(detection)
-            sc = SpectralClustering(n_clusters=current_cluster_num, affinity='precomputed', n_init=20, assign_labels="discretize")
-            sc.fit(similarity_Matrix)
-            _, counts2 = np.unique(sc.labels_, return_counts=True)
-            label = np.array(sc.labels_).reshape((len(detection), 1))
-        # -------------- version 3 end
-
-        # -------------- version 4
-        if version == 3:
-            _, counts = np.unique(detection[:, 0], return_counts=True)
-            thresh = 200
-            clusters = hcluster.fclusterdata(detection[:, 1:3], thresh, criterion="distance")
-
-            _, counts2 = np.unique(clusters, return_counts=True)
-            current_cluster_num = len(counts2)
-
-            for ind in counts2:
-                if ind > 4:
-                    current_cluster_num += int(np.ceil(ind/4)) - 1
-
-            similarity_Matrix = getSimilarityMatrix(detection)
-            sc = SpectralClustering(n_clusters=current_cluster_num, affinity='precomputed', n_init=20, assign_labels="discretize")
-            sc.fit(similarity_Matrix)
-            _, counts2 = np.unique(sc.labels_, return_counts=True)
-            label = np.array(sc.labels_).reshape((len(detection), 1))
-
-        # -------------- version 4 end
-        if version == 4:
-            _, counts = np.unique(detection[:, 0], return_counts=True)
-            thresh = 200
-            clusters = hcluster.fclusterdata(detection[:, 1:3], thresh, criterion="distance")
-
-            _, counts2 = np.unique(clusters, return_counts=True)
-            current_cluster_num = len(counts2)
-
-            for ind in counts2:
-                if ind > 4:
-                    current_cluster_num += int(np.ceil(ind/4)) - 1
-
-            similarity_Matrix = getSimilarityMatrix(detection)
-            must_x, must_y = np.where(similarity_Matrix == 1)
-            not_x, not_y = np.where(similarity_Matrix == 0)
-
-            must_zipped = list(zip(must_x, must_y))
-            not_zipped = list(zip(not_x, not_y))
-
-            clusters, centers = cop_kmeans(dataset=similarity_Matrix, k=current_cluster_num, ml=must_zipped, cl=not_zipped, max_iter=400)
-            if clusters is not None:
-                label = np.array(clusters).reshape((len(detection), 1))
-
         # combined detection and label
-        if len(detection) >= 1:
-            detection = np.append(detection, label, axis=1)
-            # calucate new detection using mean x, y-point.
-            new_detection = []
-            # print(label_num)
-            for i in np.unique(label):
-                info_detection = [current_frame + 1]
-                coordinate = np.array([detection[k, 1:3] for k in range(0, len(detection)) if detection[k, 3] == i])
-                index = [original_index[k] for k in range(0, len(original_index)) if label[k] == i]
-                index = recomputeIndex(index, cam_num, num_each_camera)
-                info_detection.extend(getMeanPoint(coordinate))
-                info_detection.extend(index)
-                new_detection.append(info_detection)
-                total_detections.append(info_detection)
+        detection = np.append(detection, label, axis=1)
+        # calucate new detection using mean x, y-point.
+        new_detection = []
+        # print(label_num)
+        for i in np.unique(label):
+            info_detection = [current_frame + 1]
+            coordinate = np.array([detection[k, 1:3] for k in range(0, len(detection)) if detection[k, 3] == i])
+            index = [original_index[k] for k in range(0, len(original_index)) if label[k] == i]
+            index = recomputeIndex(index, cam_num, num_each_camera)
+            info_detection.extend(getMeanPoint(coordinate))
+            info_detection.extend(index)
+            new_detection.append(info_detection)
+            total_detections.append(info_detection)
 
-            # plot result after clustering
-            if plot_img is True:
-                new_detection = np.array(new_detection)
-                # -- << plot each original detection >>
-                for i in range(0, len(detection)):
-                    plt.plot(detection[i, 1], detection[i, 2], color[int(detection[i, 3])])
-                # -- << plot new detection with circle point >>
-                # for i in range(0, len(new_detection)):
-                #    plt.plot(new_detection[i, 1], new_detection[i, 2], color[int(detection[i, 3])])
-                # -- << plot new detection with triangle point >>
-                plt.plot(new_detection[:, 1], new_detection[:, 2], 'y^')
-                plt.xlabel('x')
-                plt.ylabel('y')
-                plt.xlim((0, 1500))
-                plt.ylim((1400, 0))
-                # plt.legend(['bo', 'go', 'ro', 'co'], ['cam1', 'cam2', 'cam3', 'cam4'], loc='upper left')
-                plt.title('clustering')
-                plt.savefig(save_img + str(current_frame+1) + '.png')
-                # plt.show()
-                plt.close()
+        # plot result after clustering
+        if plot_img is True:
+            new_detection = np.array(new_detection)
+            # -- << plot each original detection >>
+            for i in range(0, len(detection)):
+                plt.plot(detection[i, 1], detection[i, 2], color[int(detection[i, 3])])
+            # -- << plot new detection with circle point >>
+            # for i in range(0, len(new_detection)):
+            #    plt.plot(new_detection[i, 1], new_detection[i, 2], color[int(detection[i, 3])])
+            # -- << plot new detection with triangle point >>
+            plt.plot(new_detection[:, 1], new_detection[:, 2], 'y^')
+            plt.xlabel('x')
+            plt.ylabel('y')
+            plt.xlim((0, 1500))
+            plt.ylim((1400, 0))
+            # plt.legend(['bo', 'go', 'ro', 'co'], ['cam1', 'cam2', 'cam3', 'cam4'], loc='upper left')
+            plt.title('clustering')
+            plt.savefig(save_img + str(current_frame+1) + '.png')
+            # plt.show()
+            plt.close()
 
     total_detections = np.array(total_detections).reshape((len(total_detections), 7))
     # print(total_detections)
     # scipy.io.savemat(save_root + 'camera_all.mat', mdict={'detections': total_detections})
-    scipy.io.savemat(save_root + 'camera_cam2.mat', mdict={'detections': total_detections})
-    # scipy.io.savemat(save_root + 'camera_cam124.mat', mdict={'detections': total_detections})
+    # scipy.io.savemat(save_root + 'camera_cam2.mat', mdict={'detections': total_detections})
+    scipy.io.savemat(save_root + 'camera_cam124.mat', mdict={'detections': total_detections})
     # scipy.io.savemat(save_root + 'camera_cam134.mat', mdict={'detections': total_detections})
 
 if __name__ == '__main__':
