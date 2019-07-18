@@ -14,8 +14,8 @@ for player=1:40
             opts = get_opts(player, track);
             create_experiment_dir(opts);
             %compute_L0_features(opts);
-            compute_L1_tracklets3D_cam(opts);
-            compute_L2_trajectories3D(opts);
+            %compute_L1_tracklets3D_cam(opts);
+            %compute_L2_trajectories3D(opts);
             %fix_gt;
             [TP_temp, FN_temp, FP_temp, IDSW_temp, MOTA_temp] = gt_demo(opts);
             TP(player, track) = TP_temp;
@@ -104,6 +104,8 @@ filename_temp = fullfile(opts.experiment_root, '/TP.mat')
 save(filename_temp, 'TP');
 filename_temp = fullfile(opts.experiment_root, '/FP.mat')
 save(filename_temp, 'FP');
+filename_temp = fullfile(opts.experiment_root, '/FN.mat')
+save(filename_temp, 'FN');
 filename_temp = fullfile(opts.experiment_root, '/IDSW.mat')
 save(filename_temp, 'IDSW');
 

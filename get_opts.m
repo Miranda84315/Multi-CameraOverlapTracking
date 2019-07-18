@@ -11,13 +11,13 @@ opts.dataset_path    = 'D:/Code/MultiCamOverlap/dataset/';
 opts.gurobi_path     = 'C:/gurobi800/win64/matlab';
 %opts.experiment_root = 'D:/Code/MultiCamOverlap/experiments';
 %opts.experiment_root = 'D:/Code/MultiCamOverlap/experiments_alpha';
-%opts.experiment_root = 'D:/Code/MultiCamOverlap/experiments_reconnect';
+opts.experiment_root = 'D:/Code/MultiCamOverlap/experiments_reconnect';
 %opts.experiment_root = 'D:/Code/MultiCamOverlap/experiments_cluster1';
 %opts.experiment_root = 'D:/Code/MultiCamOverlap/experiments_cluster2';
 %opts.experiment_root = 'D:/Code/MultiCamOverlap/experiments_cluster3';
 %opts.experiment_root = 'D:/Code/MultiCamOverlap/experiments_cam2';
 %opts.experiment_root = 'D:/Code/MultiCamOverlap/experiments_cam124';
-opts.experiment_root = 'D:/Code/MultiCamOverlap/experiments_cam134';
+%opts.experiment_root = 'D:/Code/MultiCamOverlap/experiments_cam134';
 
 %opts.experiment_dir = 'experiments';
 if opts.player <10
