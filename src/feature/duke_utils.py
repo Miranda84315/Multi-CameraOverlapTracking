@@ -16,14 +16,14 @@ class DukeVideoReader:
 
     def __init__(self, dataset_path, track_name):
         self.NumCameras = 4
-        self.NumFrames = [810, 810, 810, 810]
-        self.PartMaxFrame = 810
+        self.NumFrames = [9369, 9369, 9369, 9369]
+        self.PartMaxFrame = 9369
         self.MaxPart = [0, 0, 0, 0]
         self.PartFrames = []
-        self.PartFrames.append([810])
-        self.PartFrames.append([810])
-        self.PartFrames.append([810])
-        self.PartFrames.append([810])
+        self.PartFrames.append([9369])
+        self.PartFrames.append([9369])
+        self.PartFrames.append([9369])
+        self.PartFrames.append([9369])
         self.DatasetPath = dataset_path
         self.CurrentCamera = 1
         self.CurrentPart = 0

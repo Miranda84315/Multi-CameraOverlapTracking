@@ -10,6 +10,7 @@ from tf_pose.estimator import TfPoseEstimator
 from tf_pose.networks import get_graph_path, model_wh
 import matplotlib.pyplot as plt
 import scipy.io
+import os
 
 logger = logging.getLogger('TfPoseEstimator')
 logger.setLevel(logging.DEBUG)
@@ -19,10 +20,11 @@ formatter = logging.Formatter('[%(asctime)s] [%(name)s] [%(levelname)s] %(messag
 ch.setFormatter(formatter)
 logger.addHandler(ch)
 
-save_root = 'D:/Code/MultiCamOverlap/dataset/detections/No3/openpose/'
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='tf-pose-estimation run')
+    parser.add_argument('--icam', type=int, default=1)
+    parser.add_argument('--save_root', type=str)
     parser.add_argument('--video', type=str, default='./video/cam1.avi')
     parser.add_argument('--model', type=str, default='cmu', help='cmu / mobilenet_thin')
 
@@ -32,6 +34,8 @@ if __name__ == '__main__':
                         help='if provided, resize heatmaps before they are post-processed. default=1.0')
 
     args = parser.parse_args()
+    if not os.path.exists(args.save_root):
+        os.mkdir(args.save_root)
 
     w, h = model_wh(args.resize)
     if w == 0 or h == 0:
@@ -40,16 +44,17 @@ if __name__ == '__main__':
         e = TfPoseEstimator(get_graph_path(args.model), target_size=(w, h))
 
     detections = []
-    icam = 4
+    icam = args.icam
+    save_root = args.save_root
     cap = cv2.VideoCapture(args.video)
     if cap.isOpened() is False:
         print("Error opening video stream or file")
-    for count in range(1, 811):
+    for count in range(1, int(cap.get(cv2.CAP_PROP_FRAME_COUNT))):
         print('frame = ', count)
         ret_val, image = cap.read()
         t = time.time()
         humans = e.inference(image, resize_to_default=(w > 0 and h > 0), upsample_size=args.resize_out_ratio)
-        
+
         for human in humans:
             temp = []
             temp.extend([icam, count])
@@ -59,7 +64,7 @@ if __name__ == '__main__':
                 else:
                     body_part = human.body_parts[i]
                     score = human.body_parts[i].score
-                    #print('x = ', body_part.x, ' / y = ', body_part.y , ' / score = ', score)
+                    # print('x = ', body_part.x, ' / y = ', body_part.y , ' / score = ', score)
                     temp.extend([body_part.x, body_part.y, score])
             print(temp)
             detections.append(temp)
@@ -70,40 +75,9 @@ if __name__ == '__main__':
 
         image = TfPoseEstimator.draw_humans(image, humans, imgcopy=False)
 
-        cv2.imshow('tf-pose-estimation result', image)
-        cv2.waitKey(1)
+        # cv2.imshow('tf-pose-estimation result', image)
+        # cv2.waitKey(1)
+
     detections = np.array(detections)
     detections = detections.reshape((len(detections), 56))  # 2d array of 3x3
-    scipy.io.savemat(
-        save_root + 'cam' + str(icam) + '.mat',
-        mdict={'detections': detections})
-    '''
-    fig = plt.figure()
-    plt.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
-    plt.show()
-    bgimg = cv2.cvtColor(image.astype(np.uint8), cv2.COLOR_BGR2RGB)
-    bgimg = cv2.resize(bgimg, (e.heatMat.shape[1], e.heatMat.shape[0]), interpolation=cv2.INTER_AREA)
-    # show network output
-    a = fig.add_subplot(2, 2, 2)
-    plt.imshow(bgimg, alpha=0.5)
-    tmp = np.amax(e.heatMat[:, :, :-1], axis=2)
-    plt.imshow(tmp, cmap=plt.cm.gray, alpha=0.5)
-    plt.colorbar()
-
-    tmp2 = e.pafMat.transpose((2, 0, 1))
-    tmp2_odd = np.amax(np.absolute(tmp2[::2, :, :]), axis=0)
-    tmp2_even = np.amax(np.absolute(tmp2[1::2, :, :]), axis=0)
-
-    a = fig.add_subplot(2, 2, 3)
-    a.set_title('Vectormap-x')
-    # plt.imshow(CocoPose.get_bgimg(inp, target_size=(vectmap.shape[1], vectmap.shape[0])), alpha=0.5)
-    plt.imshow(tmp2_odd, cmap=plt.cm.gray, alpha=0.5)
-    plt.colorbar()
-
-    a = fig.add_subplot(2, 2, 4)
-    a.set_title('Vectormap-y')
-    # plt.imshow(CocoPose.get_bgimg(inp, target_size=(vectmap.shape[1], vectmap.shape[0])), alpha=0.5)
-    plt.imshow(tmp2_even, cmap=plt.cm.gray, alpha=0.5)
-    plt.colorbar()
-    plt.show()
-'''
+    scipy.io.savemat(save_root + 'cam' + str(icam) + '_pose.mat', mdict={'detections': detections})

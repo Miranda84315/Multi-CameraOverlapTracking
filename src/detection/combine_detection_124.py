@@ -42,7 +42,7 @@ version = 0
 
 detection_root = detection_dir + track
 save_root = detection_dir + track
-save_img = detection_root + 'imgcam124/'
+save_img = detection_root + 'imgcam234/'
 
 cam_num = 4
 cam_total = 3
@@ -209,14 +209,14 @@ def main():
     # endFrame = int(max(detections[:, 1]))
     total_detections = []
     for current_frame in range(startFrame, endFrame):
-        detection = np.array([detections[i, [0, 7, 8]] for i in range(len(detections)) if (detections[i, 1] == (current_frame + 1)) and (int(detections[i, 0]) == 1 or int(detections[i, 0]) == 4 or int(detections[i, 0]) == 2) ])
+        detection = np.array([detections[i, [0, 7, 8]] for i in range(len(detections)) if (detections[i, 1] == (current_frame + 1)) and (int(detections[i, 0]) == 4 or int(detections[i, 0]) == 3 or int(detections[i, 0]) == 2) ])
         for i in range(0, len(detection)):
             # plot feet_x, feet_y into 3D location
             x, y = project_3d(detection[i, 1], detection[i, 2], cmtx, dist, Rt[int(detection[i, 0]) - 1])
             detection[i, 1] = x
             detection[i, 2] = y
 
-        original_index = np.array([i for i in range(len(detections)) if (detections[i, 1] == (current_frame + 1)) and (int(detections[i, 0]) == 1 or int(detections[i, 0]) == 4 or int(detections[i, 0]) == 2)])
+        original_index = np.array([i for i in range(len(detections)) if (detections[i, 1] == (current_frame + 1)) and (int(detections[i, 0]) == 4 or int(detections[i, 0]) == 3 or int(detections[i, 0]) == 2)])
         # delete lonely point
         nearest = nearestPoint(detection[:, 1], detection[:, 2])
         detection = detection[nearest <= 150, :]
@@ -312,7 +312,7 @@ def main():
     # print(total_detections)
     # scipy.io.savemat(save_root + 'camera_all.mat', mdict={'detections': total_detections})
     # scipy.io.savemat(save_root + 'camera_cam2.mat', mdict={'detections': total_detections})
-    scipy.io.savemat(save_root + 'camera_cam124.mat', mdict={'detections': total_detections})
+    scipy.io.savemat(save_root + 'camera_cam234.mat', mdict={'detections': total_detections})
     # scipy.io.savemat(save_root + 'camera_cam134.mat', mdict={'detections': total_detections})
 
 if __name__ == '__main__':

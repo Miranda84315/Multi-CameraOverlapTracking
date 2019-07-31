@@ -6,15 +6,16 @@ FP = zeros(40, 8);
 IDSW = zeros(40, 8);
 MOTA = zeros(40, 8);
 single = cell(40, 9);
-player_spec = [4,22, 18];
+player_spec = [4, 22, 18];
 
 for player=1:40
     for track=1:8
         if ~((player==4 & ismember(track, [5:8])) | player==18 )
             opts = get_opts(player, track);
-            create_experiment_dir(opts);
+            %create_experiment_dir(opts);
             %compute_L0_features(opts);
             %compute_L1_tracklets3D_cam(opts);
+            %compute_L1_tracklets3D(opts);
             %compute_L2_trajectories3D(opts);
             %fix_gt;
             [TP_temp, FN_temp, FP_temp, IDSW_temp, MOTA_temp] = gt_demo(opts);

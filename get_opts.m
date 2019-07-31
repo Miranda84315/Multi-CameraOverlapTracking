@@ -11,7 +11,8 @@ opts.dataset_path    = 'D:/Code/MultiCamOverlap/dataset/';
 opts.gurobi_path     = 'C:/gurobi800/win64/matlab';
 %opts.experiment_root = 'D:/Code/MultiCamOverlap/experiments';
 %opts.experiment_root = 'D:/Code/MultiCamOverlap/experiments_alpha';
-opts.experiment_root = 'D:/Code/MultiCamOverlap/experiments_reconnect';
+opts.experiment_root = 'D:/Code/MultiCamOverlap/experiments_openpose';
+%opts.experiment_root = 'D:/Code/MultiCamOverlap/experiments_reconnect';
 %opts.experiment_root = 'D:/Code/MultiCamOverlap/experiments_cluster1';
 %opts.experiment_root = 'D:/Code/MultiCamOverlap/experiments_cluster2';
 %opts.experiment_root = 'D:/Code/MultiCamOverlap/experiments_cluster3';
@@ -19,13 +20,20 @@ opts.experiment_root = 'D:/Code/MultiCamOverlap/experiments_reconnect';
 %opts.experiment_root = 'D:/Code/MultiCamOverlap/experiments_cam124';
 %opts.experiment_root = 'D:/Code/MultiCamOverlap/experiments_cam134';
 
+%opts.experiment_root = 'D:/Code/MultiCamOverlap/experiments_cam234';
+%opts.experiment_root = 'D:/Code/MultiCamOverlap/experiments_cam123';
+%opts.experiment_root = 'D:/Code/MultiCamOverlap/experiments_cam12';
+%opts.experiment_root = 'D:/Code/MultiCamOverlap/experiments_cam13';
+%opts.experiment_root = 'D:/Code/MultiCamOverlap/experiments_cam23';
+%opts.experiment_root = 'D:/Code/MultiCamOverlap/experiments_cam24';
+%opts.experiment_root = 'D:/Code/MultiCamOverlap/experiments_cam34';
+
 %opts.experiment_dir = 'experiments';
 if opts.player <10
     opts.experiment_name = ['Player0', num2str(opts.player), '/track', num2str(opts.track)];
 else
     opts.experiment_name = ['Player', num2str(opts.player), '/track', num2str(opts.track)];
 end
-%opts.experiment_name = 'Player05/track4';
 opts.sequence = 1;
 
 opts.reader = DataVideoReader(opts.dataset_path, opts.experiment_name);
@@ -34,8 +42,8 @@ opts.reader = DataVideoReader(opts.dataset_path, opts.experiment_name);
 % General settings
 opts.eval_dir = 'L2-trajectories';
 opts.visualize = false;
-opts.image_width = 1920;
-opts.image_height = 1080;
+opts.image_width = 360;%1920;
+opts.image_height = 288;%1080;
 opts.current_camera = -1;
 opts.world = 0;
 opts.ROIs = getROIs();
@@ -53,25 +61,25 @@ opts.load_trajectories = 1;
 
 % Tracklets
 tracklets = [];
-tracklets.window_width = 5;%15;
+tracklets.window_width = 5;
 tracklets.min_length = 1;
 tracklets.alpha = 1;
 tracklets.beta = 0.02;
 tracklets.cluster_coeff = 0.75;
 tracklets.nearest_neighbors = 8;
-tracklets.speed_limit = 80000;%20;
-tracklets.threshold = 14;%8;
+tracklets.speed_limit = 80000;
+tracklets.threshold = 14;
 
 % Trajectories
 trajectories = [];
 trajectories.appearance_groups = 1; % determined automatically when zero
 trajectories.alpha = 1;
 trajectories.beta = 0.01;
-trajectories.window_width = 10;%30;
-trajectories.overlap = 5;%15;
+trajectories.window_width = 10;
+trajectories.overlap = 5;
 trajectories.speed_limit = 80000;
 trajectories.indifference_time = 100;
-trajectories.threshold = 14;%8;
+trajectories.threshold = 14;
 trajectories.finalnfirst=200;
 
 % Identities

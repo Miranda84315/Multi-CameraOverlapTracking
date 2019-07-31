@@ -2,6 +2,7 @@ function compute_L0_features(opts)
 % Computes features for the input poses
 pose = 'alpha_pose';
 %pose = 'detections';
+%pose = 'openpose';
 for iCam = 1:4
 
     % Load poses

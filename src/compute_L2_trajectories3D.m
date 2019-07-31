@@ -4,8 +4,8 @@ function compute_L2_trajectories3D(opts)
 % -- load tracklets from L1-tracklet.mat
 % -- trajectoriesFromTracklets include detection start/endFrame and
 % -- segmentStart/End
-
-pose = 'alpha_pose';
+pose = 'openpose';
+%pose = 'alpha_pose';
 %pose = 'detections';
 
 load(fullfile(opts.experiment_root, opts.experiment_name, 'L1-tracklets', sprintf('tracklets_%s.mat',opts.sequence_names{opts.sequence})));

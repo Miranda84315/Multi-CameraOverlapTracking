@@ -26,7 +26,7 @@ if args.player < 10:
 else:
     player = 'Player' + str(args.player) + '/track'
 video_dir = 'D:/Code/MultiCamOverlap/dataset/videos/' + player
-experiment_dir = 'D:/Code/MultiCamOverlap/experiments_cluster3/' + player
+experiment_dir = 'D:/Code/MultiCamOverlap/experiments_alpha/' + player
 
 #track_num = '6/'
 #video_dir = 'D:/Code/MultiCamOverlap/dataset/videos/Player05/track'
@@ -86,6 +86,23 @@ def draw_bb(img, icam, data):
     return img
 
 
+def draw_bb_trajectory(img, icam, data, current_frame):
+    for detection in data:
+        color_id = tuple(color[int(detection[1])])
+        index = icam * 4
+        left_x = int(detection[index])
+        left_y = int(detection[index + 1])
+        right_x = int(detection[index] + detection[index + 2])
+        right_y = int(detection[index + 1] + detection[index + 3])
+        if detection[0] == current_frame:
+            cv2.rectangle(img, (left_x, left_y), (right_x, right_y), color_id, 3)
+            cv2.rectangle(img, (left_x - 1, left_y - 35), (right_x + 1, left_y), color_id, -1)
+            cv2.putText(img, str(int(detection[1])), (left_x, left_y), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 0, 0), 2)
+        else:
+            cv2.circle(img, (int((left_x + right_x) / 2), right_y), 7, color_id, -1)
+    return img
+
+
 def draw_traj(img, frame, data):
     for detection in data:
         color_id = tuple(color[int(detection[1])])
@@ -97,7 +114,6 @@ def draw_traj(img, frame, data):
 
 def main():
     startFrame = 0
-    #endFrame = 390
 
     global fileOutput
     global color
@@ -123,17 +139,16 @@ def main():
 
     for current_frame in range(startFrame, endFrame):
         ind = [fileOutput[i, :] for i in range(0, len(fileOutput)) if fileOutput[i, 0] == current_frame + 1]
+        ind_interval = [fileOutput[i, :] for i in range(0, len(fileOutput)) if fileOutput[i, 0] <= current_frame + 1]
         img_temp = []
         for icam in range(1, cam_num + 1):
             ret, frame_img = cap[icam-1].read()
-            frame_img = draw_bb(frame_img, icam, ind)
+            frame_img = draw_bb_trajectory(frame_img, icam, ind_interval, current_frame)
             img_temp.append(frame_img)
-
         img_top = np.concatenate((img_temp[0], img_temp[1]), axis=0)
         img_bottom = np.concatenate((img_temp[2], img_temp[3]), axis=0)
         img = np.concatenate((img_top, img_bottom), axis=1)
         img = cv2.resize(img, (1920, 1080))
-
         cv2.putText(img, str(current_frame), (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
         cv2.imshow("video2", img)
         trajectory = cv2.imread('D:/Code/MultiCamOverlap/UI/data/BasketballCourt.png')

@@ -6,12 +6,12 @@ import os.path
 
 def main():
     startFrame = 0
-    frame_total = [182, 134, 145, 190, 206, 172, 175, 117]
+    frame_total = [152, 117, 153, 180, 114, 201, 158, 364]
 
     for num in range(1, 9):
         track_num = str(num) + '/'
-        video_dir = 'D:/Code/MultiCamOverlap/dataset/videos/Player40/track'
-        experiment_dir = 'D:/Code/MultiCamOverlap/temp/Player40/'
+        video_dir = 'D:/Code/MultiCamOverlap/dataset/videos/Player52/track'
+        experiment_dir = 'D:/Code/MultiCamOverlap/temp/Player52/'
 
         experiment_root = experiment_dir
         video_root = video_dir + track_num

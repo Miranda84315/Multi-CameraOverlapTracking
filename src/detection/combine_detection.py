@@ -31,7 +31,7 @@ matrix_save = 'D:/Code/MultiCamOverlap/dataset/calibration/0322_15/information/'
 detection_dir = 'D:/Code/MultiCamOverlap/dataset/alpha_pose/Player15/track'
 track = '1/'
 '''
-version = 4
+version = 0
 '''
     version 0: experiments_alpla - Outlier + spectral & constraint + constrained K-Means (Best)
     version 1: experiments_cluster1 - Spectral
@@ -262,7 +262,7 @@ def main():
             label = np.array(sc.labels_).reshape((len(detection), 1))
 
             if any(counts2 >= 5):
-                print(current_frame)
+                # print(current_frame)
                 must_x, must_y = np.where(similarity_Matrix == 1)
                 not_x, not_y = np.where(similarity_Matrix == 0)
 
@@ -367,7 +367,7 @@ def main():
                 label = np.array(clusters).reshape((len(detection), 1))
 
         # combined detection and label
-        print(label)
+        # print(label)
         detection = np.append(detection, label, axis=1)
         # calucate new detection using mean x, y-point.
         new_detection = []
@@ -405,9 +405,9 @@ def main():
 
     total_detections = np.array(total_detections).reshape((len(total_detections), 7))
     # print(total_detections)
-    # scipy.io.savemat(save_root + 'camera_all.mat', mdict={'detections': total_detections})
-    scipy.io.savemat(save_root + 'camera_cluater' + str(version) + '.mat', mdict={'detections': total_detections})
-    scipy.io.savemat(save_root + 'camera_cam2.mat', mdict={'detections': total_detections})
+    scipy.io.savemat(save_root + 'camera_all.mat', mdict={'detections': total_detections})
+    # scipy.io.savemat(save_root + 'camera_cluater' + str(version) + '.mat', mdict={'detections': total_detections})
+    # scipy.io.savemat(save_root + 'camera_cam2.mat', mdict={'detections': total_detections})
 
 
 if __name__ == '__main__':

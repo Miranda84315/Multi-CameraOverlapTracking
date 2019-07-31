@@ -1,5 +1,6 @@
 function compute_L1_tracklets3D(opts)
-pose = 'alpha_pose';
+%pose = 'alpha_pose';
+pose = 'openpose';
 %pose = 'detections';
 % get features from camera1~camera4
 opts.current_camera = 1;
@@ -20,8 +21,8 @@ end
 clear detections_temp features_temp iCam
 
 % -- detections = [frame, x, y, cam1, cam2, cam3, cam4]
-%load(fullfile(opts.dataset_path, pose, opts.experiment_name, sprintf('camera_all.mat')));
-load(fullfile(opts.dataset_path, pose, opts.experiment_name, sprintf('camera_cluater3.mat')));
+load(fullfile(opts.dataset_path, pose, opts.experiment_name, sprintf('camera_all.mat')));
+%load(fullfile(opts.dataset_path, pose, opts.experiment_name, sprintf('camera_cluater3.mat')));
 
 % -- new method to filter bad lonely detection
 detections_filter = detections;
