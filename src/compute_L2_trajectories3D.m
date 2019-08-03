@@ -4,8 +4,8 @@ function compute_L2_trajectories3D(opts)
 % -- load tracklets from L1-tracklet.mat
 % -- trajectoriesFromTracklets include detection start/endFrame and
 % -- segmentStart/End
-pose = 'openpose';
-%pose = 'alpha_pose';
+%pose = 'openpose';
+pose = 'alpha_pose';
 %pose = 'detections';
 
 load(fullfile(opts.experiment_root, opts.experiment_name, 'L1-tracklets', sprintf('tracklets_%s.mat',opts.sequence_names{opts.sequence})));
@@ -82,5 +82,5 @@ dlmwrite(sprintf('%s/%s/L2-trajectories/cam_%s.txt', ...
 command = strcat('C:/Users/Owner/Anaconda3/envs/tensorflow/python.exe UI/show3Dvideo.py' , ...
     sprintf(' --track %s', num2str(opts.track)), ...
     sprintf(' --player %s', num2str(opts.player)));
-%system(command);
+system(command);
 end

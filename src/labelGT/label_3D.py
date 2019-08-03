@@ -91,15 +91,24 @@ def project_3d(u, v, cameraMatrix, distCoeffs, Rt):
 
 def main():
 
-    cmtx = np.loadtxt(matrix_save + 'intrinsics.txt')
-    dist = np.loadtxt(matrix_save + 'distCoeffs.txt')
+    cam_num = 4
     Rt = []
+    cmtx = []
+    dist = []
+
+    for i in range(1, cam_num + 1):
+        cmtx_temp = np.loadtxt(matrix_save + 'intrinsics' + str(i) + '.txt')
+        dist_temp = np.loadtxt(matrix_save + 'distCoeffs' + str(i) + '.txt')
+        Rt_temp = np.loadtxt(matrix_save + 'Rt' + str(i) + '.txt')
+        cmtx.append(cmtx_temp)
+        dist.append(dist_temp)
+        Rt.append(Rt_temp)
 
     for i in range(1, 5):
         Rt_temp = np.loadtxt(matrix_save + 'Rt' + str(i) + '.txt')
         Rt.append(Rt_temp)
 
-    gt = load_mat(save_root + 'gt_data_fix.mat')
+    gt = load_mat(save_root + 'gt_data.mat')
     end_sequence = max(gt[:, 0])
     gt_all = np.zeros((5 * end_sequence, 4))
     for frame in range(1, end_sequence + 1):
@@ -111,7 +120,7 @@ def main():
             for icam, left, top, w, h in gt_temp:
                 feet_x = int(left + (w/2))
                 feet_y = int(top + h)
-                x, y = project_3d(feet_x, feet_y, cmtx, dist, Rt[icam - 1])
+                x, y = project_3d(feet_x, feet_y, cmtx[icam - 1], dist[icam - 1], Rt[icam - 1])
                 if x > 0 and y > 0:
                     gt_all[(id_num - 1) * end_sequence + frame - 1, 2] += x
                     gt_all[(id_num - 1) * end_sequence + frame - 1, 3] += y

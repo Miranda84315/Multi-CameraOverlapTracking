@@ -5,6 +5,7 @@ import os.path
 from heatmappy import Heatmapper
 from PIL import Image
 from argparse import ArgumentParser
+from scipy.ndimage import gaussian_filter1d
 '''
 This is use for save tracking result video
 And save in 
@@ -54,7 +55,8 @@ def load_mat():
 
 
 def random_color(number_people):
-    color = np.zeros((number_people + 1, 3))
+    print(number_people)
+    color = np.zeros((max(number_people + 1, 6), 3))
     color[0] = [82, 82, 82]     # yellow
     color[1] = [119, 65, 110]   # purple
     color[2] = [213, 173, 71]   # blue
@@ -87,19 +89,34 @@ def draw_bb(img, icam, data):
 
 
 def draw_bb_trajectory(img, icam, data, current_frame):
-    for detection in data:
-        color_id = tuple(color[int(detection[1])])
-        index = icam * 4
-        left_x = int(detection[index])
-        left_y = int(detection[index + 1])
-        right_x = int(detection[index] + detection[index + 2])
-        right_y = int(detection[index + 1] + detection[index + 3])
-        if detection[0] == current_frame:
-            cv2.rectangle(img, (left_x, left_y), (right_x, right_y), color_id, 3)
-            cv2.rectangle(img, (left_x - 1, left_y - 35), (right_x + 1, left_y), color_id, -1)
-            cv2.putText(img, str(int(detection[1])), (left_x, left_y), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 0, 0), 2)
-        else:
-            cv2.circle(img, (int((left_x + right_x) / 2), right_y), 7, color_id, -1)
+    data = np.array(data)
+    total_ID = int(max(data[:, 1]))
+    for id_num in range(1, total_ID + 1):
+        id_index = np.where(data[:, 1] == id_num)[0]
+        draw_feet_x = []
+        draw_feet_y = []
+        for i in id_index:
+            detection = data[i, :]
+            color_id = tuple(color[int(detection[1])])
+            index = icam * 4
+            left_x = int(detection[index])
+            left_y = int(detection[index + 1])
+            right_x = int(detection[index] + detection[index + 2])
+            right_y = int(detection[index + 1] + detection[index + 3])
+            feet_x = int((left_x + right_x) / 2)
+            feet_y = int(detection[index + 1] + detection[index + 3])
+            if feet_x != -1 and feet_y != -1:
+                draw_feet_x.append(feet_x)
+                draw_feet_y.append(feet_y)
+            if detection[0] == current_frame:
+                cv2.rectangle(img, (left_x, left_y), (right_x, right_y), color_id, 3)
+                cv2.rectangle(img, (left_x - 1, left_y - 35), (right_x + 1, left_y), color_id, -1)
+                cv2.putText(img, str(int(detection[1])), (left_x, left_y), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 0, 0), 2)
+        draw_feet_x = gaussian_filter1d(draw_feet_x, 2)
+        draw_feet_y = gaussian_filter1d(draw_feet_y, 2)
+        for i in range(0, len(draw_feet_x) - 1):
+            cv2.line(img, (draw_feet_x[i], draw_feet_y[i]), (draw_feet_x[i+1], draw_feet_y[i+1]), color_id, 6)
+
     return img
 
 
@@ -139,7 +156,7 @@ def main():
 
     for current_frame in range(startFrame, endFrame):
         ind = [fileOutput[i, :] for i in range(0, len(fileOutput)) if fileOutput[i, 0] == current_frame + 1]
-        ind_interval = [fileOutput[i, :] for i in range(0, len(fileOutput)) if fileOutput[i, 0] <= current_frame + 1]
+        ind_interval = [fileOutput[i, :] for i in range(0, len(fileOutput)) if fileOutput[i, 0] <= current_frame + 1 and (fileOutput[i, 0] + 75) > current_frame]
         img_temp = []
         for icam in range(1, cam_num + 1):
             ret, frame_img = cap[icam-1].read()

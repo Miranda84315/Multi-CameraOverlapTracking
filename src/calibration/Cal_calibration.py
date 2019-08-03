@@ -7,7 +7,7 @@ Use this to calucate intrinsics and extrinsics
 and save the reslut in npy file
 '''
 
-root = 'D:/Code/MultiCamOverlap/dataset/calibration/0426_52/'
+root = 'D:/Code/MultiCamOverlap/dataset/calibration/0000/'
 intrinsics_root = root + 'cam'
 extrinsics_root = intrinsics_root
 matrix_save = root + 'information/'
@@ -106,12 +106,21 @@ def main():
             np.savetxt(matrix_save + 'intrinsics' + str(icam) + '.txt', cmtx)
             np.savetxt(matrix_save + 'distCoeffs' + str(icam) + '.txt', dist)
 
-    cmtx = np.loadtxt(matrix_save + 'intrinsics.txt')
-    dist = np.loadtxt(matrix_save + 'distCoeffs.txt')
+    #cmtx = np.loadtxt(matrix_save + 'intrinsics.txt')
+    #dist = np.loadtxt(matrix_save + 'distCoeffs.txt')
+
+    cmtx = []
+    dist = []
+
+    for i in range(1, cam_num + 1):
+        cmtx_temp = np.loadtxt(matrix_save + 'intrinsics' + str(i) + '.txt')
+        dist_temp = np.loadtxt(matrix_save + 'distCoeffs' + str(i) + '.txt')
+        cmtx.append(cmtx_temp)
+        dist.append(dist_temp)
 
     objp, corners = load_objp_corners()
     for icam in range(1, cam_num + 1):
-        r, t, Rt = get_extrinsics(icam, cmtx, dist, objp[icam - 1], corners[icam - 1])
+        r, t, Rt = get_extrinsics(icam, cmtx[icam - 1], dist[icam - 1], objp[icam - 1], corners[icam - 1])
         np.savetxt(matrix_save + 'Rt' + str(icam) + '.txt', Rt)
 
     Rt_all = []

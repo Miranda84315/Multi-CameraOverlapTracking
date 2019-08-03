@@ -1,6 +1,6 @@
 function compute_L1_tracklets3D(opts)
-%pose = 'alpha_pose';
-pose = 'openpose';
+pose = 'alpha_pose';
+%pose = 'openpose';
 %pose = 'detections';
 % get features from camera1~camera4
 opts.current_camera = 1;

@@ -1,8 +1,8 @@
 % Demo visualizing OpenPose detections
-opts = get_opts(24, 6);
+opts = get_opts(, 6);
 
-cam = 2;
-frame = 100;
+cam = 4;
+frame = 1;
 load(fullfile(opts.dataset_path, 'alpha_pose', opts.experiment_name, sprintf('cam%d.mat',cam)));
 img = opts.reader.getFrame(cam, frame);
 poses = detections(detections(:,1) == cam & detections(:,2) == frame,3:end);
