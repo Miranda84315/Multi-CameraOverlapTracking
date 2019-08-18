@@ -21,7 +21,7 @@ clear detections_temp features_temp iCam
 
 % -- detections = [frame, x, y, cam1, cam2, cam3, cam4]
 %load(fullfile(opts.dataset_path, pose, opts.experiment_name, sprintf('camera_all.mat')));
-load(fullfile(opts.dataset_path, pose, opts.experiment_name, sprintf('camera_cam34.mat')));
+load(fullfile(opts.dataset_path, pose, opts.experiment_name, sprintf('camera_cluster4.mat')));
 
 %filename_save = fullfile(opts.dataset_path, pose, opts.experiment_name, sprintf('camera_all2.mat'));
 %save(filename_save,'detections');

@@ -156,7 +156,7 @@ def main():
 
     for current_frame in range(startFrame, endFrame):
         ind = [fileOutput[i, :] for i in range(0, len(fileOutput)) if fileOutput[i, 0] == current_frame + 1]
-        ind_interval = [fileOutput[i, :] for i in range(0, len(fileOutput)) if fileOutput[i, 0] <= current_frame + 1 and (fileOutput[i, 0] + 75) > current_frame]
+        ind_interval = [fileOutput[i, :] for i in range(0, len(fileOutput)) if fileOutput[i, 0] <= current_frame + 1 and (fileOutput[i, 0] + 200) > current_frame]
         img_temp = []
         for icam in range(1, cam_num + 1):
             ret, frame_img = cap[icam-1].read()

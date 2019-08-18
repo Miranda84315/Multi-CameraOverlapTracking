@@ -42,7 +42,7 @@ version = 0
 
 detection_root = detection_dir + track
 save_root = detection_dir + track
-save_img = detection_root + 'imgcam13/'
+save_img = detection_root + 'imgcam12/'
 
 cam_num = 4
 cam_total = 2
@@ -316,6 +316,7 @@ def main():
     scipy.io.savemat(save_root + 'camera_cam34.mat', mdict={'detections': total_detections})
     # scipy.io.savemat(save_root + 'camera_cam124.mat', mdict={'detections': total_detections})
     # scipy.io.savemat(save_root + 'camera_cam134.mat', mdict={'detections': total_detections})
+
 
 if __name__ == '__main__':
     main()

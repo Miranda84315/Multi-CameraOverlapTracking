@@ -34,7 +34,7 @@ function [TP, FN, FP, IDSW, MOTA] = gt_demo(opts)
 
 
     VOCscore = 0.5;
-    dispON  = true;
+    dispON  = false;
     ClearMOT = evaluateMOT(gt, res, VOCscore, dispON);
     
     TP = ClearMOT.TP;

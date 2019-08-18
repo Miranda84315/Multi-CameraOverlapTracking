@@ -10,10 +10,10 @@ PlayerX(1~52) - trackY(1~8)
 要記得改 line 12 ~ 13 的 PlayerX 以及 line14 的 trackY
 還有matrix_save 的日期
 '''
-video_dir = 'D:/Code/MultiCamOverlap/dataset/videos/Player05/track'
-save_dir = 'D:/Code/MultiCamOverlap/dataset/ground_truth/Player05/track'
-matrix_save = 'D:/Code/MultiCamOverlap/dataset/calibration/0317/information/'
-track_num = '2/'
+video_dir = 'D:/Code/MultiCamOverlap/dataset/videos/Player46/track'
+save_dir = 'D:/Code/MultiCamOverlap/dataset/ground_truth/Player46/track'
+matrix_save = 'D:/Code/MultiCamOverlap/dataset/calibration/0425/information/'
+track_num = '1/'
 
 video_root = video_dir + track_num
 save_root = save_dir + track_num

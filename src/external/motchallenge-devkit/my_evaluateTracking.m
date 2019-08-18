@@ -43,7 +43,7 @@ multicam = 1;
 % Read sequence list
 sequenceListFile = fullfile('seqmaps',seqmap);
 allSequences = parseSequences2(sequenceListFile);
-fprintf('Sequences: \n');
+%fprintf('Sequences: \n');
 disp(allSequences')
 gtMat = [];
 resMat = [];
@@ -115,7 +115,7 @@ if hasDuplicates
     allMets(ind).m    = mets;
     allMets(ind).IDmeasures = metsID;
     allMets(ind).additionalInfo = additionalInfo;
-    fprintf('%s\n', sequenceName); printMetrics(mets); fprintf('\n');
+    %fprintf('%s\n', sequenceName); printMetrics(mets); fprintf('\n');
     evalFile = fullfile(resDir, sprintf('eval_%s.txt',sequenceName));
     dlmwrite(evalFile, mets);
     
@@ -123,8 +123,8 @@ end
 
 % Overall scores
 metsBenchmark = evaluateBenchmark(allMets, world);
-fprintf('\n');
-fprintf(' ********************* Your %s Results *********************\n', benchmark);
+%fprintf('\n');
+%fprintf(' ********************* Your %s Results *********************\n', benchmark);
 printMetrics(metsBenchmark);
 evalFile = fullfile(resDir, 'eval.txt');
 dlmwrite(evalFile, metsBenchmark);
@@ -135,10 +135,10 @@ dlmwrite(evalFile, metsBenchmark);
 if multicam
     
     metsMultiCam = evaluateMultiCam(gtMat, resMat, threshold, world);
-    fprintf('\n');
-    fprintf(' ********************* Your %s MultiCam Results *********************\n', benchmark);
-    fprintf('IDF1   IDP    IDR\n');
-    fprintf('%.2f  %.2f  %.2f\n', metsMultiCam(1), metsMultiCam(2), metsMultiCam(3));
+    %fprintf('\n');
+    %fprintf(' ********************* Your %s MultiCam Results *********************\n', benchmark);
+    %fprintf('IDF1   IDP    IDR\n');
+    %fprintf('%.2f  %.2f  %.2f\n', metsMultiCam(1), metsMultiCam(2), metsMultiCam(3));
     
     evalFile = fullfile(resDir, 'eval_mc.txt');
     dlmwrite(evalFile, metsMultiCam);

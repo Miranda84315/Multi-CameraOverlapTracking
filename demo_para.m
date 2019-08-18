@@ -1,22 +1,31 @@
 % Use for run feature extraction
+for player=41:52
+    for track=1:8
+            opts = get_opts(player, track);
+            create_experiment_dir(opts);
+            compute_L1_tracklets3D_cam(opts);
+            compute_L2_trajectories3D(opts);
+        end
+end
 
-TP = zeros(40, 8);
-FN = zeros(40, 8);
-FP = zeros(40, 8);
-IDSW = zeros(40, 8);
-MOTA = zeros(40, 8);
-single = cell(40, 9);
+
+TP = zeros(52, 8);
+FN = zeros(52, 8);
+FP = zeros(52, 8);
+IDSW = zeros(52, 8);
+MOTA = zeros(52, 8);
+single = cell(52, 9);
 player_spec = [4, 22, 18];
 
-for player=1:40
+for player=1:52
     for track=1:8
         if ~((player==4 & ismember(track, [5:8])) | player==18 )
             opts = get_opts(player, track);
             %create_experiment_dir(opts);
             %compute_L0_features(opts);
             %compute_L1_tracklets3D_cam(opts);
-            %compute_L1_tracklets3D(opts);
-            %compute_L2_trajectories3D(opts);
+            compute_L1_tracklets3D(opts);
+            compute_L2_trajectories3D(opts);
             %fix_gt;
             [TP_temp, FN_temp, FP_temp, IDSW_temp, MOTA_temp] = gt_demo(opts);
             TP(player, track) = TP_temp;
@@ -68,7 +77,7 @@ end
 single_result = [];
 for icam=1:5
     avg_temp = [];
-    for player = 1:40
+    for player = 1:52
         if ~isempty(single{player, 9})
             avg_temp = [avg_temp; single{player, 9}(icam, :)];
         end
@@ -77,7 +86,7 @@ for icam=1:5
     single_result(icam, [5:10]) = sum(avg_temp(:, [5:10]));
 end
 
-for player=1:40
+for player=1:52
     if player==4
         MOTA(player, 9) = mean(MOTA(player, 1:4));
     elseif player == 22
@@ -86,13 +95,6 @@ for player=1:40
         MOTA(player, 9) = mean(MOTA(player, 1:8));
     end
 end
-
-
-fprintf('MOTA = %f \n', mean(mean(MOTA)));
-fprintf('TP = %d \n', sum(sum(TP)));
-fprintf('FP = %d \n', sum(sum(FP)));
-fprintf('FN = %d \n', sum(sum(FN)));
-fprintf('IDSW = %d \n', sum(sum(IDSW)));
 
     
 filename_temp = fullfile(opts.experiment_root, '/single_result.mat')
@@ -110,4 +112,10 @@ save(filename_temp, 'FN');
 filename_temp = fullfile(opts.experiment_root, '/IDSW.mat')
 save(filename_temp, 'IDSW');
 
+
+fprintf('MOTA = %f \n', mean(mean(MOTA)));
+fprintf('TP = %d \n', sum(sum(TP)));
+fprintf('FP = %d \n', sum(sum(FP)));
+fprintf('FN = %d \n', sum(sum(FN)));
+fprintf('IDSW = %d \n', sum(sum(IDSW)));
 
